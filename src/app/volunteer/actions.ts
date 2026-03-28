@@ -13,30 +13,69 @@ export interface VolunteerInput {
 export async function submitVolunteerApplication(
   input: VolunteerInput
 ): Promise<{ success: boolean; error?: string }> {
+  const token = process.env.MONDAY_API_TOKEN;
+  const boardId = process.env.MONDAY_VOLUNTEER_BOARD_ID;
+
+  if (!token || !boardId) {
+    console.error("[Volunteer Application] Missing MONDAY_API_TOKEN or MONDAY_VOLUNTEER_BOARD_ID");
+    return { success: false, error: "Server configuration error. Please contact us directly." };
+  }
+
+  const fullName = `${input.firstName} ${input.lastName}`;
+
+  const notesLines = [
+    `Role: ${input.role}`,
+    `Availability: ${input.availability}`,
+    input.message ? `\n${input.message}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const columnValues = JSON.stringify({
+    short_textj00mpdv0: fullName,
+    short_textjyc0986f: input.lastName,
+    short_textjwgz4sor: input.email,
+    short_text70w7rlxm: input.phone,
+    long_textbsbqmt6z: { text: notesLines },
+  });
+
+  const mutation = `
+    mutation {
+      create_item(
+        board_id: ${boardId},
+        item_name: "${fullName.replace(/"/g, '\\"')}",
+        column_values: ${JSON.stringify(columnValues)}
+      ) {
+        id
+      }
+    }
+  `;
+
   try {
-    // Log the application (visible in Vercel function logs)
+    const res = await fetch("https://api.monday.com/v2", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+        "API-Version": "2024-01",
+      },
+      body: JSON.stringify({ query: mutation }),
+    });
+
+    const json = await res.json();
+
+    if (json.errors?.length) {
+      console.error("[Volunteer Application] Monday.com errors:", json.errors);
+      return { success: false, error: "Something went wrong. Please try again or contact us." };
+    }
+
     console.log(
-      `[Volunteer Application] ${input.firstName} ${input.lastName} <${input.email}> | Role: ${input.role} | Availability: ${input.availability}`
+      `[Volunteer Application] Created Monday.com item ${json.data?.create_item?.id} for ${fullName} <${input.email}>`
     );
-
-    // TODO: When MONDAY_API_TOKEN is set, create an item in Monday.com board:
-    // const mondayToken = process.env.MONDAY_API_TOKEN;
-    // if (mondayToken) {
-    //   await fetch("https://api.monday.com/v2", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json", Authorization: mondayToken },
-    //     body: JSON.stringify({
-    //       query: `mutation { create_item (board_id: YOUR_BOARD_ID, item_name: "${input.firstName} ${input.lastName}", column_values: "{}") { id } }`,
-    //     }),
-    //   });
-    // }
-
-    // TODO: Send notification email to RECEIPT_EMAIL (process.env.RECEIPT_EMAIL)
-    // via Resend or Nodemailer when email service is configured.
 
     return { success: true };
   } catch (error) {
-    console.error("[Volunteer Application] Error:", error);
-    return { success: false, error: "Something went wrong. Please try again." };
+    console.error("[Volunteer Application] Fetch error:", error);
+    return { success: false, error: "Something went wrong. Please try again or contact us." };
   }
 }
