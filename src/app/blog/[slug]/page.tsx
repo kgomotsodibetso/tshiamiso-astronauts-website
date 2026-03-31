@@ -1,25 +1,39 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { fetchPostBySlug, fetchPublishedPosts } from "../actions";
+import { formatDate } from "@/lib/formatDate";
 
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  const posts = await fetchPublishedPosts();
-  return posts.map((p) => ({ slug: p.slug }));
+  try {
+    const posts = await fetchPublishedPosts();
+    return posts.map((p) => ({ slug: p.slug }));
+  } catch {
+    return [];
+  }
 }
 
-function formatDate(dateStr: string): string {
-  if (!dateStr) return "";
-  const [year, month, day] = dateStr.split("-").map(Number);
-  return new Date(year, month - 1, day).toLocaleDateString("en-ZA", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const post = await fetchPostBySlug(slug);
+    if (!post) return {};
+    return {
+      title: `${post.title} | Tshiamiso Astronauts`,
+      description: post.excerpt || undefined,
+    };
+  } catch {
+    return {};
+  }
 }
 
 export default async function BlogPostPage({

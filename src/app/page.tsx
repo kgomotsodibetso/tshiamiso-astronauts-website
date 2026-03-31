@@ -1,4 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Tshiamiso Astronauts — Literacy & Education NPO | Evaton West",
+  description:
+    "Tshiamiso Astronauts NPC is a South African literacy and education non-profit based in Evaton West, Gauteng, running spelling bees, tutoring, and community programmes.",
+};
 
 const programmes = [
   {

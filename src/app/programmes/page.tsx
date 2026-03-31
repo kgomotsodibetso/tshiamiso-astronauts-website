@@ -1,4 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Our Programmes | Tshiamiso Astronauts",
+  description:
+    "Explore Tshiamiso Astronauts' programmes — from Spelling Bee competitions and tutoring to digital skills, arts, and university guidance for learners in Evaton West.",
+};
 
 const programmes = [
   {

@@ -1,4 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Our Impact | Tshiamiso Astronauts",
+  description:
+    "See the real-world difference Tshiamiso Astronauts is making — learners reached, programmes delivered, and communities transformed in Evaton West.",
+};
 
 const stats = [
   { value: "500+", label: "Learners Reached", description: "Children, youth, and adults served across all programmes" },

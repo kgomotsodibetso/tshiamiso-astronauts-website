@@ -1,8 +1,15 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { fetchEvents, type MondayEvent } from "./actions";
 import { EventCard } from "./EventCard";
 
-export const revalidate = 3600; // Re-fetch from Monday.com every hour
+export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: "Events & Competitions | Tshiamiso Astronauts",
+  description:
+    "Find upcoming Spelling Bee rounds, community festivals, and fundraising events from Tshiamiso Astronauts. RSVP online.",
+};
 
 export default async function EventsPage() {
   let events: MondayEvent[] = [];
@@ -15,9 +22,18 @@ export default async function EventsPage() {
     fetchError = true;
   }
 
-  const today = new Date(new Date().toDateString());
-  const upcoming = events.filter((e) => e.date && new Date(e.date) >= today);
-  const past = events.filter((e) => e.date && new Date(e.date) < today);
+  // Build today at local midnight to avoid UTC vs SAST shift when comparing
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  function toLocalDate(dateStr: string): Date | null {
+    if (!dateStr) return null;
+    const [y, m, d] = dateStr.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  }
+
+  const upcoming = events.filter((e) => { const d = toLocalDate(e.date); return d !== null && d >= today; });
+  const past     = events.filter((e) => { const d = toLocalDate(e.date); return d !== null && d < today; });
 
   return (
     <>

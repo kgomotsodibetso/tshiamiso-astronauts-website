@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { submitRsvp, type MondayEvent } from "./actions";
+import { formatDate } from "@/lib/formatDate";
 
 const CATEGORY_STYLES: Record<string, string> = {
   "Spelling Bee": "bg-brand-orange text-white",
@@ -14,13 +15,6 @@ const CATEGORY_ICONS: Record<string, string> = {
   Fundraising: "💼",
   Community: "🌍",
 };
-
-function formatDate(dateStr: string): string {
-  if (!dateStr) return "";
-  const [year, month, day] = dateStr.split("-").map(Number);
-  const d = new Date(year, month - 1, day);
-  return d.toLocaleDateString("en-ZA", { day: "numeric", month: "long", year: "numeric" });
-}
 
 export function EventCard({ event }: { event: MondayEvent }) {
   const [open, setOpen] = useState(false);
