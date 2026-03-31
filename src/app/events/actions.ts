@@ -211,7 +211,7 @@ export async function submitRsvp(
     const mondayJson = await mondayRes.json();
     if (mondayJson.errors?.length) throw new Error(mondayJson.errors[0].message);
 
-    console.log(`[RSVP] Created item for ${fullName} — ${input.eventName}`);
+    console.log(`[RSVP] Created item ${mondayJson.data?.create_item?.id}`);
 
     // SMS notification — fire and forget, never block the RSVP success
     sendRsvpSms(input, attendees, fullName).catch((err) =>
