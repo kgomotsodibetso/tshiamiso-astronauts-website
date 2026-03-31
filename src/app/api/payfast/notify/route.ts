@@ -1,28 +1,116 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 
-// PayFast Instant Transaction Notification (ITN) handler.
-// PayFast POSTs payment confirmation here after every transaction.
-// TODO: Validate the ITN signature, then trigger a Section 18A receipt email.
+// PayFast published ITN source IPs.
+// Verify these are current at: https://developers.payfast.co.za/docs#step_5_itn
+const PAYFAST_VALID_IPS = new Set([
+  "197.97.145.144",
+  "197.97.145.145",
+  "197.97.145.146",
+  "197.97.145.147",
+  "197.97.145.148",
+  "197.97.145.149",
+  "197.97.145.150",
+  "197.97.145.151",
+  "41.74.179.194",
+  "41.74.179.195",
+  "41.74.179.196",
+  "41.74.179.197",
+  "41.74.179.198",
+  "41.74.179.199",
+  "41.74.179.200",
+  "41.74.179.201",
+]);
+
+/**
+ * Verify the PayFast ITN signature.
+ *
+ * Algorithm (from PayFast docs):
+ *   1. Take all posted fields except "signature", drop empty values.
+ *   2. Build a URL-encoded query string preserving the received field order.
+ *   3. If PAYFAST_PASSPHRASE is configured, append &passphrase=<value>.
+ *   4. MD5-hash the string and compare to the posted "signature" field.
+ */
+function verifySignature(
+  params: Record<string, string>,
+  receivedSig: string,
+  passphrase: string | undefined
+): boolean {
+  const pairs = Object.entries(params)
+    .filter(([key, val]) => key !== "signature" && val !== "")
+    .map(([key, val]) => `${key}=${encodeURIComponent(val).replace(/%20/g, "+")}`);
+
+  const queryString = pairs.join("&");
+  const stringToHash = passphrase
+    ? `${queryString}&passphrase=${encodeURIComponent(passphrase).replace(/%20/g, "+")}`
+    : queryString;
+
+  const computed = crypto.createHash("md5").update(stringToHash).digest("hex");
+
+  // Timing-safe comparison prevents timing-oracle attacks
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(computed, "utf8"),
+      Buffer.from(receivedSig, "utf8")
+    );
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.formData();
-    const data = Object.fromEntries(body.entries());
+    // ── 1. Verify source IP ─────────────────────────────────────────────────
+    // Vercel forwards the real client IP in x-forwarded-for (first entry).
+    const forwardedFor = req.headers.get("x-forwarded-for");
+    const realIp = req.headers.get("x-real-ip");
+    const sourceIp = (forwardedFor ? forwardedFor.split(",")[0] : realIp ?? "").trim();
 
-    const paymentStatus = data["payment_status"];
-    const amount = data["amount_gross"];
-    const email = data["email_address"];
-    const firstName = data["name_first"];
-    const lastName = data["name_last"];
+    const isLocalDev = process.env.NODE_ENV !== "production";
+    const ipAllowed = isLocalDev || PAYFAST_VALID_IPS.has(sourceIp);
+
+    if (!ipAllowed) {
+      console.warn(`[PayFast ITN] Rejected: unexpected source IP ${sourceIp}`);
+      return new NextResponse("Forbidden", { status: 403 });
+    }
+
+    // ── 2. Parse body — preserve field order for signature verification ─────
+    const body = await req.formData();
+    const params: Record<string, string> = {};
+    body.forEach((value, key) => {
+      params[key] = String(value);
+    });
+
+    const receivedSig = params["signature"] ?? "";
+
+    // ── 3. Verify signature ─────────────────────────────────────────────────
+    const passphrase = process.env.PAYFAST_PASSPHRASE || undefined;
+
+    if (!verifySignature(params, receivedSig, passphrase)) {
+      console.warn("[PayFast ITN] Rejected: invalid signature");
+      return new NextResponse("Bad Request", { status: 400 });
+    }
+
+    // ── 4. Process verified notification ───────────────────────────────────
+    const paymentStatus = params["payment_status"];
+    const amount        = params["amount_gross"];
+
+    // Log without full PII — only email domain, not the full address (POPIA)
+    const emailParts = (params["email_address"] ?? "").split("@");
+    const safeEmail  = emailParts.length === 2 ? `***@${emailParts[1]}` : "***";
 
     console.log(
-      `[PayFast ITN] Status: ${paymentStatus} | Amount: R${amount} | Donor: ${firstName} ${lastName} <${email}>`
+      `[PayFast ITN] Status: ${paymentStatus} | Amount: R${amount} | Email: ${safeEmail}`
     );
 
-    // TODO: If paymentStatus === "COMPLETE":
-    //   1. Validate ITN signature against PayFast
-    //   2. Send Section 18A receipt email via Resend / Nodemailer to donor email
-    //   3. BCC receipt to process.env.RECEIPT_EMAIL
+    if (paymentStatus === "COMPLETE") {
+      // TODO: Send Section 18A receipt email via Resend / Nodemailer
+      //   - To: params["email_address"]
+      //   - BCC: process.env.RECEIPT_EMAIL
+      //   - Include: params["name_first"], params["name_last"], amount_gross, pf_payment_id
+    }
 
+    // Always return 200 to acknowledge receipt — PayFast retries on non-200
     return new NextResponse("OK", { status: 200 });
   } catch (error) {
     console.error("[PayFast ITN] Error:", error);
