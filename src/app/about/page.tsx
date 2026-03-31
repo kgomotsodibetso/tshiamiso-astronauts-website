@@ -1,3 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us | Tshiamiso Astronauts",
+  description:
+    "Learn about Tshiamiso Astronauts NPC — our mission, values, and the team transforming literacy and education in Evaton West, Gauteng.",
+};
+
 const values = [
   {
     letter: "I",

@@ -1,18 +1,16 @@
 import Link from "next/link";
 import Image from "next/image";
+import type { Metadata } from "next";
 import { fetchPublishedPosts, type BlogPost } from "./actions";
+import { formatDate } from "@/lib/formatDate";
 
 export const revalidate = 3600;
 
-function formatDate(dateStr: string): string {
-  if (!dateStr) return "";
-  const [year, month, day] = dateStr.split("-").map(Number);
-  return new Date(year, month - 1, day).toLocaleDateString("en-ZA", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
+export const metadata: Metadata = {
+  title: "Blog | Tshiamiso Astronauts",
+  description:
+    "News, stories, and reflections from the Tshiamiso Astronauts community in Evaton West, Gauteng.",
+};
 
 function PostCard({ post }: { post: BlogPost }) {
   return (
@@ -27,6 +25,7 @@ function PostCard({ post }: { post: BlogPost }) {
             src={post.coverImageUrl}
             alt={post.title}
             fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover group-hover:scale-105 transition-transform duration-300"
           />
         </div>
