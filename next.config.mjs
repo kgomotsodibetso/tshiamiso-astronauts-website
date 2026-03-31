@@ -41,11 +41,7 @@ const nextConfig = {
       },
       {
         protocol: "https",
-        hostname: "**.hubspot.net",
-      },
-      {
-        protocol: "https",
-        hostname: "**.hubspotusercontent.com",
+        hostname: "22500830.fs1.hubspotusercontent-na1.net",
       },
     ],
   },
