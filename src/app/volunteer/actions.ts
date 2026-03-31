@@ -90,7 +90,7 @@ export async function submitVolunteerApplication(
       return { success: false, error: "Something went wrong. Please try again or contact us." };
     }
 
-    console.log(`[Volunteer] Created item ${json.data?.create_item?.id} for ${fullName}`);
+    console.log(`[Volunteer] Created item ${json.data?.create_item?.id}`);
     return { success: true };
   } catch (error) {
     console.error("[Volunteer] Fetch error:", error);
