@@ -102,6 +102,36 @@ export interface RsvpInput {
   organisation: string;
 }
 
+// ── RSVP open re-check ────────────────────────────────────────────────────────
+async function checkRsvpOpen(eventId: string, token: string): Promise<boolean> {
+  const numId = Number(eventId);
+  if (!Number.isInteger(numId) || numId <= 0) return false;
+
+  const query = `{
+    items(ids: [${numId}]) {
+      column_values(ids: ["${EV_RSVP_OPEN}"]) { value }
+    }
+  }`;
+
+  try {
+    const res = await fetch("https://api.monday.com/v2", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+        "API-Version": "2024-01",
+      },
+      body: JSON.stringify({ query }),
+      cache: "no-store",
+    });
+    const json = await res.json();
+    const value = json.data?.items?.[0]?.column_values?.[0]?.value;
+    return value ? JSON.parse(value)?.checked === true : false;
+  } catch {
+    return false;
+  }
+}
+
 // ── Server-side validation ─────────────────────────────────────────────────────
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -134,6 +164,11 @@ export async function submitRsvp(
 
   const validationError = validate(input);
   if (validationError) return { success: false, error: validationError };
+
+  const rsvpOpen = await checkRsvpOpen(input.eventId, token);
+  if (!rsvpOpen) {
+    return { success: false, error: "RSVP is no longer available for this event." };
+  }
 
   const attendees = Math.round(Number(input.attendees));
   const fullName  = `${input.firstName.trim()} ${input.lastName.trim()}`;

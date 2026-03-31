@@ -120,7 +120,7 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
       lastName: lastName.trim(),
       email: email.trim(),
       phone: phone.trim(),
-      attendees: parseInt(attendees, 10),
+      attendees: parseInt(attendees, 10) || 1,
       organisation: organisation.trim(),
     });
     setLoading(false);
