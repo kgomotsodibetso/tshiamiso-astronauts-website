@@ -1,5 +1,8 @@
 "use server";
 
+import { headers } from "next/headers";
+import { formRatelimit } from "@/lib/ratelimit";
+
 export interface ContactInput {
   firstName: string;
   lastName: string;
@@ -136,6 +139,11 @@ async function sendSmsNotification(input: ContactInput): Promise<void> {
 export async function submitContactForm(
   input: ContactInput
 ): Promise<{ success: boolean; error?: string }> {
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for")?.split(",")[0].trim() ?? "anonymous";
+  const { success: allowed } = await formRatelimit.limit(ip);
+  if (!allowed) return { success: false, error: "Too many requests. Please try again later." };
+
   const validationError = validate(input);
   if (validationError) return { success: false, error: validationError };
 
