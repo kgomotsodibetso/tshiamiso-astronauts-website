@@ -1,5 +1,8 @@
 "use server";
 
+import { headers } from "next/headers";
+import { formRatelimit } from "@/lib/ratelimit";
+
 // ── Column IDs ────────────────────────────────────────────────────────────────
 // Events board (5093847317)
 const EV_DATE     = "date_mm1wd7t7";
@@ -154,6 +157,11 @@ function sanitizeSms(value: string, maxLen = 80): string {
 export async function submitRsvp(
   input: RsvpInput
 ): Promise<{ success: boolean; error?: string }> {
+  const headersList = await headers();
+  const ip = headersList.get("x-forwarded-for")?.split(",")[0].trim() ?? "anonymous";
+  const { success: allowed } = await formRatelimit.limit(ip);
+  if (!allowed) return { success: false, error: "Too many requests. Please try again later." };
+
   const token       = process.env.MONDAY_API_TOKEN;
   const rsvpBoardId = process.env.MONDAY_RSVP_BOARD_ID;
 

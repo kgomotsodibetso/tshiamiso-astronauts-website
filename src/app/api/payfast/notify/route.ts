@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import { payfastRatelimit } from "@/lib/ratelimit";
 
 // PayFast published ITN source IPs.
 // Verify these are current at: https://developers.payfast.co.za/docs#step_5_itn
@@ -60,12 +61,18 @@ function verifySignature(
 
 export async function POST(req: NextRequest) {
   try {
-    // ── 1. Verify source IP ─────────────────────────────────────────────────
-    // Vercel forwards the real client IP in x-forwarded-for (first entry).
+    // ── 1. Rate limit ───────────────────────────────────────────────────────
     const forwardedFor = req.headers.get("x-forwarded-for");
     const realIp = req.headers.get("x-real-ip");
     const sourceIp = (forwardedFor ? forwardedFor.split(",")[0] : realIp ?? "").trim();
 
+    const { success: allowed } = await payfastRatelimit.limit(sourceIp || "anonymous");
+    if (!allowed) {
+      console.warn(`[PayFast ITN] Rate limited: ${sourceIp}`);
+      return new NextResponse("Too Many Requests", { status: 429 });
+    }
+
+    // ── 2. Verify source IP ─────────────────────────────────────────────────
     const isLocalDev = process.env.NODE_ENV !== "production";
     const ipAllowed = isLocalDev || PAYFAST_VALID_IPS.has(sourceIp);
 
@@ -74,7 +81,7 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Forbidden", { status: 403 });
     }
 
-    // ── 2. Parse body — preserve field order for signature verification ─────
+    // ── 3. Parse body — preserve field order for signature verification ─────
     const body = await req.formData();
     const params: Record<string, string> = {};
     body.forEach((value, key) => {
@@ -83,7 +90,7 @@ export async function POST(req: NextRequest) {
 
     const receivedSig = params["signature"] ?? "";
 
-    // ── 3. Verify signature ─────────────────────────────────────────────────
+    // ── 4. Verify signature ─────────────────────────────────────────────────
     const passphrase = process.env.PAYFAST_PASSPHRASE || undefined;
 
     if (!verifySignature(params, receivedSig, passphrase)) {
@@ -91,7 +98,7 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Bad Request", { status: 400 });
     }
 
-    // ── 4. Process verified notification ───────────────────────────────────
+    // ── 5. Process verified notification ───────────────────────────────────
     const paymentStatus = params["payment_status"];
     const amount        = params["amount_gross"];
 
