@@ -35,8 +35,14 @@ const fetchAllPosts = cache(async function fetchAllPosts(): Promise<BlogPost[]> 
     return [];
   }
 
+  const numericBoardId = Number(boardId);
+  if (!Number.isInteger(numericBoardId) || numericBoardId <= 0) {
+    console.error("[Blog] MONDAY_BLOG_BOARD_ID is not a valid integer");
+    return [];
+  }
+
   const query = `{
-    boards(ids: [${boardId}]) {
+    boards(ids: [${numericBoardId}]) {
       items_page(limit: 100) {
         items {
           id
