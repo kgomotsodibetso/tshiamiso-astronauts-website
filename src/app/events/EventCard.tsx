@@ -109,7 +109,6 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
     setLoading(true);
     const result = await submitRsvp({
       eventId: event.id,
-      eventName: event.name,
       firstName: firstName.trim(),
       lastName: lastName.trim(),
       email: email.trim(),

@@ -96,7 +96,6 @@ export async function fetchEvents(): Promise<MondayEvent[]> {
 
 export interface RsvpInput {
   eventId: string;
-  eventName: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -105,13 +104,19 @@ export interface RsvpInput {
   organisation: string;
 }
 
-// ── RSVP open re-check ────────────────────────────────────────────────────────
-async function checkRsvpOpen(eventId: string, token: string): Promise<boolean> {
+// ── Server-side event verification ───────────────────────────────────────────
+// Returns the canonical event name and RSVP-open flag from Monday.com in a
+// single query — the client-supplied event name is never trusted.
+async function fetchEventDetails(
+  eventId: string,
+  token: string
+): Promise<{ open: boolean; name: string } | null> {
   const numId = Number(eventId);
-  if (!Number.isInteger(numId) || numId <= 0) return false;
+  if (!Number.isInteger(numId) || numId <= 0) return null;
 
   const query = `{
     items(ids: [${numId}]) {
+      name
       column_values(ids: ["${EV_RSVP_OPEN}"]) { value }
     }
   }`;
@@ -128,10 +133,13 @@ async function checkRsvpOpen(eventId: string, token: string): Promise<boolean> {
       cache: "no-store",
     });
     const json = await res.json();
-    const value = json.data?.items?.[0]?.column_values?.[0]?.value;
-    return value ? JSON.parse(value)?.checked === true : false;
+    const item = json.data?.items?.[0];
+    if (!item) return null;
+    const value = item.column_values?.[0]?.value;
+    const open  = value ? JSON.parse(value)?.checked === true : false;
+    return { open, name: String(item.name ?? "") };
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -173,14 +181,15 @@ export async function submitRsvp(
   const validationError = validate(input);
   if (validationError) return { success: false, error: validationError };
 
-  const rsvpOpen = await checkRsvpOpen(input.eventId, token);
-  if (!rsvpOpen) {
+  const details = await fetchEventDetails(input.eventId, token);
+  if (!details || !details.open) {
     return { success: false, error: "RSVP is no longer available for this event." };
   }
 
+  const eventName = details.name; // authoritative server-side name
   const attendees = Math.round(Number(input.attendees));
   const fullName  = `${input.firstName.trim()} ${input.lastName.trim()}`;
-  const itemName  = `${fullName} — ${input.eventName}`;
+  const itemName  = `${fullName} — ${eventName}`;
 
   // Use GraphQL variables — no user data in the query string
   const mutation = `
@@ -197,7 +206,7 @@ export async function submitRsvp(
     boardId: rsvpBoardId,
     itemName,
     columnValues: JSON.stringify({
-      [RSVP_EVENT]: input.eventName,
+      [RSVP_EVENT]: eventName,
       [RSVP_EMAIL]: input.email.trim().toLowerCase(),
       [RSVP_PHONE]: input.phone.trim(),
       [RSVP_COUNT]: attendees,
@@ -222,7 +231,7 @@ export async function submitRsvp(
     console.log(`[RSVP] Created item ${mondayJson.data?.create_item?.id}`);
 
     // SMS notification — fire and forget, never block the RSVP success
-    sendRsvpSms(input, attendees, fullName).catch((err) =>
+    sendRsvpSms(input, eventName, attendees, fullName).catch((err) =>
       console.warn("[RSVP] SMS notification failed:", err)
     );
 
@@ -233,7 +242,7 @@ export async function submitRsvp(
   }
 }
 
-async function sendRsvpSms(input: RsvpInput, attendees: number, fullName: string): Promise<void> {
+async function sendRsvpSms(input: RsvpInput, eventName: string, attendees: number, fullName: string): Promise<void> {
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken  = process.env.TWILIO_AUTH_TOKEN;
   const from       = process.env.TWILIO_FROM_NUMBER;
@@ -245,14 +254,14 @@ async function sendRsvpSms(input: RsvpInput, attendees: number, fullName: string
   }
 
   // Sanitize all user fields before embedding in SMS body
-  const name      = sanitizeSms(fullName, 80);
-  const eventName = sanitizeSms(input.eventName, 80);
+  const name           = sanitizeSms(fullName, 80);
+  const safeEventName  = sanitizeSms(eventName, 80);
   const email     = sanitizeSms(input.email, 100);
   const phone     = sanitizeSms(input.phone || "not provided", 20);
 
   const smsBody =
     `New RSVP: ${name}\n` +
-    `Event: ${eventName}\n` +
+    `Event: ${safeEventName}\n` +
     `Attendees: ${attendees}\n` +
     `Email: ${email}\n` +
     `Phone: ${phone}`;
