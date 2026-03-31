@@ -1,5 +1,7 @@
 "use server";
 
+import { cache } from "react";
+
 // ── Column IDs ────────────────────────────────────────────────────────────────
 // Blog Posts board (5093847699)
 const BLOG_SLUG        = "text_mm1w2qxa";
@@ -24,9 +26,14 @@ export interface BlogPost {
   published: boolean;
 }
 
-async function fetchAllPosts(): Promise<BlogPost[]> {
-  const token   = process.env.MONDAY_API_TOKEN!;
-  const boardId = process.env.MONDAY_BLOG_BOARD_ID!;
+const fetchAllPosts = cache(async function fetchAllPosts(): Promise<BlogPost[]> {
+  const token   = process.env.MONDAY_API_TOKEN;
+  const boardId = process.env.MONDAY_BLOG_BOARD_ID;
+
+  if (!token || !boardId) {
+    console.error("[Blog] Missing MONDAY_API_TOKEN or MONDAY_BLOG_BOARD_ID");
+    return [];
+  }
 
   const query = `{
     boards(ids: [${boardId}]) {
@@ -56,7 +63,7 @@ async function fetchAllPosts(): Promise<BlogPost[]> {
       "API-Version": "2024-01",
     },
     body: JSON.stringify({ query }),
-    cache: "no-store",
+    next: { revalidate: 3600 },
   });
 
   const json = await res.json();
@@ -82,7 +89,7 @@ async function fetchAllPosts(): Promise<BlogPost[]> {
       published,
     };
   });
-}
+});
 
 export async function fetchPublishedPosts(): Promise<BlogPost[]> {
   const posts = await fetchAllPosts();

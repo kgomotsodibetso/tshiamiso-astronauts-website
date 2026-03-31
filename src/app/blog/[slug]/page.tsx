@@ -28,7 +28,14 @@ export default async function BlogPostPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const post = await fetchPostBySlug(slug);
+
+  let post;
+  try {
+    post = await fetchPostBySlug(slug);
+  } catch (err) {
+    console.error("[Blog] Failed to fetch post:", err);
+    notFound();
+  }
 
   if (!post) notFound();
 
