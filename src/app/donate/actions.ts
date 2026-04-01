@@ -10,18 +10,51 @@ interface DonateInput {
   isRecurring: boolean;
 }
 
+// PayFast requires fields in this exact order for signature generation.
+// Source: PayFast PHP SDK Auth.php — do NOT sort alphabetically.
+const PAYFAST_FIELD_ORDER = [
+  "merchant_id", "merchant_key", "return_url", "cancel_url", "notify_url",
+  "notify_method", "name_first", "name_last", "email_address", "cell_number",
+  "m_payment_id", "amount", "item_name", "item_description",
+  "custom_int1", "custom_int2", "custom_int3", "custom_int4", "custom_int5",
+  "custom_str1", "custom_str2", "custom_str3", "custom_str4", "custom_str5",
+  "email_confirmation", "confirmation_address", "currency", "payment_method",
+  "subscription_type",
+  // passphrase is inserted here when present
+  "billing_date", "recurring_amount", "frequency", "cycles",
+  "subscription_notify_email", "subscription_notify_webhook", "subscription_notify_buyer",
+];
+
 function buildSignature(params: Record<string, string>, passphrase?: string): string {
-  const queryString = Object.keys(params)
-    .filter((k) => params[k] !== "")
-    .sort()
-    .map((k) => `${k}=${encodeURIComponent(params[k]).replace(/%20/g, "+")}`)
+  // Build ordered entries following PayFast's exact field order
+  const entries: [string, string][] = [];
+
+  for (const key of PAYFAST_FIELD_ORDER) {
+    if (key === "subscription_type" && params[key]) {
+      entries.push([key, params[key]]);
+      // Passphrase is inserted immediately after subscription_type
+      if (passphrase?.trim()) {
+        entries.push(["passphrase", passphrase.trim()]);
+      }
+      continue;
+    }
+    if (params[key] !== undefined && params[key] !== "") {
+      entries.push([key, params[key]]);
+    }
+    // If we've exhausted all known fields and passphrase hasn't been added yet
+    // (non-subscription case), it goes after payment_method / at end of known fields
+  }
+
+  // Non-subscription: passphrase goes after all other fields
+  if (passphrase?.trim() && !params["subscription_type"]) {
+    entries.push(["passphrase", passphrase.trim()]);
+  }
+
+  const paramString = entries
+    .map(([k, v]) => `${k}=${encodeURIComponent(v).replace(/%20/g, "+")}`)
     .join("&");
 
-  const stringToHash = passphrase
-    ? `${queryString}&passphrase=${encodeURIComponent(passphrase).replace(/%20/g, "+")}`
-    : queryString;
-
-  return crypto.createHash("md5").update(stringToHash).digest("hex");
+  return crypto.createHash("md5").update(paramString).digest("hex");
 }
 
 export async function buildPayFastPayload(input: DonateInput): Promise<{
