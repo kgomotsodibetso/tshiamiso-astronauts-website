@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -7,14 +8,21 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Logo & tagline */}
           <div>
-            <p className="text-brand-white font-bold text-xl mb-1">
-              Tshiamiso{" "}
-              <span className="text-brand-orange">Astronauts</span>
-            </p>
-            <p className="text-brand-light-teal text-sm mt-1">
+            <Link href="/" className="inline-block">
+              <div className="bg-white rounded-xl px-4 py-3 inline-block">
+                <Image
+                  src="/images/logos/logo-full.png"
+                  alt="Tshiamiso Astronauts"
+                  width={180}
+                  height={56}
+                  className="h-14 w-auto"
+                />
+              </div>
+            </Link>
+            <p className="text-brand-light-teal text-sm mt-3">
               Literacy &amp; Lifelong Learning
             </p>
-            <p className="text-gray-400 text-xs mt-2">
+            <p className="text-gray-400 text-xs mt-1">
               Evaton West, Gauteng, South Africa
             </p>
           </div>
