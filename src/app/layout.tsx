@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Fredoka, Nunito } from "next/font/google";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
-const montserrat = Montserrat({
+const fredoka = Fredoka({
   subsets: ["latin"],
-  variable: "--font-montserrat",
+  weight: ["400", "600", "700"],
+  variable: "--font-fredoka",
+  display: "swap",
+});
+
+const nunito = Nunito({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-nunito",
   display: "swap",
 });
 
@@ -28,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${montserrat.variable} font-sans antialiased bg-brand-white text-brand-navy`}>
+      <body className={`${fredoka.variable} ${nunito.variable} font-sans antialiased bg-brand-white text-brand-navy`}>
         <Navigation />
         <main id="main-content" className="pt-16">{children}</main>
         <Footer />
