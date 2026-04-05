@@ -1,5 +1,16 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import {
+  BookOpen,
+  Star,
+  PencilLine,
+  GraduationCap,
+  Monitor,
+  Sun,
+  Library,
+  Trophy,
+  Mic,
+} from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Our Programmes | Tshiamiso Astronauts",
@@ -9,7 +20,7 @@ export const metadata: Metadata = {
 
 const programmes = [
   {
-    icon: "📚",
+    Icon: BookOpen,
     name: "TA Book Club",
     tagline: "Where readers become thinkers.",
     audience: "Adults",
@@ -18,7 +29,7 @@ const programmes = [
       "Each month, community members gather to explore a member-selected book together. Sessions include a structured presentation covering the introduction, characters, plot, and evaluation — followed by lively Q&A discussions. The Book Club is where adults in Evaton West come together to grow their minds, share perspectives, and build a lifelong love of reading.",
   },
   {
-    icon: "🌟",
+    Icon: Star,
     name: "Children's Reading Club",
     tagline: "Every page is a new adventure.",
     audience: "Children — All Ages",
@@ -27,7 +38,7 @@ const programmes = [
       "Every week, our young readers gather to explore a different book together. Through reading, discussion, and fun activities and games inspired by the story, we nurture a love of literature in children of all ages. The Kids Reading Club is where imagination is celebrated and every child is an Astronaut in the making.",
   },
   {
-    icon: "✏️",
+    Icon: PencilLine,
     name: "Homework Assistance",
     tagline: "Extra support, extraordinary results.",
     audience: "Grades 1–12",
@@ -36,7 +47,7 @@ const programmes = [
       "Our Homework Assistance programme provides learners in Grades 1 to 12 with structured academic support outside the classroom. Covering subjects including Maths, English, and Bokgoni (Setswana), our trained tutors work one-on-one and in small groups to close learning gaps and build confidence. Currently our highest-attendance programme, serving hundreds of learners in 2026.",
   },
   {
-    icon: "🎓",
+    Icon: GraduationCap,
     name: "University Application Assistance",
     tagline: "Your future starts here.",
     audience: "Matriculants",
@@ -45,7 +56,7 @@ const programmes = [
       "We guide every eligible matriculant through the university and TVET College application process — from choosing the right institution to completing NSFAS forms and submitting applications on time. No learner in Evaton West should miss out on higher education because of a lack of information or support. We make sure they don't.",
   },
   {
-    icon: "💻",
+    Icon: Monitor,
     name: "Digital Skills Development",
     tagline: "The skills of tomorrow, available today.",
     audience: "Youth & Adults",
@@ -54,7 +65,7 @@ const programmes = [
       "Through our certified Digital Skills programme, we equip community members with in-demand skills for the modern economy. Courses include Computer Literacy, Programming, Digital Project Management, Graphic Design, UX Design, Social Media Management, and Data Analysis. All training is delivered at our Evaton West facility.",
   },
   {
-    icon: "☀️",
+    Icon: Sun,
     name: "School Holiday Programme",
     tagline: "Learning never takes a holiday.",
     audience: "Children",
@@ -63,7 +74,7 @@ const programmes = [
       "During school holidays, our doors stay open. The School Holiday Programme runs multi-day sessions for children featuring reading, creative writing, singing, educational games, arts and crafts, and team-building activities. It is TA's flagship community programme — having served nearly 400 children across June and July 2024 alone.",
   },
   {
-    icon: "🏛️",
+    Icon: Library,
     name: "TA Evaton West Library",
     tagline: "Knowledge belongs to everyone.",
     audience: "All Ages",
@@ -72,7 +83,7 @@ const programmes = [
       "Our fully furnished community library serves as an information hub for all residents of Evaton West. Open to learners, students, families, and adults alike, the library offers a wide range of books, a quiet study space, internet access, and reading resources. It is managed by our dedicated Librarian and Resource Manager and serves as the physical heart of everything TA does.",
   },
   {
-    icon: "🏆",
+    Icon: Trophy,
     name: "Spelling Bee Competition",
     tagline: "Words are power. Compete with confidence.",
     audience: "Grades 4–7",
@@ -81,7 +92,7 @@ const programmes = [
       "Our annual Spelling Bee Competition is one of TA's most celebrated community events, drawing competitors from Grades 4 to 7, their parents, and community leaders. Preliminary rounds are held throughout the year, building to a Grand Finale that showcases the literacy progress of our young Astronauts. The competition has attracted partnerships with Evaton Mall and Chief Bambatha community structures.",
   },
   {
-    icon: "🎤",
+    Icon: Mic,
     name: "Public Speaking Programme",
     tagline: "Find your voice. Own the room.",
     audience: "Youth",
@@ -115,7 +126,7 @@ export default function ProgrammesPage() {
       <section className="py-20 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {programmes.map(({ icon, name, tagline, audience, audienceColour, description }) => (
+            {programmes.map(({ Icon, name, tagline, audience, audienceColour, description }) => (
               <div
                 key={name}
                 className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden"
@@ -123,7 +134,9 @@ export default function ProgrammesPage() {
                 {/* Card header */}
                 <div className="p-6 pb-0 flex items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
-                    <div className="text-4xl flex-shrink-0">{icon}</div>
+                    <div className="w-12 h-12 rounded-xl bg-brand-navy flex items-center justify-center flex-shrink-0">
+                      <Icon className="text-brand-orange" size={22} strokeWidth={2} />
+                    </div>
                     <div>
                       <h2 className="text-brand-navy font-bold text-xl leading-tight">
                         {name}

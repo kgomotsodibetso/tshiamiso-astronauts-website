@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Mail, Phone, MapPin, Rocket } from "lucide-react";
 import { submitContactForm } from "./actions";
 
 const SUBJECTS = [
@@ -15,19 +16,19 @@ const SUBJECTS = [
 
 const CONTACT_DETAILS = [
   {
-    icon: "✉️",
+    Icon: Mail,
     label: "Email Us",
     value: "info@tshiamisoastronauts.org",
     href: "mailto:info@tshiamisoastronauts.org",
   },
   {
-    icon: "📞",
+    Icon: Phone,
     label: "Call Us",
     value: "066 071 5426",
     href: "tel:+27660715426",
   },
   {
-    icon: "📍",
+    Icon: MapPin,
     label: "Find Us",
     value: "4206 Kopanong Street, Ext 3\nEvaton West, Mafatsana, 1984",
     href: "https://maps.google.com/?q=4206+Kopanong+Street+Evaton+West",
@@ -135,7 +136,7 @@ export default function ContactPage() {
                 How to reach us
               </h2>
               <div className="space-y-5">
-                {CONTACT_DETAILS.map(({ icon, label, value, href }) => (
+                {CONTACT_DETAILS.map(({ Icon, label, value, href }) => (
                   <a
                     key={label}
                     href={href}
@@ -143,7 +144,9 @@ export default function ContactPage() {
                     rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
                     className="flex items-start gap-4 group"
                   >
-                    <span className="text-2xl flex-shrink-0 mt-0.5">{icon}</span>
+                    <div className="w-10 h-10 rounded-xl bg-brand-navy flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Icon className="text-brand-orange" size={18} strokeWidth={2} />
+                    </div>
                     <div>
                       <p className="text-xs font-semibold text-brand-teal uppercase tracking-wide mb-0.5">
                         {label}
@@ -204,7 +207,9 @@ export default function ContactPage() {
           <div className="lg:col-span-3">
             {submitted ? (
               <div className="bg-white rounded-2xl p-10 shadow-sm border border-gray-100 text-center h-full flex flex-col items-center justify-center">
-                <div className="text-6xl mb-4">🚀</div>
+                <div className="w-16 h-16 rounded-2xl bg-brand-navy flex items-center justify-center mx-auto mb-4">
+                  <Rocket className="text-brand-orange" size={32} strokeWidth={2} />
+                </div>
                 <h3 className="text-2xl font-bold text-brand-navy mb-2">
                   Message Received!
                 </h3>

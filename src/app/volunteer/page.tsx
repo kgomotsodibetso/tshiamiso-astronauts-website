@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { BookOpen, Handshake, Sprout, Trophy, Rocket } from "lucide-react";
 import { submitVolunteerApplication } from "./actions";
 
 const ROLES = [
@@ -26,22 +27,22 @@ const AVAILABILITY = [
 
 const WHY_VOLUNTEER = [
   {
-    icon: "📚",
+    Icon: BookOpen,
     title: "Make a Real Impact",
     body: "Directly change the trajectory of a young person's life. One hour a week can help a child fall in love with reading.",
   },
   {
-    icon: "🤝",
+    Icon: Handshake,
     title: "Join a Movement",
     body: "Become part of a passionate community of educators, professionals, and changemakers in Evaton West.",
   },
   {
-    icon: "🌱",
+    Icon: Sprout,
     title: "Grow Your Skills",
     body: "Develop coaching, communication, and leadership skills while giving back to your community.",
   },
   {
-    icon: "🏆",
+    Icon: Trophy,
     title: "Recognised Service",
     body: "Receive a volunteer recognition letter after 3 months of service — valuable for your CV or CSI reporting.",
   },
@@ -136,12 +137,14 @@ export default function VolunteerPage() {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {WHY_VOLUNTEER.map(({ icon, title, body }) => (
+            {WHY_VOLUNTEER.map(({ Icon, title, body }) => (
               <div
                 key={title}
                 className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center"
               >
-                <div className="text-4xl mb-4">{icon}</div>
+                <div className="w-12 h-12 rounded-xl bg-brand-navy flex items-center justify-center mx-auto mb-4">
+                  <Icon className="text-brand-orange" size={22} strokeWidth={2} />
+                </div>
                 <h3 className="text-brand-navy font-bold text-base mb-2">{title}</h3>
                 <p className="text-gray-500 text-sm leading-relaxed">{body}</p>
               </div>
@@ -212,7 +215,9 @@ export default function VolunteerPage() {
 
           {submitted ? (
             <div className="bg-white rounded-2xl p-10 shadow-sm border border-gray-100 text-center">
-              <div className="text-6xl mb-4">🚀</div>
+              <div className="w-16 h-16 rounded-2xl bg-brand-navy flex items-center justify-center mx-auto mb-4">
+                <Rocket className="text-brand-orange" size={32} strokeWidth={2} />
+              </div>
               <h3 className="text-2xl font-bold text-brand-navy mb-2">
                 Application Received!
               </h3>
