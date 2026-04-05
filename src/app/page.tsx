@@ -215,7 +215,69 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. DONATE BANNER */}
+      {/* 5. TESTIMONIALS */}
+      <section className="py-20 px-6 bg-brand-navy">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="text-brand-light-teal text-sm font-semibold uppercase tracking-widest mb-3">
+              Community Voices
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
+              Lives Changed in{" "}
+              <span className="text-brand-orange">Evaton West</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                quote:
+                  "Before I joined the Homework Assistance programme, I was struggling with Maths and couldn't keep up in class. Now I actually enjoy it. The tutors are patient and they explain things in a way that makes sense.",
+                name: "Learner, Grade 9",
+                programme: "Homework Assistance",
+              },
+              {
+                quote:
+                  "The Holiday Programme is a blessing for our community. My children come home every day excited about what they learned and made. It keeps them safe, busy, and growing — and it's free. I am so grateful.",
+                name: "Parent, Evaton West",
+                programme: "School Holiday Programme",
+              },
+              {
+                quote:
+                  "I didn't know where to start with my university application. The team at TA walked me through everything — the forms, NSFAS, which courses to apply for. I'm now studying towards my degree.",
+                name: "Matriculant, Class of 2024",
+                programme: "University Application Assistance",
+              },
+            ].map(({ quote, name, programme }) => (
+              <div
+                key={name}
+                className="bg-white/10 border border-white/20 rounded-2xl p-8 flex flex-col"
+              >
+                <div className="text-brand-orange text-5xl font-serif leading-none mb-4">
+                  &ldquo;
+                </div>
+                <p className="text-gray-200 text-sm leading-relaxed flex-1 italic">
+                  {quote}
+                </p>
+                <div className="mt-6 pt-6 border-t border-white/20">
+                  <p className="text-white font-bold text-sm">{name}</p>
+                  <p className="text-brand-light-teal text-xs mt-0.5">
+                    {programme}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-gray-500 text-xs mt-10 italic">
+            Read more impact stories on our{" "}
+            <Link href="/impact" className="text-brand-light-teal hover:underline">
+              Impact page
+            </Link>
+            .
+          </p>
+        </div>
+      </section>
+
+      {/* 7. DONATE BANNER */}
       <section className="bg-brand-orange py-20 px-6 text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -238,7 +300,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 6. VOLUNTEER CTA */}
+      {/* 8. VOLUNTEER CTA */}
       <section className="py-20 px-6 bg-brand-white text-center">
         <div className="max-w-2xl mx-auto">
           <p className="text-brand-teal font-semibold text-sm uppercase tracking-widest mb-3">
