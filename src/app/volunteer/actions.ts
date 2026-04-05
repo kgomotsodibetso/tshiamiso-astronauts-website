@@ -12,8 +12,24 @@ export interface VolunteerInput {
 
 // ── Server-side validation ─────────────────────────────────────────────────────
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const ROLES = ["Tutor", "Mentor", "Event Support", "Admin & Logistics", "Fundraising", "Other"];
-const AVAILABILITY = ["Weekdays", "Weekends", "Both", "Flexible"];
+const ROLES = [
+  "Reading Coach / Tutor",
+  "Homework Assistance Mentor",
+  "Digital Skills Trainer",
+  "University Application Advisor",
+  "Event Coordinator",
+  "Admin & Communications Support",
+  "Fundraising & Partnerships",
+  "General Volunteer",
+];
+const AVAILABILITY = [
+  "Weekday mornings",
+  "Weekday afternoons",
+  "Weekday evenings",
+  "Weekends",
+  "School holidays only",
+  "Flexible / Remote only",
+];
 
 function validate(input: VolunteerInput): string | null {
   if (!input.firstName?.trim() || input.firstName.length > 100) return "First name is required (max 100 chars).";
