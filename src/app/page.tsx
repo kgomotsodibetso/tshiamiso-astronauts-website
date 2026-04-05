@@ -38,6 +38,7 @@ export const metadata: Metadata = {
 const programmes = [
   {
     Icon: BookOpen,
+    anchor: "ta-book-club",
     name: "TA Book Club",
     tagline: "Where readers become thinkers.",
     excerpt:
@@ -45,6 +46,7 @@ const programmes = [
   },
   {
     Icon: Star,
+    anchor: "childrens-reading-club",
     name: "Children's Reading Club",
     tagline: "Every page is a new adventure.",
     excerpt:
@@ -52,6 +54,7 @@ const programmes = [
   },
   {
     Icon: PencilLine,
+    anchor: "homework-assistance",
     name: "Homework Assistance",
     tagline: "Extra support, extraordinary results.",
     excerpt:
@@ -59,6 +62,7 @@ const programmes = [
   },
   {
     Icon: GraduationCap,
+    anchor: "university-application-assistance",
     name: "University Application Assistance",
     tagline: "Your future starts here.",
     excerpt:
@@ -66,6 +70,7 @@ const programmes = [
   },
   {
     Icon: Monitor,
+    anchor: "digital-skills-development",
     name: "Digital Skills Development",
     tagline: "The skills of tomorrow, available today.",
     excerpt:
@@ -73,6 +78,7 @@ const programmes = [
   },
   {
     Icon: Sun,
+    anchor: "school-holiday-programme",
     name: "School Holiday Programme",
     tagline: "Learning never takes a holiday.",
     excerpt:
@@ -80,6 +86,7 @@ const programmes = [
   },
   {
     Icon: Library,
+    anchor: "ta-evaton-west-library",
     name: "TA Evaton West Library",
     tagline: "Knowledge belongs to everyone.",
     excerpt:
@@ -87,6 +94,7 @@ const programmes = [
   },
   {
     Icon: Trophy,
+    anchor: "spelling-bee-competition",
     name: "Spelling Bee Competition",
     tagline: "Words are power. Compete with confidence.",
     excerpt:
@@ -94,6 +102,7 @@ const programmes = [
   },
   {
     Icon: Mic,
+    anchor: "public-speaking-programme",
     name: "Public Speaking Programme",
     tagline: "Find your voice. Own the room.",
     excerpt:
@@ -201,15 +210,16 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {programmes.map(({ Icon, name, tagline, excerpt }) => (
-              <div
+            {programmes.map(({ Icon, anchor, name, tagline, excerpt }) => (
+              <Link
                 key={name}
-                className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+                href={`/programmes#${anchor}`}
+                className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 group block"
               >
                 <div className="w-10 h-10 rounded-xl bg-brand-navy flex items-center justify-center mb-4">
                   <Icon className="text-brand-orange" size={20} strokeWidth={2} />
                 </div>
-                <h3 className="text-brand-navy font-bold text-lg mb-1">
+                <h3 className="text-brand-navy font-bold text-lg mb-1 group-hover:text-brand-teal transition-colors">
                   {name}
                 </h3>
                 <p className="text-brand-orange text-sm font-semibold italic mb-3">
@@ -218,7 +228,7 @@ export default function HomePage() {
                 <p className="text-gray-600 text-sm leading-relaxed">
                   {excerpt}
                 </p>
-              </div>
+              </Link>
             ))}
           </div>
           <div className="text-center mt-10">

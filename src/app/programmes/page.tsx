@@ -38,6 +38,7 @@ export const metadata: Metadata = {
 const programmes = [
   {
     Icon: BookOpen,
+    anchor: "ta-book-club",
     name: "TA Book Club",
     tagline: "Where readers become thinkers.",
     audience: "Adults",
@@ -47,6 +48,7 @@ const programmes = [
   },
   {
     Icon: Star,
+    anchor: "childrens-reading-club",
     name: "Children's Reading Club",
     tagline: "Every page is a new adventure.",
     audience: "Children — All Ages",
@@ -56,6 +58,7 @@ const programmes = [
   },
   {
     Icon: PencilLine,
+    anchor: "homework-assistance",
     name: "Homework Assistance",
     tagline: "Extra support, extraordinary results.",
     audience: "Grades 1–12",
@@ -65,6 +68,7 @@ const programmes = [
   },
   {
     Icon: GraduationCap,
+    anchor: "university-application-assistance",
     name: "University Application Assistance",
     tagline: "Your future starts here.",
     audience: "Matriculants",
@@ -74,6 +78,7 @@ const programmes = [
   },
   {
     Icon: Monitor,
+    anchor: "digital-skills-development",
     name: "Digital Skills Development",
     tagline: "The skills of tomorrow, available today.",
     audience: "Youth & Adults",
@@ -83,6 +88,7 @@ const programmes = [
   },
   {
     Icon: Sun,
+    anchor: "school-holiday-programme",
     name: "School Holiday Programme",
     tagline: "Learning never takes a holiday.",
     audience: "Children",
@@ -92,6 +98,7 @@ const programmes = [
   },
   {
     Icon: Library,
+    anchor: "ta-evaton-west-library",
     name: "TA Evaton West Library",
     tagline: "Knowledge belongs to everyone.",
     audience: "All Ages",
@@ -101,6 +108,7 @@ const programmes = [
   },
   {
     Icon: Trophy,
+    anchor: "spelling-bee-competition",
     name: "Spelling Bee Competition",
     tagline: "Words are power. Compete with confidence.",
     audience: "Grades 4–7",
@@ -110,6 +118,7 @@ const programmes = [
   },
   {
     Icon: Mic,
+    anchor: "public-speaking-programme",
     name: "Public Speaking Programme",
     tagline: "Find your voice. Own the room.",
     audience: "Youth",
@@ -143,10 +152,11 @@ export default function ProgrammesPage() {
       <section className="py-20 px-6 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {programmes.map(({ Icon, name, tagline, audience, audienceColour, description }) => (
+            {programmes.map(({ Icon, anchor, name, tagline, audience, audienceColour, description }) => (
               <div
                 key={name}
-                className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden"
+                id={anchor}
+                className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 overflow-hidden scroll-mt-20"
               >
                 {/* Card header */}
                 <div className="p-6 pb-0 flex items-start justify-between gap-4">
