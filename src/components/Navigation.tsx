@@ -21,7 +21,14 @@ export default function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-brand-white shadow-sm">
+    <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:bg-brand-orange focus:text-white focus:font-bold focus:px-4 focus:py-2 focus:rounded-lg focus:shadow-lg"
+      >
+        Skip to main content
+      </a>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-brand-white shadow-sm">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
@@ -124,5 +131,6 @@ export default function Navigation() {
         </div>
       )}
     </header>
+    </>
   );
 }
