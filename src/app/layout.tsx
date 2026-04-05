@@ -29,7 +29,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${montserrat.variable} font-sans antialiased bg-brand-white text-brand-navy`}>
         <Navigation />
-        <main className="pt-16">{children}</main>
+        <main id="main-content" className="pt-16">{children}</main>
         <Footer />
       </body>
     </html>
