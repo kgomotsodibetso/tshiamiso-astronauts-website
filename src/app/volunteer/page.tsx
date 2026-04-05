@@ -22,6 +22,8 @@ const AVAILABILITY = [
   "Flexible / Remote only",
 ];
 
+const LANGUAGES = ["Sesotho", "IsiZulu", "English", "Other (Specify)"];
+
 const WHY_VOLUNTEER = [
   {
     Icon: BookOpen,
@@ -70,6 +72,9 @@ export default function VolunteerPage() {
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState("");
   const [availability, setAvailability] = useState("");
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [cvFile, setCvFile] = useState<File | null>(null);
+  const [qualFile, setQualFile] = useState<File | null>(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -85,15 +90,18 @@ export default function VolunteerPage() {
     }
 
     setLoading(true);
-    const result = await submitVolunteerApplication({
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      role,
-      availability,
-      message: message.trim(),
-    });
+    const formData = new FormData();
+    formData.append("firstName", firstName.trim());
+    formData.append("lastName", lastName.trim());
+    formData.append("email", email.trim());
+    formData.append("phone", phone.trim());
+    formData.append("role", role);
+    formData.append("availability", availability);
+    formData.append("languages", JSON.stringify(languages));
+    formData.append("message", message.trim());
+    if (cvFile) formData.append("cv", cvFile, cvFile.name);
+    if (qualFile) formData.append("qualification", qualFile, qualFile.name);
+    const result = await submitVolunteerApplication(formData);
     setLoading(false);
 
     if (result.success) {
@@ -172,6 +180,7 @@ export default function VolunteerPage() {
                 <span className="text-brand-navy font-semibold text-sm">{r}</span>
               </div>
             ))}
+
           </div>
         </div>
       </section>
@@ -339,16 +348,69 @@ export default function VolunteerPage() {
                   </select>
                 </div>
                 <div>
+                  <label className="block text-sm font-semibold text-gray-600 mb-2">
+                    Language Proficiency
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {LANGUAGES.map((lang) => (
+                      <label key={lang} className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={languages.includes(lang)}
+                          onChange={(e) =>
+                            setLanguages(
+                              e.target.checked
+                                ? [...languages, lang]
+                                : languages.filter((l) => l !== lang)
+                            )
+                          }
+                          className="w-4 h-4 accent-brand-teal"
+                        />
+                        <span className="text-sm text-brand-navy">{lang}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div>
                   <label className="block text-sm font-semibold text-gray-600 mb-1">
-                    Tell us about yourself
+                    Why do you want to join the &apos;Year of Breakthrough&apos; and help children in Evaton West read for meaning?
                   </label>
                   <textarea
                     rows={4}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Share your background, skills, or why you'd like to volunteer with us…"
+                    placeholder="Share your background, skills, and motivation…"
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-brand-navy focus:outline-none focus:border-brand-teal resize-none"
                   />
+                </div>
+              </div>
+
+              {/* Documents */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 space-y-4">
+                <h3 className="text-brand-navy font-bold text-lg">Documents</h3>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-600 mb-1">
+                    Upload Your CV
+                  </label>
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => setCvFile(e.target.files?.[0] ?? null)}
+                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-navy file:text-white hover:file:opacity-90 cursor-pointer"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">PDF, DOC or DOCX</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-600 mb-1">
+                    Highest Qualification
+                  </label>
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                    onChange={(e) => setQualFile(e.target.files?.[0] ?? null)}
+                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-navy file:text-white hover:file:opacity-90 cursor-pointer"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">PDF, DOC, DOCX or image</p>
                 </div>
               </div>
 
