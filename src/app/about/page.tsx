@@ -62,19 +62,19 @@ const partners = [
   {
     name: "Evaton Mall",
     category: "Community Partner",
-    logo: "/images/partners/Evaton%20Mall%20Logo%20H.jpg",
+    logo: "/images/partners/evaton-mall.jpg",
     darkBg: false,
   },
   {
     name: "Southern African Association of Youth Clubs",
     category: "Youth Organisation",
-    logo: "/images/partners/SAAYC-White%404x.png",
+    logo: "/images/partners/saayc.png",
     darkBg: true,
   },
   {
     name: "Spitfire",
     category: "Technology Partner",
-    logo: "/images/partners/Spitfire%20Full%20Colour%20Logo.png",
+    logo: "/images/partners/spitfire.png",
     darkBg: false,
   },
   {
@@ -86,7 +86,7 @@ const partners = [
   {
     name: "The 100% Foundation",
     category: "Foundation Partner",
-    logo: "/images/partners/cropped-100-Foundation-Logo-v2-png-1%20(1).webp",
+    logo: "/images/partners/100-foundation.webp",
     darkBg: false,
   },
   {
