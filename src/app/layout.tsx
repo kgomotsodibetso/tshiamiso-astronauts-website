@@ -14,6 +14,10 @@ export const metadata: Metadata = {
   title: "Tshiamiso Astronauts NPC",
   description:
     "Tshiamiso Astronauts NPC — A South African literacy non-profit organisation based in Evaton West, Gauteng.",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({
