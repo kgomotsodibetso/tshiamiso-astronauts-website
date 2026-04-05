@@ -38,7 +38,7 @@ const CONTACT_DETAILS = [
 const SOCIAL_LINKS = [
   {
     label: "Facebook",
-    href: "https://shorturl.at/qxNZd",
+    href: "https://www.facebook.com/TshiamisoAstronauts/",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
         <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
@@ -47,7 +47,7 @@ const SOCIAL_LINKS = [
   },
   {
     label: "Instagram",
-    href: "https://shorturl.at/DanLM",
+    href: "https://www.instagram.com/tshiamisoastronauts/",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -58,7 +58,7 @@ const SOCIAL_LINKS = [
   },
   {
     label: "LinkedIn",
-    href: "https://shorturl.at/I2QQk",
+    href: "https://www.linkedin.com/company/tshiamiso-astronauts/",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
         <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z" />
