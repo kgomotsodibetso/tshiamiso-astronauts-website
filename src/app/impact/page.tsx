@@ -6,6 +6,23 @@ export const metadata: Metadata = {
   title: "Our Impact | Tshiamiso Astronauts",
   description:
     "See the real-world difference Tshiamiso Astronauts is making — learners reached, programmes delivered, and communities transformed in Evaton West.",
+  openGraph: {
+    title: "Our Impact | Tshiamiso Astronauts",
+    description:
+      "See the real-world difference Tshiamiso Astronauts is making — learners reached, programmes delivered, and communities transformed in Evaton West.",
+    url: "https://tshiamisoastronauts.org/impact",
+    siteName: "Tshiamiso Astronauts NPC",
+    images: [{ url: "/images/social/social-media.png", width: 1200, height: 630, alt: "Tshiamiso Astronauts — Literacy & Education NPO" }],
+    locale: "en_ZA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Our Impact | Tshiamiso Astronauts",
+    description:
+      "See the real-world difference Tshiamiso Astronauts is making — learners reached, programmes delivered, and communities transformed in Evaton West.",
+    images: ["/images/social/social-media.png"],
+  },
 };
 
 const stats = [

@@ -16,6 +16,23 @@ export const metadata: Metadata = {
   title: "Tshiamiso Astronauts — Literacy & Education NPO | Evaton West",
   description:
     "Tshiamiso Astronauts NPC is a South African literacy and education non-profit based in Evaton West, Gauteng, running spelling bees, tutoring, and community programmes.",
+  openGraph: {
+    title: "Tshiamiso Astronauts — Literacy & Education NPO | Evaton West",
+    description:
+      "Tshiamiso Astronauts NPC is a South African literacy and education non-profit based in Evaton West, Gauteng, running spelling bees, tutoring, and community programmes.",
+    url: "https://tshiamisoastronauts.org",
+    siteName: "Tshiamiso Astronauts NPC",
+    images: [{ url: "/images/social/social-media.png", width: 1200, height: 630, alt: "Tshiamiso Astronauts — Literacy & Education NPO" }],
+    locale: "en_ZA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Tshiamiso Astronauts — Literacy & Education NPO | Evaton West",
+    description:
+      "Tshiamiso Astronauts NPC is a South African literacy and education non-profit based in Evaton West, Gauteng, running spelling bees, tutoring, and community programmes.",
+    images: ["/images/social/social-media.png"],
+  },
 };
 
 const programmes = [

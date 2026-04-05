@@ -16,6 +16,23 @@ export const metadata: Metadata = {
   title: "Our Programmes | Tshiamiso Astronauts",
   description:
     "Explore Tshiamiso Astronauts' programmes — from Spelling Bee competitions and tutoring to digital skills, arts, and university guidance for learners in Evaton West.",
+  openGraph: {
+    title: "Our Programmes | Tshiamiso Astronauts",
+    description:
+      "Explore Tshiamiso Astronauts' programmes — from Spelling Bee competitions and tutoring to digital skills, arts, and university guidance for learners in Evaton West.",
+    url: "https://tshiamisoastronauts.org/programmes",
+    siteName: "Tshiamiso Astronauts NPC",
+    images: [{ url: "/images/social/social-media.png", width: 1200, height: 630, alt: "Tshiamiso Astronauts — Literacy & Education NPO" }],
+    locale: "en_ZA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Our Programmes | Tshiamiso Astronauts",
+    description:
+      "Explore Tshiamiso Astronauts' programmes — from Spelling Bee competitions and tutoring to digital skills, arts, and university guidance for learners in Evaton West.",
+    images: ["/images/social/social-media.png"],
+  },
 };
 
 const programmes = [

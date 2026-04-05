@@ -10,6 +10,23 @@ export const metadata: Metadata = {
   title: "Blog | Tshiamiso Astronauts",
   description:
     "News, stories, and reflections from the Tshiamiso Astronauts community in Evaton West, Gauteng.",
+  openGraph: {
+    title: "Blog | Tshiamiso Astronauts",
+    description:
+      "News, stories, and reflections from the Tshiamiso Astronauts community in Evaton West, Gauteng.",
+    url: "https://tshiamisoastronauts.org/blog",
+    siteName: "Tshiamiso Astronauts NPC",
+    images: [{ url: "/images/social/social-media.png", width: 1200, height: 630, alt: "Tshiamiso Astronauts — Literacy & Education NPO" }],
+    locale: "en_ZA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog | Tshiamiso Astronauts",
+    description:
+      "News, stories, and reflections from the Tshiamiso Astronauts community in Evaton West, Gauteng.",
+    images: ["/images/social/social-media.png"],
+  },
 };
 
 function PostCard({ post }: { post: BlogPost }) {

@@ -11,6 +11,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://tshiamisoastronauts.org"),
   title: "Tshiamiso Astronauts NPC",
   description:
     "Tshiamiso Astronauts NPC — A South African literacy non-profit organisation based in Evaton West, Gauteng.",
