@@ -70,9 +70,9 @@ const values = [
 ];
 
 const team = [
-  { name: "Kgomotso Dibetso", role: "Co-Founder" },
-  { name: "Tsholofelo Kado", role: "Co-Founder" },
-  { name: "Thembani Dube", role: "Co-Founder" },
+  { name: "Kgomotso Dibetso", role: "Co-Founder", image: "/images/founders/kgomotso-dibetso.png" },
+  { name: "Tsholofelo Kado", role: "Co-Founder", image: "/images/founders/tsholofelo-kado.png" },
+  { name: "Thembani Dube", role: "Co-Founder", image: "/images/founders/thembani-dube.png" },
 ];
 
 const partners = [
@@ -232,16 +232,19 @@ export default function AboutPage() {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
-            {team.map(({ name, role }) => (
+            {team.map(({ name, role, image }) => (
               <div
                 key={name}
                 className="bg-white rounded-2xl p-8 text-center shadow-sm border border-gray-100"
               >
-                {/* Avatar placeholder */}
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-brand-teal to-brand-navy mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-white text-2xl font-bold">
-                    {name.charAt(0)}
-                  </span>
+                <div className="w-24 h-24 rounded-full mx-auto mb-4 overflow-hidden">
+                  <Image
+                    src={image}
+                    alt={name}
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
                 <h3 className="text-brand-navy font-bold text-lg mb-1">
                   {name}
