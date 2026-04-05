@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, Phone, MapPin, Rocket } from "lucide-react";
 import { submitContactForm } from "./actions";
 
@@ -109,8 +110,16 @@ export default function ContactPage() {
   return (
     <>
       {/* HERO */}
-      <section className="bg-gradient-to-br from-brand-navy to-brand-teal py-24 px-6 text-center">
-        <div className="max-w-2xl mx-auto">
+      <section className="relative py-24 px-6 text-center">
+        <Image
+          src="/images/contact-us-page/contact-hero.jpg"
+          alt="Tshiamiso Astronauts Contact Us"
+          fill
+          priority
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-brand-navy/70" />
+        <div className="relative z-10 max-w-2xl mx-auto">
           <p className="text-brand-light-teal text-sm font-semibold uppercase tracking-widest mb-4">
             Get In Touch
           </p>
