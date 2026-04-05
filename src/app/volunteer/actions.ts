@@ -12,16 +12,15 @@ export interface VolunteerInput {
 
 // ── Server-side validation ─────────────────────────────────────────────────────
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const ROLES = [
-  "Reading Coach / Tutor",
-  "Homework Assistance Mentor",
-  "Digital Skills Trainer",
-  "University Application Advisor",
-  "Event Coordinator",
-  "Admin & Communications Support",
-  "Fundraising & Partnerships",
-  "General Volunteer",
-];
+// Keys must match Monday.com status label indices for column single_select7la5rsb
+const ROLE_INDEX_MAP: Record<string, number> = {
+  "Comprehension Navigator (Grades 4–7)": 2,
+  "Phonics Specialist (Grade 1)": 3,
+  "Data Marshall (Monitoring & Evaluation)": 4,
+  "Fluency Coach (Grades 2–3)": 6,
+  "Homework Support (Intermediate/High School)": 7,
+};
+const ROLES = Object.keys(ROLE_INDEX_MAP);
 const AVAILABILITY = [
   "Weekday mornings",
   "Weekday afternoons",
@@ -58,7 +57,6 @@ export async function submitVolunteerApplication(
 
   const fullName = `${input.firstName.trim()} ${input.lastName.trim()}`;
   const notesLines = [
-    `Role: ${input.role}`,
     `Availability: ${input.availability}`,
     input.message ? `\n${input.message}` : "",
   ]
@@ -84,6 +82,7 @@ export async function submitVolunteerApplication(
       short_textjyc0986f: input.lastName.trim(),
       short_textjwgz4sor: input.email.trim().toLowerCase(),
       short_text70w7rlxm: input.phone.trim(),
+      single_select7la5rsb: { index: ROLE_INDEX_MAP[input.role] },
       long_textbsbqmt6z: { text: notesLines },
     }),
   };

@@ -6,14 +6,11 @@ import { BookOpen, Handshake, Sprout, Trophy, Rocket } from "lucide-react";
 import { submitVolunteerApplication } from "./actions";
 
 const ROLES = [
-  "Reading Coach / Tutor",
-  "Homework Assistance Mentor",
-  "Digital Skills Trainer",
-  "University Application Advisor",
-  "Event Coordinator",
-  "Admin & Communications Support",
-  "Fundraising & Partnerships",
-  "General Volunteer",
+  "Comprehension Navigator (Grades 4–7)",
+  "Phonics Specialist (Grade 1)",
+  "Fluency Coach (Grades 2–3)",
+  "Homework Support (Intermediate/High School)",
+  "Data Marshall (Monitoring & Evaluation)",
 ];
 
 const AVAILABILITY = [
