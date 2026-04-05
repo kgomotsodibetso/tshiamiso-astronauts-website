@@ -1,5 +1,16 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import {
+  BookOpen,
+  Star,
+  PencilLine,
+  GraduationCap,
+  Monitor,
+  Sun,
+  Library,
+  Trophy,
+  Mic,
+} from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Tshiamiso Astronauts — Literacy & Education NPO | Evaton West",
@@ -9,63 +20,63 @@ export const metadata: Metadata = {
 
 const programmes = [
   {
-    icon: "📚",
+    Icon: BookOpen,
     name: "TA Book Club",
     tagline: "Where readers become thinkers.",
     excerpt:
       "Each month, community members gather to explore a member-selected book through structured discussion, Q&A, and shared reflection. A space for adults in Evaton West to grow their minds and build a lifelong love of reading.",
   },
   {
-    icon: "🌟",
+    Icon: Star,
     name: "Children's Reading Club",
     tagline: "Every page is a new adventure.",
     excerpt:
       "Every week, young readers explore a different book together through reading, discussion, and fun story-inspired activities. Where imagination is celebrated and every child is an Astronaut in the making.",
   },
   {
-    icon: "✏️",
+    Icon: PencilLine,
     name: "Homework Assistance",
     tagline: "Extra support, extraordinary results.",
     excerpt:
       "Structured academic support for learners in Grades 1–12 across Maths, English, and Bokgoni (Setswana). Our trained tutors work one-on-one and in small groups to close learning gaps and build confidence.",
   },
   {
-    icon: "🎓",
+    Icon: GraduationCap,
     name: "University Application Assistance",
     tagline: "Your future starts here.",
     excerpt:
       "We guide every eligible matriculant through university and TVET College applications — from choosing an institution to completing NSFAS forms. No learner in Evaton West should miss higher education for lack of support.",
   },
   {
-    icon: "💻",
+    Icon: Monitor,
     name: "Digital Skills Development",
     tagline: "The skills of tomorrow, available today.",
     excerpt:
       "Certified training in Computer Literacy, Programming, Graphic Design, UX Design, Social Media Management, and Data Analysis — all delivered at our Evaton West facility.",
   },
   {
-    icon: "☀️",
+    Icon: Sun,
     name: "School Holiday Programme",
     tagline: "Learning never takes a holiday.",
     excerpt:
       "During school holidays, our doors stay open for reading, creative writing, arts, and team-building. Our flagship community event — serving nearly 400 children across June and July 2024 alone.",
   },
   {
-    icon: "🏛️",
+    Icon: Library,
     name: "TA Evaton West Library",
     tagline: "Knowledge belongs to everyone.",
     excerpt:
       "A fully furnished community library open to learners, students, families, and adults — offering books, a quiet study space, internet access, and reading resources.",
   },
   {
-    icon: "🏆",
+    Icon: Trophy,
     name: "Spelling Bee Competition",
     tagline: "Words are power. Compete with confidence.",
     excerpt:
       "Our annual Spelling Bee draws competitors from Grades 4–7, parents, and community leaders. Preliminary rounds build to a Grand Finale with partnerships from Evaton Mall and Chief Bambatha community structures.",
   },
   {
-    icon: "🎤",
+    Icon: Mic,
     name: "Public Speaking Programme",
     tagline: "Find your voice. Own the room.",
     excerpt:
@@ -173,12 +184,14 @@ export default function HomePage() {
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {programmes.map(({ icon, name, tagline, excerpt }) => (
+            {programmes.map(({ Icon, name, tagline, excerpt }) => (
               <div
                 key={name}
                 className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100"
               >
-                <div className="text-3xl mb-3">{icon}</div>
+                <div className="w-10 h-10 rounded-xl bg-brand-navy flex items-center justify-center mb-4">
+                  <Icon className="text-brand-orange" size={20} strokeWidth={2} />
+                </div>
                 <h3 className="text-brand-navy font-bold text-lg mb-1">
                   {name}
                 </h3>
