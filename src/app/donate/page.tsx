@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { buildPayFastPayload } from "./actions";
 
 const PRESET_AMOUNTS = [100, 250, 500, 1000];
@@ -65,8 +66,16 @@ export default function DonatePage() {
   return (
     <>
       {/* HERO */}
-      <section className="bg-gradient-to-br from-brand-navy to-brand-teal py-24 px-6 text-center">
-        <div className="max-w-2xl mx-auto">
+      <section className="relative py-24 px-6 text-center">
+        <Image
+          src="/images/donate-page/donate-hero.jpg"
+          alt="Tshiamiso Astronauts Donate"
+          fill
+          priority
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-brand-navy/70" />
+        <div className="relative z-10 max-w-2xl mx-auto">
           <p className="text-brand-light-teal text-sm font-semibold uppercase tracking-widest mb-4">
             Make a Difference
           </p>
