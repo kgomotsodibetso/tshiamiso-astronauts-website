@@ -20,7 +20,8 @@ const config: Config = {
         "brand-rose-beige": "#C39585",
       },
       fontFamily: {
-        sans: ["var(--font-montserrat)", "Arial", "Poppins", "sans-serif"],
+        sans: ["var(--font-nunito)", "Arial", "sans-serif"],
+        display: ["var(--font-fredoka)", "Arial", "sans-serif"],
       },
     },
   },
