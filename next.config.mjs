@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
+  },
   async headers() {
     // CSP: 'unsafe-inline'/'unsafe-eval' are required by Next.js for hydration
     // and Tailwind inline styles.  The remaining directives (form-action,
