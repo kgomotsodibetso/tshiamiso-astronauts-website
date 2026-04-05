@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { PencilLine, Sun, GraduationCap, Monitor } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Our Impact | Tshiamiso Astronauts",
@@ -16,28 +17,28 @@ const stats = [
 
 const highlights = [
   {
-    icon: "✏️",
+    Icon: PencilLine,
     programme: "Homework Assistance",
     stat: "Highest Attendance",
     result:
       "Our most attended programme — serving hundreds of learners in 2026 across Grades 1 to 12. Tutors work one-on-one and in small groups across Maths, English, and Bokgoni (Setswana), closing learning gaps that the classroom alone cannot address.",
   },
   {
-    icon: "☀️",
+    Icon: Sun,
     programme: "School Holiday Programme",
     stat: "400+ Campers in 2024",
     result:
       "Nearly 400 children attended our School Holiday Programme across June and July 2024. Multi-day sessions covering reading, creative writing, arts, crafts, and team-building — keeping children engaged, learning, and safe during the school holidays.",
   },
   {
-    icon: "🎓",
+    Icon: GraduationCap,
     programme: "University Application Assistance",
     stat: "Zero learners left behind",
     result:
       "Every eligible matriculant who comes through our doors leaves with a completed university or TVET College application and NSFAS submission. We ensure that no young person in Evaton West misses out on higher education due to a lack of information or support.",
   },
   {
-    icon: "💻",
+    Icon: Monitor,
     programme: "Digital Skills Development",
     stat: "Future-ready skills",
     result:
@@ -120,13 +121,15 @@ export default function ImpactPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {highlights.map(({ icon, programme, stat, result }) => (
+            {highlights.map(({ Icon, programme, stat, result }) => (
               <div
                 key={programme}
                 className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100"
               >
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="text-4xl">{icon}</div>
+                  <div className="w-12 h-12 rounded-xl bg-brand-navy flex items-center justify-center flex-shrink-0">
+                    <Icon className="text-brand-orange" size={22} strokeWidth={2} />
+                  </div>
                   <div>
                     <h3 className="text-brand-navy font-bold text-lg leading-tight">
                       {programme}
