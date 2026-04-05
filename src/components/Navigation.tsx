@@ -10,7 +10,6 @@ const navLinks = [
   { href: "/about", label: "About" },
   { href: "/programmes", label: "Programmes" },
   { href: "/impact", label: "Impact" },
-  { href: "/donate", label: "Donate" },
   { href: "/events", label: "Events" },
   { href: "/blog", label: "Blog" },
   { href: "/volunteer", label: "Volunteer" },
@@ -58,6 +57,14 @@ export default function Navigation() {
           })}
         </ul>
 
+        {/* Desktop Donate CTA */}
+        <Link
+          href="/donate"
+          className="hidden lg:inline-block bg-brand-orange text-white text-sm font-bold px-5 py-2 rounded-lg hover:opacity-90 transition-opacity flex-shrink-0"
+        >
+          Donate Now
+        </Link>
+
         {/* Mobile hamburger */}
         <button
           className="lg:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5 focus:outline-none"
@@ -85,27 +92,36 @@ export default function Navigation() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <ul className="lg:hidden bg-brand-white border-t border-gray-100 px-4 pb-4 flex flex-col gap-1">
-          {navLinks.map(({ href, label }) => {
-            const isActive =
-              href === "/" ? pathname === "/" : pathname.startsWith(href);
-            return (
-              <li key={href}>
-                <Link
-                  href={href}
-                  onClick={() => setMenuOpen(false)}
-                  className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive
-                      ? "text-brand-orange bg-orange-50"
-                      : "text-brand-navy hover:text-brand-orange hover:bg-gray-50"
-                  }`}
-                >
-                  {label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+        <div className="lg:hidden bg-brand-white border-t border-gray-100 px-4 pb-4">
+          <ul className="flex flex-col gap-1 mb-4">
+            {navLinks.map(({ href, label }) => {
+              const isActive =
+                href === "/" ? pathname === "/" : pathname.startsWith(href);
+              return (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    onClick={() => setMenuOpen(false)}
+                    className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActive
+                        ? "text-brand-orange bg-orange-50"
+                        : "text-brand-navy hover:text-brand-orange hover:bg-gray-50"
+                    }`}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          <Link
+            href="/donate"
+            onClick={() => setMenuOpen(false)}
+            className="block w-full bg-brand-orange text-white text-sm font-bold px-4 py-3 rounded-lg text-center hover:opacity-90 transition-opacity"
+          >
+            Donate Now
+          </Link>
+        </div>
       )}
     </header>
   );
