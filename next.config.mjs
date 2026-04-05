@@ -12,7 +12,7 @@ const nextConfig = {
       "img-src 'self' data: https://www.tshiamisoastronauts.org https://*.hubspot.net https://*.hubspotusercontent.com",
       "font-src 'self'",
       "connect-src 'self' https://api.monday.com",
-      "form-action 'self' https://www.payfast.co.za",
+      "form-action 'self' https://www.payfast.co.za https://payment.payfast.io",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "object-src 'none'",
