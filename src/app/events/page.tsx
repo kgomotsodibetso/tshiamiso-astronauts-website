@@ -9,6 +9,23 @@ export const metadata: Metadata = {
   title: "Events & Competitions | Tshiamiso Astronauts",
   description:
     "Find upcoming Spelling Bee rounds, community festivals, and fundraising events from Tshiamiso Astronauts. RSVP online.",
+  openGraph: {
+    title: "Events & Competitions | Tshiamiso Astronauts",
+    description:
+      "Find upcoming Spelling Bee rounds, community festivals, and fundraising events from Tshiamiso Astronauts. RSVP online.",
+    url: "https://tshiamisoastronauts.org/events",
+    siteName: "Tshiamiso Astronauts NPC",
+    images: [{ url: "/images/social/social-media.png", width: 1200, height: 630, alt: "Tshiamiso Astronauts — Literacy & Education NPO" }],
+    locale: "en_ZA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Events & Competitions | Tshiamiso Astronauts",
+    description:
+      "Find upcoming Spelling Bee rounds, community festivals, and fundraising events from Tshiamiso Astronauts. RSVP online.",
+    images: ["/images/social/social-media.png"],
+  },
 };
 
 export default async function EventsPage() {

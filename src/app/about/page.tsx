@@ -5,6 +5,23 @@ export const metadata: Metadata = {
   title: "About Us | Tshiamiso Astronauts",
   description:
     "Learn about Tshiamiso Astronauts NPC — our mission, values, and the team transforming literacy and education in Evaton West, Gauteng.",
+  openGraph: {
+    title: "About Us | Tshiamiso Astronauts",
+    description:
+      "Learn about Tshiamiso Astronauts NPC — our mission, values, and the team transforming literacy and education in Evaton West, Gauteng.",
+    url: "https://tshiamisoastronauts.org/about",
+    siteName: "Tshiamiso Astronauts NPC",
+    images: [{ url: "/images/social/social-media.png", width: 1200, height: 630, alt: "Tshiamiso Astronauts — Literacy & Education NPO" }],
+    locale: "en_ZA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Us | Tshiamiso Astronauts",
+    description:
+      "Learn about Tshiamiso Astronauts NPC — our mission, values, and the team transforming literacy and education in Evaton West, Gauteng.",
+    images: ["/images/social/social-media.png"],
+  },
 };
 
 const values = [

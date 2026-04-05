@@ -27,9 +27,27 @@ export async function generateMetadata({
   try {
     const post = await fetchPostBySlug(slug);
     if (!post) return {};
+    const image = post.coverImageUrl || "/images/social/social-media.png";
+    const title = `${post.title} | Tshiamiso Astronauts`;
+    const description = post.excerpt || "Read this story from the Tshiamiso Astronauts community in Evaton West.";
     return {
-      title: `${post.title} | Tshiamiso Astronauts`,
-      description: post.excerpt || undefined,
+      title,
+      description,
+      openGraph: {
+        title,
+        description,
+        url: `https://tshiamisoastronauts.org/blog/${slug}`,
+        siteName: "Tshiamiso Astronauts NPC",
+        images: [{ url: image, width: 1200, height: 630, alt: post.title }],
+        locale: "en_ZA",
+        type: "article",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title,
+        description,
+        images: [image],
+      },
     };
   } catch {
     return {};
