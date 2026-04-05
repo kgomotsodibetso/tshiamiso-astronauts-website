@@ -24,7 +24,7 @@ const CONTACT_DETAILS = [
   {
     Icon: Phone,
     label: "Call Us",
-    value: "066 071 5426",
+    value: "+27 66 071 5426",
     href: "tel:+27660715426",
   },
   {
