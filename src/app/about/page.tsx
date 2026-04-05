@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "About Us | Tshiamiso Astronauts",
@@ -58,10 +59,42 @@ const team = [
 ];
 
 const partners = [
-  { name: "Evaton Mall", category: "Community Partner" },
-  { name: "Chief Bambatha Community Structures", category: "Community Partner" },
-  { name: "Partner Name", category: "Coming Soon" },
-  { name: "Partner Name", category: "Coming Soon" },
+  {
+    name: "Evaton Mall",
+    category: "Community Partner",
+    logo: "/images/partners/Evaton%20Mall%20Logo%20H.jpg",
+    darkBg: false,
+  },
+  {
+    name: "Southern African Association of Youth Clubs",
+    category: "Youth Organisation",
+    logo: "/images/partners/SAAYC-White%404x.png",
+    darkBg: true,
+  },
+  {
+    name: "Spitfire",
+    category: "Technology Partner",
+    logo: "/images/partners/Spitfire%20Full%20Colour%20Logo.png",
+    darkBg: false,
+  },
+  {
+    name: "Bookt",
+    category: "Corporate Partner",
+    logo: "/images/partners/bookt-logo.png",
+    darkBg: false,
+  },
+  {
+    name: "The 100% Foundation",
+    category: "Foundation Partner",
+    logo: "/images/partners/cropped-100-Foundation-Logo-v2-png-1%20(1).webp",
+    darkBg: false,
+  },
+  {
+    name: "Dept. of Sport, Arts & Culture",
+    category: "Government Partner",
+    logo: "/images/partners/sport-arts-culture.jpg",
+    darkBg: false,
+  },
 ];
 
 export default function AboutPage() {
@@ -258,14 +291,31 @@ export default function AboutPage() {
             We are grateful to the organisations and community structures that
             stand with us.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {partners.map(({ name, category }) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            {partners.map(({ name, category, logo, darkBg }) => (
               <div
-                key={name + category}
-                className="bg-white/10 rounded-xl p-6 border border-white/20"
+                key={name}
+                className={`rounded-xl p-6 flex flex-col items-center gap-4 ${
+                  darkBg ? "bg-brand-navy border border-white/20" : "bg-white"
+                }`}
               >
-                <p className="text-white font-semibold text-sm mb-1">{name}</p>
-                <p className="text-brand-light-teal text-xs">{category}</p>
+                <div className="relative w-full h-16">
+                  <Image
+                    src={logo}
+                    alt={name}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 40vw, 25vw"
+                  />
+                </div>
+                <div className="text-center">
+                  <p className={`font-semibold text-sm mb-0.5 ${darkBg ? "text-white" : "text-brand-navy"}`}>
+                    {name}
+                  </p>
+                  <p className={`text-xs ${darkBg ? "text-brand-light-teal" : "text-brand-teal"}`}>
+                    {category}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
