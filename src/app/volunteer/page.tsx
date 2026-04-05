@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { BookOpen, Handshake, Sprout, Trophy, Rocket } from "lucide-react";
 import { submitVolunteerApplication } from "./actions";
 
