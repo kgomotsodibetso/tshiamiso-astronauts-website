@@ -101,13 +101,18 @@ export default function VolunteerPage() {
     formData.append("message", message.trim());
     if (cvFile) formData.append("cv", cvFile, cvFile.name);
     if (qualFile) formData.append("qualification", qualFile, qualFile.name);
-    const result = await submitVolunteerApplication(formData);
-    setLoading(false);
 
-    if (result.success) {
-      setSubmitted(true);
-    } else {
-      setError(result.error ?? "Something went wrong. Please try again.");
+    try {
+      const result = await submitVolunteerApplication(formData);
+      if (result.success) {
+        setSubmitted(true);
+      } else {
+        setError(result.error ?? "Something went wrong. Please try again.");
+      }
+    } catch {
+      setError("Something went wrong. Please try again or contact us directly.");
+    } finally {
+      setLoading(false);
     }
   }
 
