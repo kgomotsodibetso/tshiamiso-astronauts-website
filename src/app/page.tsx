@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import {
   BookOpen,
@@ -121,8 +122,16 @@ export default function HomePage() {
   return (
     <>
       {/* 1. HERO */}
-      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-navy via-[#001a80] to-brand-teal px-6 text-center">
-        <div className="max-w-3xl mx-auto">
+      <section className="relative min-h-screen flex items-center justify-center px-6 text-center">
+        <Image
+          src="/images/header-image-home-page/homepage-hero.jpg"
+          alt="Tshiamiso Astronauts hero"
+          fill
+          priority
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-brand-navy/70" />
+        <div className="relative z-10 max-w-3xl mx-auto">
           <p className="text-brand-light-teal text-sm font-semibold uppercase tracking-widest mb-4">
             Tshiamiso Astronauts NPC · Evaton West, Gauteng
           </p>
