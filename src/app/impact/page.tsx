@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { PencilLine, Sun, GraduationCap, Monitor } from "lucide-react";
 
@@ -88,8 +89,16 @@ export default function ImpactPage() {
   return (
     <>
       {/* 1. HERO */}
-      <section className="bg-gradient-to-br from-brand-navy to-brand-teal py-24 px-6 text-center">
-        <div className="max-w-3xl mx-auto">
+      <section className="relative py-24 px-6 text-center">
+        <Image
+          src="/images/impact-page/impact-hero.jpg"
+          alt="Tshiamiso Astronauts Impact"
+          fill
+          priority
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-brand-navy/70" />
+        <div className="relative z-10 max-w-3xl mx-auto">
           <p className="text-brand-light-teal text-sm font-semibold uppercase tracking-widest mb-4">
             Our Impact
           </p>
