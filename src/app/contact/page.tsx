@@ -8,9 +8,9 @@ import { submitContactForm } from "./actions";
 
 const SUBJECTS = [
   "General Enquiry",
-  "Donation",
-  "Volunteer",
-  "Partnership / Sponsorship",
+  "Volunteering",
+  "Donations & Fundraising",
+  "Partnerships",
   "Media & Press",
   "Other",
 ];
