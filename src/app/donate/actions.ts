@@ -73,9 +73,12 @@ export async function buildPayFastPayload(input: DonateInput): Promise<{
     throw new Error("Amount must be between R10 and R100,000.");
   }
 
-  const siteUrl     = process.env.NEXT_PUBLIC_SITE_URL!;
-  const merchantId  = process.env.NEXT_PUBLIC_PAYFAST_MERCHANT_ID!;
-  const merchantKey = process.env.PAYFAST_MERCHANT_KEY!;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!siteUrl) throw new Error("NEXT_PUBLIC_SITE_URL is not configured");
+  const merchantId = process.env.NEXT_PUBLIC_PAYFAST_MERCHANT_ID;
+  if (!merchantId) throw new Error("NEXT_PUBLIC_PAYFAST_MERCHANT_ID is not configured");
+  const merchantKey = process.env.PAYFAST_MERCHANT_KEY;
+  if (!merchantKey) throw new Error("PAYFAST_MERCHANT_KEY is not configured");
   const amountStr   = input.amount.toFixed(2);
 
   const params: Record<string, string> = {

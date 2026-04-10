@@ -183,10 +183,6 @@ export default function ImpactPage() {
               The most powerful measure of impact is the people behind the
               numbers.
             </p>
-            <p className="text-gray-400 text-xs mt-2 italic">
-              * Testimonials are illustrative placeholders — replace with real
-              community voices when available.
-            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
