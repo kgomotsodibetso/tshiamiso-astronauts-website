@@ -90,20 +90,24 @@ export default function ContactPage() {
     }
 
     setLoading(true);
-    const result = await submitContactForm({
-      firstName: firstName.trim(),
-      lastName: lastName.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      subject,
-      message: message.trim(),
-    });
-    setLoading(false);
-
-    if (result.success) {
-      setSubmitted(true);
-    } else {
-      setError(result.error ?? "Something went wrong. Please try again.");
+    try {
+      const result = await submitContactForm({
+        firstName: firstName.trim(),
+        lastName: lastName.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        subject,
+        message: message.trim(),
+      });
+      if (result.success) {
+        setSubmitted(true);
+      } else {
+        setError(result.error ?? "Something went wrong. Please try again.");
+      }
+    } catch {
+      setError("Something went wrong. Please try again or email us directly at info@tshiamisoastronauts.org");
+    } finally {
+      setLoading(false);
     }
   }
 
