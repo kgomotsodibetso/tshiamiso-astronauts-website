@@ -6,11 +6,29 @@ const resend = new Resend(process.env.RESEND_API_KEY || "dummy_key_to_prevent_cr
 const FROM_EMAIL = "Tshiamiso Astronauts <no-reply@tshiamisoastronauts.org>";
 const ADMIN_EMAIL = "info@tshiamisoastronauts.org";
 
+async function sendEmailSafely(options: any) {
+  if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === "dummy_key_to_prevent_crash_during_build") {
+    console.warn("[Resend] Skipping email: RESEND_API_KEY is not set.");
+    return;
+  }
+  try {
+    const { data, error } = await resend.emails.send(options);
+    if (error) {
+      console.error("[Resend] Failed to send email:", error);
+    } else {
+      console.log(`[Resend] Email sent successfully to ${options.to} (ID: ${data?.id})`);
+    }
+    return { data, error };
+  } catch (err) {
+    console.error("[Resend] Unexpected error sending email:", err);
+    return { error: err };
+  }
+}
+
 // ── Contact Us Templates ──────────────────────────────────────────────────
 
 export const sendContactConfirmation = async (email: string, firstName: string) => {
-  if (!process.env.RESEND_API_KEY) return;
-  return resend.emails.send({
+  return sendEmailSafely({
     from: FROM_EMAIL,
     to: email,
     subject: "We've received your message! | Tshiamiso Astronauts",
@@ -28,8 +46,7 @@ export const sendContactConfirmation = async (email: string, firstName: string) 
 };
 
 export const sendContactNotification = async (input: { firstName: string; lastName: string; email: string; phone: string; subject: string; message: string }) => {
-  if (!process.env.RESEND_API_KEY) return;
-  return resend.emails.send({
+  return sendEmailSafely({
     from: FROM_EMAIL,
     to: ADMIN_EMAIL,
     subject: `New Contact Form Submission: ${input.subject}`,
@@ -52,8 +69,7 @@ export const sendContactNotification = async (input: { firstName: string; lastNa
 // ── Volunteer Templates ───────────────────────────────────────────────────
 
 export const sendVolunteerConfirmation = async (email: string, firstName: string) => {
-  if (!process.env.RESEND_API_KEY) return;
-  return resend.emails.send({
+  return sendEmailSafely({
     from: FROM_EMAIL,
     to: email,
     subject: "Thank you for applying to volunteer! | Tshiamiso Astronauts",
@@ -71,8 +87,7 @@ export const sendVolunteerConfirmation = async (email: string, firstName: string
 };
 
 export const sendVolunteerNotification = async (input: { firstName: string; lastName: string; email: string; role: string }) => {
-  if (!process.env.RESEND_API_KEY) return;
-  return resend.emails.send({
+  return sendEmailSafely({
     from: FROM_EMAIL,
     to: ADMIN_EMAIL,
     subject: `New Volunteer Application: ${input.firstName} ${input.lastName}`,
@@ -91,8 +106,7 @@ export const sendVolunteerNotification = async (input: { firstName: string; last
 // ── Donor Templates ───────────────────────────────────────────────────────
 
 export const sendDonorReceipt = async (email: string, firstName: string, amount: string) => {
-  if (!process.env.RESEND_API_KEY) return;
-  return resend.emails.send({
+  return sendEmailSafely({
     from: FROM_EMAIL,
     to: email,
     subject: "Thank you for your donation! | Tshiamiso Astronauts",
@@ -110,8 +124,7 @@ export const sendDonorReceipt = async (email: string, firstName: string, amount:
 };
 
 export const sendDonorNotification = async (firstName: string, lastName: string, email: string, amount: string) => {
-  if (!process.env.RESEND_API_KEY) return;
-  return resend.emails.send({
+  return sendEmailSafely({
     from: FROM_EMAIL,
     to: ADMIN_EMAIL,
     subject: `New Donation Received: R${amount}`,

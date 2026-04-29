@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
       const firstName = params["name_first"] || "Donor";
       const lastName = params["name_last"] || "";
 
-      Promise.all([
+      await Promise.all([
         sendDonorReceipt(donorEmail, firstName, amount),
         sendDonorNotification(firstName, lastName, donorEmail, amount)
       ]).catch(err => console.error("[PayFast ITN] Email notification failed:", err));

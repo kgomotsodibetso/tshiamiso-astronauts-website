@@ -160,7 +160,7 @@ export async function submitVolunteerApplication(
       await Promise.all(uploads);
     }
 
-    Promise.all([
+    await Promise.all([
       sendVolunteerConfirmation(email, firstName),
       sendVolunteerNotification({ firstName, lastName, email, role })
     ]).catch(err => console.error("[Volunteer] Email notification failed:", err));

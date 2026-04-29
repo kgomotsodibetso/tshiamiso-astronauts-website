@@ -171,7 +171,7 @@ export async function submitContactForm(
       console.error("[Contact] SMS notification failed:", err)
     );
 
-    Promise.all([
+    await Promise.all([
       sendContactConfirmation(input.email, input.firstName),
       sendContactNotification(input)
     ]).catch(err => console.error("[Contact] Email notification failed:", err));
