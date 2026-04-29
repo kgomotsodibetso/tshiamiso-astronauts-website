@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { formRatelimit } from "@/lib/ratelimit";
+import { sendContactConfirmation, sendContactNotification } from "@/lib/resend";
 
 export interface ContactInput {
   firstName: string;
@@ -169,6 +170,11 @@ export async function submitContactForm(
     sendSmsNotification(input).catch((err) =>
       console.error("[Contact] SMS notification failed:", err)
     );
+
+    Promise.all([
+      sendContactConfirmation(input.email, input.firstName),
+      sendContactNotification(input)
+    ]).catch(err => console.error("[Contact] Email notification failed:", err));
 
     return { success: true };
   } catch (error) {

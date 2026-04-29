@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { payfastRatelimit } from "@/lib/ratelimit";
+import { sendDonorReceipt, sendDonorNotification } from "@/lib/resend";
 
 // PayFast published ITN source IPs.
 // Verify these are current at: https://developers.payfast.co.za/docs#step_5_itn
@@ -111,10 +112,14 @@ export async function POST(req: NextRequest) {
     );
 
     if (paymentStatus === "COMPLETE") {
-      // TODO: Send Section 18A receipt email via Resend / Nodemailer
-      //   - To: params["email_address"]
-      //   - BCC: process.env.RECEIPT_EMAIL
-      //   - Include: params["name_first"], params["name_last"], amount_gross, pf_payment_id
+      const donorEmail = params["email_address"];
+      const firstName = params["name_first"] || "Donor";
+      const lastName = params["name_last"] || "";
+
+      Promise.all([
+        sendDonorReceipt(donorEmail, firstName, amount),
+        sendDonorNotification(firstName, lastName, donorEmail, amount)
+      ]).catch(err => console.error("[PayFast ITN] Email notification failed:", err));
     }
 
     // Always return 200 to acknowledge receipt — PayFast retries on non-200

@@ -1,5 +1,7 @@
 "use server";
 
+import { sendVolunteerConfirmation, sendVolunteerNotification } from "@/lib/resend";
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Keys must match Monday.com status label indices for column single_select7la5rsb
@@ -157,6 +159,11 @@ export async function submitVolunteerApplication(
       }
       await Promise.all(uploads);
     }
+
+    Promise.all([
+      sendVolunteerConfirmation(email, firstName),
+      sendVolunteerNotification({ firstName, lastName, email, role })
+    ]).catch(err => console.error("[Volunteer] Email notification failed:", err));
 
     return { success: true };
   } catch (error) {
