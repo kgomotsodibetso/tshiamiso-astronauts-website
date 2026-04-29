@@ -139,37 +139,43 @@ async function sendSmsNotification(input: ContactInput): Promise<void> {
 export async function submitContactForm(
   input: ContactInput
 ): Promise<{ success: boolean; error?: string }> {
-  const headersList = await headers();
-  const ip = headersList.get("x-forwarded-for")?.split(",")[0].trim() ?? "anonymous";
-  
-  let allowed = true;
   try {
-    const result = await formRatelimit.limit(ip);
-    allowed = result.success;
-  } catch (err) {
-    console.warn("[Contact] Rate limit check failed, failing open:", err);
-  }
-  
-  if (!allowed) return { success: false, error: "Too many requests. Please try again later." };
+    const headersList = await headers();
+    const ip = headersList.get("x-forwarded-for")?.split(",")[0].trim() ?? "anonymous";
 
-  const validationError = validate(input);
-  if (validationError) return { success: false, error: validationError };
+    let allowed = true;
+    try {
+      const result = await formRatelimit.limit(ip);
+      allowed = result.success;
+    } catch (err) {
+      console.warn("[Contact] Rate limit check failed, failing open:", err);
+    }
 
-  // Save to Monday.com first — this is the authoritative record
-  try {
-    await saveToMonday(input);
+    if (!allowed) return { success: false, error: "Too many requests. Please try again later." };
+
+    const validationError = validate(input);
+    if (validationError) return { success: false, error: validationError };
+
+    try {
+      await saveToMonday(input);
+    } catch (error) {
+      console.error("[Contact] Monday.com save failed:", error);
+      return {
+        success: false,
+        error: "Something went wrong. Please email us directly at info@tshiamisoastronauts.org",
+      };
+    }
+
+    sendSmsNotification(input).catch((err) =>
+      console.error("[Contact] SMS notification failed:", err)
+    );
+
+    return { success: true };
   } catch (error) {
-    console.error("[Contact] Monday.com save failed:", error);
+    console.error("[Contact] Unexpected error:", error);
     return {
       success: false,
-      error: "Something went wrong. Please email us directly at info@tshiamisoastronauts.org",
+      error: "Something went wrong. Please try again or email us directly at info@tshiamisoastronauts.org",
     };
   }
-
-  // Send SMS notification independently — failure does not affect the user
-  sendSmsNotification(input).catch((err) =>
-    console.error("[Contact] SMS notification failed:", err)
-  );
-
-  return { success: true };
 }
