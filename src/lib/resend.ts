@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import { Resend, type CreateEmailOptions } from "resend";
 
 // If API key is missing, it will throw an error when used, which is fine as it's caught in Server Actions.
 const resend = new Resend(process.env.RESEND_API_KEY || "dummy_key_to_prevent_crash_during_build");
@@ -6,7 +6,7 @@ const resend = new Resend(process.env.RESEND_API_KEY || "dummy_key_to_prevent_cr
 const FROM_EMAIL = "Tshiamiso Astronauts <no-reply@tshiamisoastronauts.org>";
 const ADMIN_EMAIL = "info@tshiamisoastronauts.org";
 
-async function sendEmailSafely(options: any) {
+async function sendEmailSafely(options: CreateEmailOptions) {
   if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === "dummy_key_to_prevent_crash_during_build") {
     console.warn("[Resend] Skipping email: RESEND_API_KEY is not set.");
     return;
