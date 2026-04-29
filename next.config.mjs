@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverActions: {
-    bodySizeLimit: "10mb",
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
   },
   async headers() {
     // CSP: 'unsafe-inline'/'unsafe-eval' are required by Next.js for hydration
@@ -14,7 +16,7 @@ const nextConfig = {
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https://www.tshiamisoastronauts.org https://*.hubspot.net https://*.hubspotusercontent.com",
       "font-src 'self'",
-      "connect-src 'self' https://api.monday.com",
+      "connect-src 'self' https://api.monday.com https://api.resend.com https://api.twilio.com",
       "form-action 'self' https://www.payfast.co.za https://payment.payfast.io",
       "frame-ancestors 'none'",
       "base-uri 'self'",
