@@ -141,7 +141,15 @@ export async function submitContactForm(
 ): Promise<{ success: boolean; error?: string }> {
   const headersList = await headers();
   const ip = headersList.get("x-forwarded-for")?.split(",")[0].trim() ?? "anonymous";
-  const { success: allowed } = await formRatelimit.limit(ip);
+  
+  let allowed = true;
+  try {
+    const result = await formRatelimit.limit(ip);
+    allowed = result.success;
+  } catch (err) {
+    console.warn("[Contact] Rate limit check failed, failing open:", err);
+  }
+  
   if (!allowed) return { success: false, error: "Too many requests. Please try again later." };
 
   const validationError = validate(input);
