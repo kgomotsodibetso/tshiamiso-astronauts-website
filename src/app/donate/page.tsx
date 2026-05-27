@@ -57,8 +57,13 @@ export default function DonatePage() {
       });
       document.body.appendChild(form);
       form.submit();
-    } catch {
-      setError("Something went wrong. Please try again or contact us.");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "";
+      if (message.toLowerCase().includes("not configured")) {
+        setError("Our payment system is temporarily unavailable. Please email info@tshiamisoastronauts.org to donate directly.");
+      } else {
+        setError(message || "Something went wrong. Please try again or email us at info@tshiamisoastronauts.org.");
+      }
       setLoading(false);
     }
   }
