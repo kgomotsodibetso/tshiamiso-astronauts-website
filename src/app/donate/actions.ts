@@ -74,11 +74,11 @@ export async function buildPayFastPayload(input: DonateInput): Promise<{
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!siteUrl) throw new Error("NEXT_PUBLIC_SITE_URL is not configured");
+  if (!siteUrl) { console.error("[Donate] Missing env: NEXT_PUBLIC_SITE_URL"); throw new Error("NEXT_PUBLIC_SITE_URL is not configured"); }
   const merchantId = process.env.NEXT_PUBLIC_PAYFAST_MERCHANT_ID;
-  if (!merchantId) throw new Error("NEXT_PUBLIC_PAYFAST_MERCHANT_ID is not configured");
+  if (!merchantId) { console.error("[Donate] Missing env: NEXT_PUBLIC_PAYFAST_MERCHANT_ID"); throw new Error("NEXT_PUBLIC_PAYFAST_MERCHANT_ID is not configured"); }
   const merchantKey = process.env.PAYFAST_MERCHANT_KEY;
-  if (!merchantKey) throw new Error("PAYFAST_MERCHANT_KEY is not configured");
+  if (!merchantKey) { console.error("[Donate] Missing env: PAYFAST_MERCHANT_KEY"); throw new Error("PAYFAST_MERCHANT_KEY is not configured"); }
   const amountStr   = input.amount.toFixed(2);
 
   const params: Record<string, string> = {
