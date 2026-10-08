@@ -6,7 +6,7 @@ publishDate: 2026-10-08
 author: Kgomotso Dibetso
 authorRole: President, Tshiamiso Astronauts NPC
 category: Spelling Bee 2026
-partners: [Evaton Mall|/images/partners/evaton-mall.jpg]
+partners: [Evaton Mall|/images/partners/evaton-mall-trimmed.png, Gauteng Province Sport Arts Culture and Recreation|/images/partners/gauteng-sport-arts-culture-recreation.png, Emfuleni Local Municipality|/images/partners/emfuleni-local-municipality.png, Sedibeng District education sports and culture|/images/partners/sedibeng-district-municipality.png]
 tags: [Spelling Bee 2026, Sedibeng West D8, Evaton West, literacy, Breakthrough2026]
 excerpt: "Nine schools ran qualifiers between 29 May and 18 September. More than 320 learners spelled and 107 earned a place at the Grand Final at Setlabotjha Primary School on 23 October."
 seoDescription: "Nine Sedibeng West schools, 107 finalists and one Grand Final on 23 October. The story of the 2026 TA Regional Spelling Bee so far."
@@ -83,7 +83,7 @@ Not on the guest list? We will post the results and the story of the day here.
 
 ## Thank you
 
-To the principals and teacher liaisons who gave us rooms, time and their learners. To the volunteers who pronounced, scored and timed at every qualifier. To the parents who signed consent forms and sent their children. And to Evaton Mall, our confirmed Grand Final partner.
+To the principals and teacher liaisons who gave us rooms, time and their learners. To the volunteers who pronounced, scored and timed at every qualifier. To the parents who signed consent forms and sent their children. And to Evaton Mall, our Grand Final partner, and to the other supporters shown below.
 
 ## Help us keep this going
 

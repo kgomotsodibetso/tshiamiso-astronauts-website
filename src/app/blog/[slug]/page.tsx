@@ -197,9 +197,9 @@ export default async function BlogPostPage({
           {post.partners && post.partners.length > 0 && (
             <div className="mt-12 pt-8 border-t border-gray-100">
               <p className="text-sm font-semibold uppercase tracking-wide text-brand-teal mb-4">Supported by</p>
-              <div className="flex flex-wrap items-center gap-6">
+              <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
                 {post.partners.map(({ name, logo }) => (
-                  <Image key={name} src={logo} alt={name} width={160} height={80} className="h-20 w-auto object-contain" />
+                  <Image key={name} src={logo} alt={name} width={320} height={160} className="h-24 w-auto object-contain" />
                 ))}
               </div>
             </div>
