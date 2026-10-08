@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
-import { PencilLine, Sun, GraduationCap, Monitor } from "lucide-react";
+import { PencilLine, BookOpen, Library, Utensils, Trophy, GraduationCap, Monitor, MapPin } from "lucide-react";
+import { recapData as d, fmt } from "@/lib/recapData";
 
 export const metadata: Metadata = {
   title: "Our Impact | Tshiamiso Astronauts",
@@ -27,40 +28,54 @@ export const metadata: Metadata = {
 };
 
 const stats = [
-  { value: "500+", label: "Learners Reached", description: "Children, youth, and adults served across all programmes" },
-  { value: "9", label: "Active Programmes", description: "From homework support to digital skills and university guidance" },
-  { value: "400+", label: "Holiday Campers", description: "Children who attended our School Holiday Programme in 2024 alone" },
-  { value: "3+", label: "Years of Impact", description: "Serving the Evaton West community since April 2022" },
+  { value: fmt(d.attendanceRecords), label: "Learner Attendances", description: "Homework, reading and library sessions attended since February 2026" },
+  { value: `${fmt(Math.floor(d.learnerHours / 100) * 100)}+`, label: "Learner Hours", description: "Hours of tutoring, reading and learning logged in 2026" },
+  { value: String(d.sessionDays), label: "Session Days", description: "Days our doors were open for learners at 4206 Kopanong Street" },
+  { value: fmt(d.soupKitchenVisits), label: "Soup Kitchen Visits", description: `Mostly lunches, across ${d.soupKitchenServiceDays} service days` },
 ];
 
 const highlights = [
   {
     Icon: PencilLine,
     programme: "Homework Assistance",
-    stat: "Highest Attendance",
+    stat: `${d.programmes.homeworkAssistance.days} days run`,
     result:
-      "Our most attended programme — serving hundreds of learners in 2026 across Grades 1 to 12. Tutors work one-on-one and in small groups across Maths, English, and Bokgoni (Setswana), closing learning gaps that the classroom alone cannot address.",
+      `Our most attended programme: roughly ${fmt(d.programmes.homeworkAssistance.records)} attendances and about ${fmt(d.programmes.homeworkAssistance.hours)} learner hours in 2026. Tutors work one-on-one and in small groups across Maths, English and Bokgoni (Setswana), closing learning gaps the classroom alone cannot address.`,
   },
   {
-    Icon: Sun,
-    programme: "School Holiday Programme",
-    stat: "400+ Campers in 2024",
+    Icon: BookOpen,
+    programme: "Book Club",
+    stat: `${d.programmes.bookClub.days} sessions`,
     result:
-      "Nearly 400 children attended our School Holiday Programme across June and July 2024. Multi-day sessions covering reading, creative writing, arts, crafts, and team-building — keeping children engaged, learning, and safe during the school holidays.",
+      `Roughly ${d.programmes.bookClub.records} attendances and ${d.programmes.bookClub.hours} learner hours of reading together, plus ${d.programmes.saturdayBookClub.days} Saturday Book Club sessions with ${d.programmes.saturdayBookClub.hours} more hours.`,
+  },
+  {
+    Icon: Library,
+    programme: "Library",
+    stat: `${d.programmes.library.days} open days`,
+    result:
+      `A quiet, safe place to read and study: roughly ${d.programmes.library.records} library visits and ${d.programmes.library.hours} hours in 2026.`,
+  },
+  {
+    Icon: Utensils,
+    programme: "Soup Kitchen",
+    stat: `${fmt(d.soupKitchenVisits)} visits`,
+    result:
+      `Hungry children cannot learn. Across ${d.soupKitchenServiceDays} service days we served ${fmt(d.soupKitchenVisits)} visits, mostly lunch, with children under 13 making up almost half of them.`,
   },
   {
     Icon: GraduationCap,
     programme: "University Application Assistance",
-    stat: "Zero learners left behind",
+    stat: "Matric support",
     result:
-      "Every eligible matriculant who comes through our doors leaves with a completed university or TVET College application and NSFAS submission. We ensure that no young person in Evaton West misses out on higher education due to a lack of information or support.",
+      "Matriculants get hands-on help with university and TVET College applications and NSFAS submissions, so no young person in Evaton West misses out on higher education for lack of information.",
   },
   {
     Icon: Monitor,
     programme: "Digital Skills Development",
     stat: "Future-ready skills",
     result:
-      "Community members gain certified skills in Computer Literacy, Programming, Graphic Design, UX Design, Social Media Management, and Data Analysis — equipping them for the digital economy and opening doors to employment and entrepreneurship.",
+      "Community members build skills in Computer Literacy, Programming, Graphic Design, UX Design, Social Media Management and Data Analysis, opening doors to work and entrepreneurship.",
   },
 ];
 
@@ -100,16 +115,16 @@ export default function ImpactPage() {
         <div className="absolute inset-0 bg-brand-navy/70" />
         <div className="relative z-10 max-w-3xl mx-auto">
           <p className="text-brand-light-teal text-sm font-semibold uppercase tracking-widest mb-4">
-            Our Impact
+            #Breakthrough2026
           </p>
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-            Real Change in{" "}
-            <span className="text-brand-orange">Real Lives</span>
+            The Year of{" "}
+            <span className="text-brand-orange">Breakthrough</span>
           </h1>
           <p className="text-gray-200 text-lg max-w-2xl mx-auto leading-relaxed">
-            Since April 2022, Tshiamiso Astronauts NPC has been transforming
-            lives in Evaton West through literacy, education, and community
-            empowerment. Here is what that looks like in numbers and in stories.
+            2026 is our Year of Breakthrough: moving from survival to structured,
+            measurable impact. Here is what we have done so far, in real
+            numbers. Updated {d.asOfLabel}.
           </p>
         </div>
       </section>
@@ -141,12 +156,12 @@ export default function ImpactPage() {
               Programme Highlights
             </h2>
             <p className="text-brand-teal text-lg max-w-xl mx-auto">
-              The stories behind our numbers — what our programmes are actually
-              achieving on the ground.
+              What our programmes have delivered in 2026 so far. Programme splits are
+              approximate; overall totals are exact as at {d.asOfLabel}.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {highlights.map(({ Icon, programme, stat, result }) => (
               <div
                 key={programme}
@@ -169,6 +184,52 @@ export default function ImpactPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* SPELLING BEE SPOTLIGHT */}
+      <section className="py-20 px-6 bg-brand-teal">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="w-14 h-14 rounded-xl bg-brand-navy flex items-center justify-center mx-auto mb-6">
+            <Trophy className="text-brand-orange" size={26} strokeWidth={2} />
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+            Road to the Spelling Bee Grand Final
+          </h2>
+          <p className="text-gray-100 text-lg max-w-2xl mx-auto mb-10">
+            {d.spellingBee.schoolQualifiers} school qualifiers are done and{" "}
+            {d.spellingBee.finalists} finalists from Grades 4 to 7 are going
+            through to the 2026 TA Regional Spelling Bee Grand Final.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
+            <div>
+              <p className="text-5xl font-bold text-brand-navy">{d.spellingBee.schoolQualifiers}</p>
+              <p className="text-white text-sm font-bold uppercase tracking-wide">School qualifiers</p>
+            </div>
+            <div>
+              <p className="text-5xl font-bold text-brand-navy">{d.spellingBee.finalists}</p>
+              <p className="text-white text-sm font-bold uppercase tracking-wide">Finalists</p>
+            </div>
+            <div>
+              <p className="text-5xl font-bold text-brand-navy">23 Oct</p>
+              <p className="text-white text-sm font-bold uppercase tracking-wide">Grand Final</p>
+            </div>
+          </div>
+          <p className="flex items-center justify-center gap-2 text-white mb-6">
+            <MapPin size={18} aria-hidden="true" />
+            {d.spellingBee.grandFinalLabel} · {d.spellingBee.venue}
+          </p>
+          <a
+            href={d.spellingBee.rsvpUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-brand-orange text-white font-bold px-10 py-4 rounded-lg text-lg hover:bg-orange-600 transition-colors"
+          >
+            RSVP for the Grand Final
+          </a>
+          <p className="text-gray-100 text-sm mt-4">
+            RSVPs close {d.spellingBee.rsvpClosesLabel}. Proudly supported by Evaton Mall.
+          </p>
         </div>
       </section>
 
