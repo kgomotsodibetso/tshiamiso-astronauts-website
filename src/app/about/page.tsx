@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { recapData, fmt } from "@/lib/recapData";
 import Image from "next/image";
 
 export const metadata: Metadata = {
@@ -174,8 +175,8 @@ export default function AboutPage() {
                   in 2022: that access to knowledge is a right, not a privilege.
                 </p>
                 <p>
-                  Today, Tshiamiso Astronauts NPC serves hundreds of learners
-                  each year. We are motivated by every child who reads their
+                  Today, Tshiamiso Astronauts NPC has logged {fmt(recapData.attendanceRecords)} learner
+                  attendances and more than {fmt(Math.floor(recapData.learnerHours / 100) * 100)} learner hours in 2026 so far. We are motivated by every child who reads their
                   first full book, every student who secures a university place,
                   and every community member who gains a skill that opens a new
                   door. South Africa has a literacy crisis. We exist to help

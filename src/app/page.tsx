@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
+import { recapData, fmt } from "@/lib/recapData";
 import {
   BookOpen,
   Star,
@@ -83,7 +84,7 @@ const programmes = [
     name: "School Holiday Programme",
     tagline: "Learning never takes a holiday.",
     excerpt:
-      "During school holidays, our doors stay open for reading, creative writing, arts, and team-building. Our flagship community event — serving nearly 400 children across June and July 2024 alone.",
+      "During school holidays, our doors stay open for reading, creative writing, arts, and team-building. Our flagship community event for children, with reading, creative writing, arts, and team-building.",
   },
   {
     Icon: Library,
@@ -112,10 +113,10 @@ const programmes = [
 ];
 
 const stats = [
-  { value: "500+", label: "Learners Reached" },
-  { value: "9", label: "Programmes" },
-  { value: "400+", label: "Holiday Campers (2024)" },
-  { value: "3+", label: "Years Active" },
+  { value: fmt(recapData.attendanceRecords), label: "Learner Attendances (2026)" },
+  { value: `${fmt(Math.floor(recapData.learnerHours / 100) * 100)}+`, label: "Learner Hours (2026)" },
+  { value: String(recapData.sessionDays), label: "Session Days (2026)" },
+  { value: fmt(recapData.soupKitchenVisits), label: "Soup Kitchen Visits (2026)" },
 ];
 
 export default function HomePage() {

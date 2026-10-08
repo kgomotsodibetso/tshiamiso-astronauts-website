@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
+import { recapData, fmt } from "@/lib/recapData";
 import {
   BookOpen,
   Star,
@@ -65,7 +66,7 @@ const programmes = [
     audience: "Grades 1–12",
     audienceColour: "bg-brand-navy",
     description:
-      "Our Homework Assistance programme provides learners in Grades 1 to 12 with structured academic support outside the classroom. Covering subjects including Maths, English, and Bokgoni (Setswana), our trained tutors work one-on-one and in small groups to close learning gaps and build confidence. Currently our highest-attendance programme, serving hundreds of learners in 2026.",
+      `Our Homework Assistance programme provides learners in Grades 1 to 12 with structured academic support outside the classroom. Covering subjects including Maths, English, and Bokgoni (Setswana), our trained tutors work one-on-one and in small groups to close learning gaps and build confidence. Our highest-attendance programme, with roughly ${fmt(recapData.programmes.homeworkAssistance.records)} attendances and about ${fmt(recapData.programmes.homeworkAssistance.hours)} learner hours logged in 2026 so far.`,
   },
   {
     Icon: GraduationCap,
@@ -95,7 +96,7 @@ const programmes = [
     audience: "Children",
     audienceColour: "bg-brand-navy",
     description:
-      "During school holidays, our doors stay open. The School Holiday Programme runs multi-day sessions for children featuring reading, creative writing, singing, educational games, arts and crafts, and team-building activities. It is TA's flagship community programme — having served nearly 400 children across June and July 2024 alone.",
+      "During school holidays, our doors stay open. The School Holiday Programme runs multi-day sessions for children featuring reading, creative writing, singing, educational games, arts and crafts, and team-building activities. It is TA's flagship community programme for children in Evaton West.",
   },
   {
     Icon: Library,
