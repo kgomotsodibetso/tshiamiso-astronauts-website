@@ -90,7 +90,11 @@ export default async function BlogPostPage({
     description: post.seoDescription || post.excerpt,
     datePublished: post.publishedDate || undefined,
     mainEntityOfPage: postUrl,
-    image: post.coverImageUrl ? `${SITE_URL}${post.coverImageUrl}` : undefined,
+    image: post.coverImageUrl
+      ? post.coverImageUrl.startsWith("http")
+        ? post.coverImageUrl
+        : `${SITE_URL}${post.coverImageUrl}`
+      : undefined,
     inLanguage: "en-ZA",
     keywords: post.tags?.join(", "),
     author: { "@type": "Person", name: post.author },

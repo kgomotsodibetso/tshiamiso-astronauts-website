@@ -11,6 +11,31 @@ const nextConfig = {
       bodySizeLimit: "10mb",
     },
   },
+  async redirects() {
+    // Old HubSpot site URLs, kept alive so existing links and search results still work.
+    return [
+      { source: "/tshiamiso-astronauts-blog", destination: "/blog", permanent: true },
+      { source: "/tshiamiso-astronauts-blog/tag/:tag", destination: "/blog", permanent: true },
+      { source: "/tshiamiso-astronauts-blog/author/:author", destination: "/blog", permanent: true },
+      { source: "/tshiamiso-astronauts-blog/rss.xml", destination: "/blog", permanent: true },
+      { source: "/tshiamiso-astronauts-blog/:slug", destination: "/blog/:slug", permanent: true },
+      { source: "/inspiring-a-love-for-reading", destination: "/about", permanent: true },
+      { source: "/empowering-kids-in-reading-literacy-programs", destination: "/programmes", permanent: true },
+      { source: "/connect-with-readers-tshiamiso-astronauts", destination: "/events", permanent: true },
+      { source: "/support-literacy-and-learning-for-the-youth-volunteer", destination: "/volunteer", permanent: true },
+      { source: "/get-in-touch-support-literacy", destination: "/contact", permanent: true },
+      { source: "/support-our-cause-your-donation-matters", destination: "/donate", permanent: true },
+    ];
+  },
+  async rewrites() {
+    // Old image links (https://www.tshiamisoastronauts.org/hubfs/...) keep working via the HubSpot CDN.
+    return [
+      {
+        source: "/hubfs/:path*",
+        destination: "https://22500830.fs1.hubspotusercontent-na2.net/hubfs/22500830/:path*",
+      },
+    ];
+  },
   async headers() {
     // CSP: 'unsafe-inline'/'unsafe-eval' are required by Next.js for hydration
     // and Tailwind inline styles.  The remaining directives (form-action,
@@ -20,7 +45,7 @@ const nextConfig = {
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: https://www.tshiamisoastronauts.org https://*.hubspot.net https://*.hubspotusercontent.com",
+      "img-src 'self' data: https://www.tshiamisoastronauts.org https://*.hubspot.net https://*.hubspotusercontent.com https://*.hubspotusercontent-na1.net https://*.hubspotusercontent-na2.net",
       "font-src 'self'",
       "connect-src 'self' https://api.monday.com https://api.resend.com https://api.twilio.com",
       "form-action 'self' https://www.payfast.co.za https://payment.payfast.io",
@@ -53,6 +78,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "22500830.fs1.hubspotusercontent-na1.net",
+      },
+      {
+        protocol: "https",
+        hostname: "22500830.fs1.hubspotusercontent-na2.net",
       },
     ],
   },
