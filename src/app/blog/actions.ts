@@ -36,6 +36,12 @@ export interface BlogPost {
   partners?: { name: string; logo: string }[];
 }
 
+// Images uploaded to the old HubSpot site were linked as https://www.tshiamisoastronauts.org/hubfs/...
+// That path no longer exists on this site, so point them at the HubSpot CDN where the files still live.
+const OLD_HUBFS = /https:\/\/(?:www\.)?tshiamisoastronauts\.org\/hubfs\//g;
+const HUBSPOT_CDN = "https://22500830.fs1.hubspotusercontent-na2.net/hubfs/22500830/";
+const fixAssetUrls = (s: string) => s.replace(OLD_HUBFS, HUBSPOT_CDN);
+
 const fetchMondayPosts = cache(async function fetchMondayPosts(): Promise<BlogPost[]> {
   const token   = process.env.MONDAY_API_TOKEN;
   const boardId = process.env.MONDAY_BLOG_BOARD_ID;
@@ -97,8 +103,8 @@ const fetchMondayPosts = cache(async function fetchMondayPosts(): Promise<BlogPo
       title:         item.name as string,
       slug:          col(BLOG_SLUG)?.text ?? "",
       excerpt:       col(BLOG_EXCERPT)?.text ?? "",
-      body:          col(BLOG_BODY)?.text ?? "",
-      coverImageUrl: col(BLOG_COVER)?.text ?? "",
+      body:          fixAssetUrls(col(BLOG_BODY)?.text ?? ""),
+      coverImageUrl: fixAssetUrls(col(BLOG_COVER)?.text ?? ""),
       author:        col(BLOG_AUTHOR)?.text ?? "Tshiamiso Astronauts",
       category:      col(BLOG_CATEGORY)?.text ?? "",
       publishedDate: col(BLOG_DATE)?.text ?? "",
@@ -114,7 +120,10 @@ const fetchAllPosts = cache(async function fetchAllPosts(): Promise<BlogPost[]> 
   } catch (err) {
     console.error("[Blog] Monday.com posts unavailable:", err);
   }
-  return [...readLocalPosts(), ...monday];
+  const local = readLocalPosts();
+  const localSlugs = new Set(local.map((p) => p.slug));
+  // A Markdown post in content/blog replaces a Monday.com post with the same slug.
+  return [...local, ...monday.filter((p) => !localSlugs.has(p.slug))];
 });
 
 export async function fetchPublishedPosts(): Promise<BlogPost[]> {

@@ -12,8 +12,13 @@ const PUBLIC_DIR = path.join(process.cwd(), "public");
 function parseValue(raw: string): string | string[] {
   const v = raw.trim();
   if (v.startsWith('"')) {
-    const end = v.indexOf('"', 1);
-    return end > 0 ? v.slice(1, end) : v.slice(1);
+    let out = "";
+    for (let i = 1; i < v.length; i++) {
+      if (v[i] === "\\" && i + 1 < v.length) out += v[++i];
+      else if (v[i] === '"') break;
+      else out += v[i];
+    }
+    return out;
   }
   const noComment = v.replace(/\s+#.*$/, "").trim();
   if (noComment.startsWith("[") && noComment.endsWith("]")) {
@@ -65,7 +70,8 @@ export function readLocalPosts(): BlogPost[] {
     // The brand graphic is dropped into public/images/blog later; only use it once it exists.
     const hero = str(data.heroImage);
     const hero2x = hero.replace(/(\.\w+)$/, "@2x$1");
-    const hasHero = publicFileExists(hero);
+    const isRemoteHero = /^https:\/\//.test(hero);
+    const hasHero = isRemoteHero || publicFileExists(hero);
 
     posts.push({
       id: `local-${slug}`,
@@ -74,7 +80,7 @@ export function readLocalPosts(): BlogPost[] {
       excerpt: str(data.excerpt),
       body: cleanBody,
       coverImageUrl: hasHero ? hero : "",
-      coverImageHiRes: hasHero && publicFileExists(hero2x) ? hero2x : undefined,
+      coverImageHiRes: hasHero && !isRemoteHero && publicFileExists(hero2x) ? hero2x : undefined,
       author: str(data.author) || "Tshiamiso Astronauts",
       authorRole: str(data.authorRole) || undefined,
       category: str(data.category),
@@ -82,7 +88,7 @@ export function readLocalPosts(): BlogPost[] {
       published: true,
       draft,
       seoDescription: str(data.seoDescription) || undefined,
-      heroAlt: str(data.heroAlt) || undefined,
+      heroAlt: str(data.heroAlt) || str(data.title) || undefined,
       readingTime: str(data.readingTime) || undefined,
       tags: Array.isArray(data.tags) ? data.tags : undefined,
       partners: (Array.isArray(data.partners) ? data.partners : [])
