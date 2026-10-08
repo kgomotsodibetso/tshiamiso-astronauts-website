@@ -124,8 +124,15 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-gray-700 text-center text-xs text-gray-500">
-          &copy; 2026 Tshiamiso Astronauts NPC. All rights reserved.
+        <div className="mt-10 pt-6 border-t border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+          <span>&copy; 2026 Tshiamiso Astronauts NPC. All rights reserved.</span>
+          <div className="flex gap-4">
+            <Link href="/privacy" className="hover:text-gray-300 transition-colors">
+              Privacy Policy
+            </Link>
+            <span>|</span>
+            <span>POPIA Compliant</span>
+          </div>
         </div>
       </div>
     </footer>
