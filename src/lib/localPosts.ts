@@ -85,6 +85,12 @@ export function readLocalPosts(): BlogPost[] {
       heroAlt: str(data.heroAlt) || undefined,
       readingTime: str(data.readingTime) || undefined,
       tags: Array.isArray(data.tags) ? data.tags : undefined,
+      partners: (Array.isArray(data.partners) ? data.partners : [])
+        .map((entry) => {
+          const [name, logo] = entry.split("|").map((x) => x.trim());
+          return { name, logo };
+        })
+        .filter((x) => x.name && publicFileExists(x.logo)),
     });
   }
   return posts;

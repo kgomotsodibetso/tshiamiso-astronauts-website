@@ -6,6 +6,7 @@ publishDate: 2026-10-12   # proposed; confirm with Kgomotso
 author: Kgomotso Dibetso
 authorRole: President, Tshiamiso Astronauts NPC
 category: Spelling Bee 2026
+partners: [Evaton Mall|/images/partners/evaton-mall.jpg]
 tags: [Spelling Bee 2026, Sedibeng West D8, Evaton West, literacy, Breakthrough2026]
 excerpt: "Nine schools ran qualifiers between 29 May and 18 September. More than 320 learners spelled and 107 earned a place at the Grand Final at Setlabotjha Primary School on 23 October."
 seoDescription: "Nine Sedibeng West schools, 107 finalists and one Grand Final on 23 October. The story of the 2026 TA Regional Spelling Bee so far."
@@ -71,16 +72,14 @@ We also learned where to push next. At Emanzini, the moderators wrote that learn
 | Finalists by grade | Grade 4: 26, Grade 5: 27, Grade 6: 26, Grade 7: 28 |
 | Grand Final | Friday 23 October 2026 |
 
-<!-- HOLD: "320+" counts 8 of the 9 qualifiers (321 learners). Chief Bambatha's summary report (19 Aug) is not yet in the Drive. Update this number once it is filed. -->
-<!-- HOLD: "9 schools" and "107 finalists" are as at 8 Oct. Thabeng Primary's qualifier (tracker date 23 Sep) and finalist form are still outstanding. If it runs, update to 10 schools and up to 119 finalists, and re-check the grade split. -->
 
 ## The Grand Final
 
 On Friday 23 October the 107 finalists meet at Setlabotjha Primary School. The programme starts at 09:00. We will run one grade at a time, from Grade 4 to Grade 7, with a prize-giving at the end.
 
-If you are a parent, teacher, partner or member of the Evaton West community and want to be there, please RSVP by Friday 16 October: [https://wkf.ms/4zmG6n1](https://wkf.ms/4zmG6n1). You will get a confirmation email straight away.
+The Grand Final is by invitation only, so we cannot open the doors to the public. If you have received an invitation, please RSVP by Friday 16 October: [https://wkf.ms/4zmG6n1](https://wkf.ms/4zmG6n1). You will get a confirmation email straight away.
 
-<!-- HOLD: Public attendance at Setlabotjha is not confirmed. Keep the paragraph above only if Kgomotso confirms guests may attend. -->
+Not on the guest list? We will post the results and the story of the day here.
 
 ## Thank you
 
@@ -95,7 +94,5 @@ Next up: the Grand Final. We will post the results here after the day.
 *Kgomotso Dibetso, President, Tshiamiso Astronauts NPC*
 
 ---
-
-Supported by Evaton Mall. <!-- HOLD: confirm Evaton Mall wording and logo approval before publishing. -->
 
 #SpellingBee2026 #Breakthrough2026 #ReadToLead

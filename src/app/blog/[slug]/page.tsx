@@ -193,6 +193,18 @@ export default async function BlogPostPage({
             </ReactMarkdown>
           </div>
 
+          {/* Supported by */}
+          {post.partners && post.partners.length > 0 && (
+            <div className="mt-12 pt-8 border-t border-gray-100">
+              <p className="text-sm font-semibold uppercase tracking-wide text-brand-teal mb-4">Supported by</p>
+              <div className="flex flex-wrap items-center gap-6">
+                {post.partners.map(({ name, logo }) => (
+                  <Image key={name} src={logo} alt={name} width={160} height={80} className="h-20 w-auto object-contain" />
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Share + partner */}
           <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             <div className="flex flex-wrap items-center gap-3">

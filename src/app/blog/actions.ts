@@ -33,6 +33,7 @@ export interface BlogPost {
   heroAlt?: string;
   readingTime?: string;
   tags?: string[];
+  partners?: { name: string; logo: string }[];
 }
 
 const fetchMondayPosts = cache(async function fetchMondayPosts(): Promise<BlogPost[]> {
