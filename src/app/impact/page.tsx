@@ -225,10 +225,10 @@ export default function ImpactPage() {
             rel="noopener noreferrer"
             className="inline-block bg-brand-orange text-white font-bold px-10 py-4 rounded-lg text-lg hover:bg-orange-600 transition-colors"
           >
-            RSVP for the Grand Final
+            RSVP (invited guests)
           </a>
           <p className="text-gray-100 text-sm mt-4">
-            RSVPs close {d.spellingBee.rsvpClosesLabel}. Proudly supported by Evaton Mall.
+            By invitation only. Invited guests, please RSVP by {d.spellingBee.rsvpClosesLabel}. Proudly supported by Evaton Mall.
           </p>
         </div>
       </section>
