@@ -1,8 +1,8 @@
 ---
 title: "The road to the Grand Final: 9 schools, 107 finalists, one Friday in October"
 slug: road-to-the-spelling-bee-grand-final-2026
-status: draft-awaiting-president-approval
-publishDate: 2026-10-12   # proposed; confirm with Kgomotso
+status: published
+publishDate: 2026-10-08
 author: Kgomotso Dibetso
 authorRole: President, Tshiamiso Astronauts NPC
 category: Spelling Bee 2026
