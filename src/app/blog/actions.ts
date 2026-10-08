@@ -1,6 +1,7 @@
 "use server";
 
 import { cache } from "react";
+import { readLocalPosts } from "@/lib/localPosts";
 
 // ── Column IDs ────────────────────────────────────────────────────────────────
 // Blog Posts board (5093847699)
@@ -24,9 +25,17 @@ export interface BlogPost {
   category: string;
   publishedDate: string; // "YYYY-MM-DD"
   published: boolean;
+  // Optional fields, set by Markdown posts in content/blog
+  coverImageHiRes?: string;
+  authorRole?: string;
+  draft?: boolean;
+  seoDescription?: string;
+  heroAlt?: string;
+  readingTime?: string;
+  tags?: string[];
 }
 
-const fetchAllPosts = cache(async function fetchAllPosts(): Promise<BlogPost[]> {
+const fetchMondayPosts = cache(async function fetchMondayPosts(): Promise<BlogPost[]> {
   const token   = process.env.MONDAY_API_TOKEN;
   const boardId = process.env.MONDAY_BLOG_BOARD_ID;
 
@@ -95,6 +104,16 @@ const fetchAllPosts = cache(async function fetchAllPosts(): Promise<BlogPost[]> 
       published,
     };
   });
+});
+
+const fetchAllPosts = cache(async function fetchAllPosts(): Promise<BlogPost[]> {
+  let monday: BlogPost[] = [];
+  try {
+    monday = await fetchMondayPosts();
+  } catch (err) {
+    console.error("[Blog] Monday.com posts unavailable:", err);
+  }
+  return [...readLocalPosts(), ...monday];
 });
 
 export async function fetchPublishedPosts(): Promise<BlogPost[]> {

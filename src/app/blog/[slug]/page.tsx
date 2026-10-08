@@ -9,6 +9,8 @@ import { formatDate } from "@/lib/formatDate";
 
 export const revalidate = 3600;
 
+const SITE_URL = "https://tshiamisoastronauts.org";
+
 export async function generateStaticParams() {
   try {
     const posts = await fetchPublishedPosts();
@@ -29,16 +31,20 @@ export async function generateMetadata({
     if (!post) return {};
     const image = post.coverImageUrl || "/images/social/social-media.png";
     const title = `${post.title} | Tshiamiso Astronauts`;
-    const description = post.excerpt || "Read this story from the Tshiamiso Astronauts community in Evaton West.";
+    const description =
+      post.seoDescription || post.excerpt || "Read this story from the Tshiamiso Astronauts community in Evaton West.";
+    const url = `${SITE_URL}/blog/${slug}`;
     return {
       title,
       description,
+      alternates: { canonical: url },
+      ...(post.draft ? { robots: { index: false, follow: false } } : {}),
       openGraph: {
         title,
         description,
-        url: `https://tshiamisoastronauts.org/blog/${slug}`,
+        url,
         siteName: "Tshiamiso Astronauts NPC",
-        images: [{ url: image, width: 1200, height: 630, alt: post.title }],
+        images: [{ url: image, width: 1200, height: 630, alt: post.heroAlt || post.title }],
         locale: "en_ZA",
         type: "article",
       },
@@ -71,8 +77,37 @@ export default async function BlogPostPage({
 
   if (!post) notFound();
 
+  const postUrl = `${SITE_URL}/blog/${post.slug}`;
+  const shareLinks = [
+    { label: "LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(postUrl)}` },
+    { label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postUrl)}` },
+    { label: "WhatsApp", href: `https://wa.me/?text=${encodeURIComponent(`${post.title} ${postUrl}`)}` },
+  ];
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.seoDescription || post.excerpt,
+    datePublished: post.publishedDate || undefined,
+    mainEntityOfPage: postUrl,
+    image: post.coverImageUrl ? `${SITE_URL}${post.coverImageUrl}` : undefined,
+    inLanguage: "en-ZA",
+    keywords: post.tags?.join(", "),
+    author: { "@type": "Person", name: post.author },
+    publisher: { "@type": "Organization", name: "Tshiamiso Astronauts NPC", url: SITE_URL },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
+      {post.draft && (
+        <div className="bg-brand-orange text-white text-center text-sm font-bold px-6 py-2">
+          DRAFT preview: not public. Awaiting the President&apos;s approval.
+        </div>
+      )}
       {/* HERO */}
       <section className="bg-gradient-to-br from-brand-navy to-brand-teal py-20 px-6">
         <div className="max-w-3xl mx-auto text-center">
@@ -89,7 +124,16 @@ export default async function BlogPostPage({
             {post.author && (
               <>
                 <span className="text-gray-500">·</span>
-                <span>By {post.author}</span>
+                <span>
+                  By {post.author}
+                  {post.authorRole ? `, ${post.authorRole}` : ""}
+                </span>
+              </>
+            )}
+            {post.readingTime && (
+              <>
+                <span className="text-gray-500">·</span>
+                <span>{post.readingTime} read</span>
               </>
             )}
           </div>
@@ -97,7 +141,20 @@ export default async function BlogPostPage({
       </section>
 
       {/* COVER IMAGE */}
-      {post.coverImageUrl && (
+      {post.coverImageUrl && post.heroAlt && (
+        <div className="max-w-4xl mx-auto px-6 pt-10 bg-white">
+          <Image
+            src={post.coverImageHiRes || post.coverImageUrl}
+            alt={post.heroAlt}
+            width={1200}
+            height={630}
+            sizes="(max-width: 896px) 100vw, 896px"
+            className="w-full h-auto rounded-xl"
+            priority
+          />
+        </div>
+      )}
+      {post.coverImageUrl && !post.heroAlt && (
         <div className="relative w-full max-h-96 overflow-hidden bg-gray-100">
           <Image
             src={post.coverImageUrl}
@@ -122,13 +179,46 @@ export default async function BlogPostPage({
 
           {/* Body content */}
           <div className="prose prose-lg prose-headings:text-brand-navy prose-a:text-brand-teal prose-strong:text-brand-navy prose-img:rounded-xl max-w-none">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                table: ({ children }) => (
+                  <div className="overflow-x-auto">
+                    <table>{children}</table>
+                  </div>
+                ),
+              }}
+            >
               {post.body}
             </ReactMarkdown>
           </div>
 
+          {/* Share + partner */}
+          <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-sm font-semibold text-brand-navy">Share:</span>
+              {shareLinks.map(({ label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-semibold text-brand-teal border border-brand-teal rounded-full px-4 py-1.5 hover:bg-brand-teal hover:text-white transition-colors"
+                >
+                  {label}
+                </a>
+              ))}
+            </div>
+            <Link
+              href="/contact"
+              className="inline-block text-center bg-brand-navy text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-opacity"
+            >
+              Partner with us
+            </Link>
+          </div>
+
           {/* Back link */}
-          <div className="mt-16 pt-8 border-t border-gray-100">
+          <div className="mt-10 pt-8 border-t border-gray-100">
             <Link
               href="/blog"
               className="inline-flex items-center gap-2 text-brand-teal font-semibold hover:text-brand-navy transition-colors"

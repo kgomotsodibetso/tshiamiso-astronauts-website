@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Markdown blog posts are read from disk at runtime (ISR), so make sure they ship with the routes.
+  outputFileTracingIncludes: {
+    "/blog": ["./content/blog/**/*", "./public/images/blog/**/*"],
+    "/blog/[slug]": ["./content/blog/**/*", "./public/images/blog/**/*"],
+    "/sitemap.xml": ["./content/blog/**/*"],
+  },
   experimental: {
     serverActions: {
       bodySizeLimit: "10mb",
