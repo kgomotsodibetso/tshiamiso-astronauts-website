@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import Image from "next/image";
 import { buildPayFastPayload } from "./actions";
+import { trackConversion, DONATION_STARTED_SEND_TO } from "@/lib/gtag";
 
 const PRESET_AMOUNTS = [100, 250, 500, 1000];
 
@@ -56,7 +57,10 @@ export default function DonatePage() {
         form.appendChild(input);
       });
       document.body.appendChild(form);
-      form.submit();
+
+      // Google Ads conversion: "TA Donation Started (PayFast)". Fires once, after validation,
+      // then continues to PayFast (waits at most ~1 second). No personal data is sent.
+      trackConversion(DONATION_STARTED_SEND_TO, () => form.submit());
     } catch (err) {
       const message = err instanceof Error ? err.message : "";
       if (message.toLowerCase().includes("not configured")) {

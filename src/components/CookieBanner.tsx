@@ -2,22 +2,25 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { COOKIE_CONSENT_KEY, updateAdsConsent } from "@/lib/gtag";
 
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("cookie-consent");
+    const stored = localStorage.getItem(COOKIE_CONSENT_KEY);
     if (!stored) setVisible(true);
   }, []);
 
   function accept() {
-    localStorage.setItem("cookie-consent", "accepted");
+    localStorage.setItem(COOKIE_CONSENT_KEY, "accepted");
+    updateAdsConsent(true);
     setVisible(false);
   }
 
   function decline() {
-    localStorage.setItem("cookie-consent", "declined");
+    localStorage.setItem(COOKIE_CONSENT_KEY, "declined");
+    updateAdsConsent(false);
     setVisible(false);
   }
 
@@ -33,7 +36,8 @@ export default function CookieBanner() {
         <p className="text-sm text-gray-300 flex-1 leading-relaxed">
           We use cookies and collect personal information to operate our website
           and process donations, contact enquiries, and volunteer applications.
-          Your information is handled in accordance with South Africa&apos;s{" "}
+          If you accept, we also use Google Ads cookies to measure whether our
+          adverts lead to donations and messages. Your information is handled in accordance with South Africa&apos;s{" "}
           <strong className="text-white">
             Protection of Personal Information Act (POPIA)
           </strong>

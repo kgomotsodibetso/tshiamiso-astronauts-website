@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Mail, Phone, MapPin, Rocket } from "lucide-react";
 import { submitContactForm } from "./actions";
+import { trackConversion, isConversionConfigured, CONTACT_FORM_SEND_TO } from "@/lib/gtag";
 
 const SUBJECTS = [
   "General Enquiry",
@@ -101,6 +102,11 @@ export default function ContactPage() {
       });
       if (result.success) {
         setSubmitted(true);
+        // Google Ads conversion: "TA Contact Form Submitted". Only after a successful send.
+        // Skipped until the real label replaces the placeholder in src/lib/gtag.ts.
+        if (isConversionConfigured(CONTACT_FORM_SEND_TO)) {
+          trackConversion(CONTACT_FORM_SEND_TO);
+        }
       } else {
         setError(result.error ?? "Something went wrong. Please try again.");
       }
