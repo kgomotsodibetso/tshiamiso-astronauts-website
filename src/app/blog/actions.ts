@@ -135,5 +135,8 @@ export async function fetchPublishedPosts(): Promise<BlogPost[]> {
 
 export async function fetchPostBySlug(slug: string): Promise<BlogPost | null> {
   const posts = await fetchAllPosts();
-  return posts.find((p) => p.slug === slug && p.published) ?? null;
+  // Some old slugs contain emoji, which arrive percent-encoded in the URL.
+  let decoded = slug;
+  try { decoded = decodeURIComponent(slug); } catch { /* keep the raw slug */ }
+  return posts.find((p) => (p.slug === slug || p.slug === decoded) && p.published) ?? null;
 }
