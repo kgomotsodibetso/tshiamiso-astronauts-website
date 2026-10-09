@@ -92,9 +92,9 @@ export default function PrivacyPolicyPage() {
               personally.
             </p>
             <p className="mt-3">
-              If you accept cookies, our Google Ads conversion measurement also
-              records that a visit led to a donation attempt or a contact
-              message, and which advert the visit came from. We do not send your
+              Our Google Ads conversion measurement also records that a visit led
+              to a donation attempt or a contact message, and which advert the
+              visit came from. We do not send your
               name, email address, message or donation amount to Google for this
               purpose.
             </p>
@@ -191,19 +191,19 @@ export default function PrivacyPolicyPage() {
               <li>
                 <strong>Advertising measurement cookies</strong> &ndash; our
                 website uses Google Ads conversion measurement (the Google tag).
-                If you accept cookies, Google sets cookies on your device to
-                recognise that you arrived from one of our adverts and later
-                started a donation or sent us a message. We use this to see which
-                adverts work. If you decline, these cookies are not set and
-                Google receives only limited, non-identifying signals.
+                Google sets cookies on your device to recognise that you arrived
+                from one of our adverts and later started a donation or sent us
+                a message. We use this to see which adverts work. You can block
+                or delete these cookies in your browser settings, or turn off
+                personalised adverts in your Google account.
               </li>
             </ul>
             <p className="mt-3">
               You may withdraw consent to non-essential cookies at any time by
               clicking &ldquo;Decline&rdquo; on the cookie banner or by
               adjusting your browser settings. Please note that declining
-              performance or advertising cookies will not affect your ability to
-              use the website. You can also manage how Google uses your data for
+              performance cookies will not affect your ability to use the
+              website. You can also manage how Google uses your data for
               adverts at{" "}
               <a
                 href="https://adssettings.google.com"

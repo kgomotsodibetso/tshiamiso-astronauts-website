@@ -1,10 +1,10 @@
-// Google Ads conversion tracking (account 575-289-6358).
-// The Google tag itself is loaded once, site-wide, in src/app/layout.tsx.
+// Google Ads conversion events (account 575-289-6358).
+// The Google tag (G-DCD6HVVNF5, with AW-17669058060 as a destination) is NOT loaded from this
+// code. It is served from our own /metrics/ path and set up at Cloudflare level, and it defines
+// window.gtag on every page. Do not add a second gtag.js here: it would double-count.
 // Never pass names, emails or amounts to these events (POPIA, no personal data).
 
 export const GOOGLE_ADS_ID = "AW-17669058060";
-
-export const COOKIE_CONSENT_KEY = "cookie-consent";
 
 // "TA Donation Started (PayFast)" - fired on /donate just before the PayFast redirect.
 export const DONATION_STARTED_SEND_TO = `${GOOGLE_ADS_ID}/DOLwCI7Dl5YdEIzcoelB`;
@@ -16,17 +16,17 @@ type GtagFn = (...args: unknown[]) => void;
 
 declare global {
   interface Window {
-    dataLayer?: unknown[];
     gtag?: GtagFn;
   }
 }
 
 /**
- * Fires a Google Ads conversion event.
+ * Fires a Google Ads conversion event through the existing window.gtag, if there is one.
+ * If gtag is missing (ad blocker, tag not loaded) nothing is sent and nothing breaks.
  *
- * If `onDone` is given it runs exactly once: when Google confirms the event was sent
- * (event_callback), or after `timeoutMs` if it has not, or straight away if the tag is
- * unavailable (ad blocker, script failed). This keeps redirects from being held up.
+ * If `onDone` is given it runs exactly once: when Google confirms the event (event_callback),
+ * after `timeoutMs` if it has not, or straight away if gtag is unavailable. This keeps the
+ * PayFast redirect from ever being blocked or held up for more than about a second.
  */
 export function trackConversion(
   sendTo: string,
@@ -52,16 +52,4 @@ export function trackConversion(
   } catch {
     finish();
   }
-}
-
-/** Tells the Google tag what the visitor chose on the cookie banner. */
-export function updateAdsConsent(accepted: boolean): void {
-  if (typeof window === "undefined" || typeof window.gtag !== "function") return;
-  const value = accepted ? "granted" : "denied";
-  window.gtag("consent", "update", {
-    ad_storage: value,
-    ad_user_data: value,
-    ad_personalization: value,
-    analytics_storage: value,
-  });
 }
