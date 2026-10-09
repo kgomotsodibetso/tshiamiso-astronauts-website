@@ -10,10 +10,7 @@ export const COOKIE_CONSENT_KEY = "cookie-consent";
 export const DONATION_STARTED_SEND_TO = `${GOOGLE_ADS_ID}/DOLwCI7Dl5YdEIzcoelB`;
 
 // "TA Contact Form Submitted" - fired on /contact after the success state.
-// TODO(Motso): replace CONTACT_LABEL_TO_FOLLOW with the conversion label from Google Ads
-// (Goals > Conversions > TA Contact Form Submitted > Tag setup). Until it is replaced, no
-// contact conversion is sent.
-export const CONTACT_FORM_SEND_TO = `${GOOGLE_ADS_ID}/CONTACT_LABEL_TO_FOLLOW`;
+export const CONTACT_FORM_SEND_TO = `${GOOGLE_ADS_ID}/dUtxCLCbl5YdEIzcoelB`;
 
 type GtagFn = (...args: unknown[]) => void;
 
@@ -51,18 +48,10 @@ export function trackConversion(
   if (onDone) window.setTimeout(finish, timeoutMs);
 
   try {
-    window.gtag("event", "conversion", {
-      send_to: sendTo,
-      event_callback: finish,
-    });
+    window.gtag("event", "conversion", onDone ? { send_to: sendTo, event_callback: finish } : { send_to: sendTo });
   } catch {
     finish();
   }
-}
-
-/** True once the contact label has been swapped in. */
-export function isConversionConfigured(sendTo: string): boolean {
-  return !sendTo.includes("TO_FOLLOW");
 }
 
 /** Tells the Google tag what the visitor chose on the cookie banner. */
