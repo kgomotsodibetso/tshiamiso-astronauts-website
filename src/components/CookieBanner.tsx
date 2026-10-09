@@ -32,8 +32,9 @@ export default function CookieBanner() {
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <p className="text-sm text-gray-300 flex-1 leading-relaxed">
           We use cookies and collect personal information to operate our website
-          and process donations, contact enquiries, and volunteer applications.
-          Your information is handled in accordance with South Africa&apos;s{" "}
+          and process donations, contact enquiries, and volunteer applications,
+          and Google Ads measurement to see whether our adverts lead to
+          donations and messages. Your information is handled in accordance with South Africa&apos;s{" "}
           <strong className="text-white">
             Protection of Personal Information Act (POPIA)
           </strong>

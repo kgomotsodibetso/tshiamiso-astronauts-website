@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "How Tshiamiso Astronauts NPC collects, uses, and protects your personal information in accordance with POPIA.",
 };
 
-const LAST_UPDATED = "2 June 2026";
+const LAST_UPDATED = "9 October 2026";
 
 export default function PrivacyPolicyPage() {
   return (
@@ -91,6 +91,13 @@ export default function PrivacyPolicyPage() {
               This information is aggregated and is not used to identify you
               personally.
             </p>
+            <p className="mt-3">
+              Our Google Ads conversion measurement also records that a visit led
+              to a donation attempt or a contact message, and which advert the
+              visit came from. We do not send your
+              name, email address, message or donation amount to Google for this
+              purpose.
+            </p>
           </section>
 
           {/* 3 */}
@@ -117,6 +124,11 @@ export default function PrivacyPolicyPage() {
               </li>
               <li>
                 To improve the performance and usability of our website.
+              </li>
+              <li>
+                To measure whether our Google adverts lead to donations and
+                enquiries, so we can run them effectively and report results to
+                our funders.
               </li>
             </ul>
             <p className="mt-3">
@@ -176,13 +188,32 @@ export default function PrivacyPolicyPage() {
                 Insights to collect anonymised usage data so we can improve site
                 performance. No personally identifiable information is captured.
               </li>
+              <li>
+                <strong>Advertising measurement cookies</strong> &ndash; our
+                website uses Google Ads conversion measurement (the Google tag).
+                Google sets cookies on your device to recognise that you arrived
+                from one of our adverts and later started a donation or sent us
+                a message. We use this to see which adverts work. You can block
+                or delete these cookies in your browser settings, or turn off
+                personalised adverts in your Google account.
+              </li>
             </ul>
             <p className="mt-3">
               You may withdraw consent to non-essential cookies at any time by
               clicking &ldquo;Decline&rdquo; on the cookie banner or by
               adjusting your browser settings. Please note that declining
               performance cookies will not affect your ability to use the
-              website.
+              website. You can also manage how Google uses your data for
+              adverts at{" "}
+              <a
+                href="https://adssettings.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-brand-teal hover:text-brand-orange underline"
+              >
+                adssettings.google.com
+              </a>
+              .
             </p>
           </section>
 
@@ -219,6 +250,19 @@ export default function PrivacyPolicyPage() {
                 <strong>Vercel</strong> — our website hosting provider, which
                 processes limited technical data (e.g., IP address) in the
                 course of delivering our website.
+              </li>
+              <li>
+                <strong>Google (Google Ads)</strong> &ndash; used to measure
+                advert performance, as described in section 5. Google acts under{" "}
+                <a
+                  href="https://policies.google.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-brand-teal hover:text-brand-orange underline"
+                >
+                  its own Privacy Policy
+                </a>
+                .
               </li>
             </ul>
             <p className="mt-3">
