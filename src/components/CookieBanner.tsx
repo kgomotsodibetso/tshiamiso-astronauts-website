@@ -11,13 +11,10 @@ export default function CookieBanner() {
     if (!stored) setVisible(true);
   }, []);
 
-  function accept() {
-    localStorage.setItem("cookie-consent", "accepted");
-    setVisible(false);
-  }
-
-  function decline() {
-    localStorage.setItem("cookie-consent", "declined");
+  // The notice is for information only. Nothing reads this value to switch tools on or off;
+  // it just stops the notice showing again.
+  function dismiss() {
+    localStorage.setItem("cookie-consent", "acknowledged");
     setVisible(false);
   }
 
@@ -34,8 +31,8 @@ export default function CookieBanner() {
           We use cookies and similar tools on every page for website
           performance and Google Ads measurement, which shows us whether our
           adverts lead to donations and messages. We also collect personal
-          information through our donation, contact, and volunteer forms. Your
-          choice below is recorded but does not switch these tools off. To
+          information through our donation, contact, and volunteer forms. This
+          notice is for information and does not switch these tools off. To
           block them, use your browser settings. Your information is handled in accordance with South Africa&apos;s{" "}
           <strong className="text-white">
             Protection of Personal Information Act (POPIA)
@@ -51,16 +48,10 @@ export default function CookieBanner() {
         </p>
         <div className="flex gap-3 flex-shrink-0">
           <button
-            onClick={accept}
-            className="bg-brand-orange text-white text-sm font-bold px-5 py-2.5 rounded-lg hover:opacity-90 transition-opacity"
+            onClick={dismiss}
+            className="bg-brand-orange text-white text-sm font-bold px-8 py-2.5 rounded-lg hover:opacity-90 transition-opacity"
           >
-            Accept
-          </button>
-          <button
-            onClick={decline}
-            className="border border-gray-500 text-gray-300 text-sm font-semibold px-5 py-2.5 rounded-lg hover:border-gray-300 hover:text-white transition-colors"
-          >
-            Decline
+            OK
           </button>
         </div>
       </div>

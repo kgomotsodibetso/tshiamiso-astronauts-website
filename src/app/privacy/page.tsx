@@ -199,8 +199,8 @@ export default function PrivacyPolicyPage() {
             </ul>
             <p className="mt-3">
               The performance and advertising measurement described above runs on
-              every page of the website. The cookie banner records your choice
-              but does not switch these tools off. To opt out, you can block or
+              every page of the website. The cookie notice is for information
+              only and does not switch these tools off. To opt out, you can block or
               delete cookies in your browser settings, manage how Google uses
               your data for adverts at{" "}
               <a
