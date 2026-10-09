@@ -43,11 +43,11 @@ const nextConfig = {
     // regardless and do not need nonces.
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: https://www.tshiamisoastronauts.org https://*.hubspot.net https://*.hubspotusercontent.com https://*.hubspotusercontent-na1.net https://*.hubspotusercontent-na2.net https://www.google.com https://www.google.co.za https://googleads.g.doubleclick.net https://*.g.doubleclick.net",
+      "img-src 'self' data: https://www.tshiamisoastronauts.org https://*.hubspot.net https://*.hubspotusercontent.com https://*.hubspotusercontent-na1.net https://*.hubspotusercontent-na2.net https://www.google.com https://www.google.co.za https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://www.googletagmanager.com https://*.google-analytics.com",
       "font-src 'self'",
-      "connect-src 'self' https://api.monday.com https://api.resend.com https://api.twilio.com https://www.google.com https://www.google.co.za https://www.googleadservices.com https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://*.google-analytics.com https://*.analytics.google.com",
+      "connect-src 'self' https://api.monday.com https://api.resend.com https://api.twilio.com https://www.google.com https://www.google.co.za https://www.googleadservices.com https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://pagead2.googlesyndication.com",
       "form-action 'self' https://www.payfast.co.za https://payment.payfast.io",
       "frame-ancestors 'none'",
       "base-uri 'self'",
