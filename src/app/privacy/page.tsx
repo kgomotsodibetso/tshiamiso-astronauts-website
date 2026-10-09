@@ -193,18 +193,16 @@ export default function PrivacyPolicyPage() {
                 website uses Google Ads conversion measurement (the Google tag).
                 Google sets cookies on your device to recognise that you arrived
                 from one of our adverts and later started a donation or sent us
-                a message. We use this to see which adverts work. You can block
-                or delete these cookies in your browser settings, or turn off
-                personalised adverts in your Google account.
+                a message. We use this to see which adverts work. See the
+                paragraph below for how to opt out.
               </li>
             </ul>
             <p className="mt-3">
-              You may withdraw consent to non-essential cookies at any time by
-              clicking &ldquo;Decline&rdquo; on the cookie banner or by
-              adjusting your browser settings. Please note that declining
-              performance cookies will not affect your ability to use the
-              website. You can also manage how Google uses your data for
-              adverts at{" "}
+              The performance and advertising measurement described above runs on
+              every page of the website. The cookie banner records your choice
+              but does not switch these tools off. To opt out, you can block or
+              delete cookies in your browser settings, manage how Google uses
+              your data for adverts at{" "}
               <a
                 href="https://adssettings.google.com"
                 target="_blank"
@@ -213,7 +211,15 @@ export default function PrivacyPolicyPage() {
               >
                 adssettings.google.com
               </a>
-              .
+              , or email us at{" "}
+              <a
+                href="mailto:info@tshiamisoastronauts.org"
+                className="text-brand-teal hover:text-brand-orange underline"
+              >
+                info@tshiamisoastronauts.org
+              </a>{" "}
+              and we will help. Blocking these cookies will not affect your
+              ability to use the website.
             </p>
           </section>
 
