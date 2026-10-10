@@ -98,6 +98,12 @@ export default function PrivacyPolicyPage() {
               name, email address, message or donation amount to Google for this
               purpose.
             </p>
+            <p className="mt-3">
+              We also use Microsoft Clarity to understand how visitors use our
+              website (for example clicks, scrolling and session recordings).
+              Clarity masks sensitive information typed into forms, and we do
+              not use it to identify you personally.
+            </p>
           </section>
 
           {/* 3 */}
@@ -196,6 +202,11 @@ export default function PrivacyPolicyPage() {
                 a message. We use this to see which adverts work. See the
                 paragraph below for how to opt out.
               </li>
+              <li>
+                <strong>Usage analytics cookies</strong> &ndash; our website
+                uses Microsoft Clarity, which sets cookies to record how
+                visitors click and scroll so we can improve the site.
+              </li>
             </ul>
             <p className="mt-3">
               The performance and advertising measurement described above runs on
@@ -256,6 +267,19 @@ export default function PrivacyPolicyPage() {
                 <strong>Vercel</strong> — our website hosting provider, which
                 processes limited technical data (e.g., IP address) in the
                 course of delivering our website.
+              </li>
+              <li>
+                <strong>Microsoft (Clarity)</strong> &ndash; used to analyse
+                website usage. Microsoft acts under{" "}
+                <a
+                  href="https://privacy.microsoft.com/privacystatement"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-brand-teal hover:text-brand-orange underline"
+                >
+                  its own Privacy Statement
+                </a>
+                .
               </li>
               <li>
                 <strong>Google (Google Ads)</strong> &ndash; used to measure

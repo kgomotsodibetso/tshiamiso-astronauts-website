@@ -229,7 +229,7 @@ export default function ContactPage() {
                 <h3 className="text-2xl font-bold text-brand-navy mb-2">
                   Message Received!
                 </h3>
-                <p className="text-gray-500 mb-6 leading-relaxed">
+                <p className="text-gray-500 mb-6 leading-relaxed" data-clarity-mask="true">
                   Thank you, {firstName}! We have received your message and will get
                   back to you at{" "}
                   <span className="text-brand-teal font-semibold">{email}</span> as

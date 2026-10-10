@@ -29,8 +29,9 @@ export default function CookieBanner() {
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <p className="text-sm text-gray-300 flex-1 leading-relaxed">
           We use cookies and similar tools on every page for website
-          performance and Google Ads measurement, which shows us whether our
-          adverts lead to donations and messages. We also collect personal
+          performance, Microsoft Clarity (which shows us how visitors use the site)
+          and Google Ads measurement, which shows us whether our adverts lead to
+          donations and messages. We also collect personal
           information through our donation, contact, and volunteer forms. This
           notice is for information and does not switch these tools off. To
           block them, use your browser settings. Your information is handled in accordance with South Africa&apos;s{" "}
