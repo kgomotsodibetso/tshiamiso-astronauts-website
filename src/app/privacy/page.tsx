@@ -293,10 +293,10 @@ export default function PrivacyPolicyPage() {
               to correct or delete it, and withdraw your consent at any time.
               Email our Information Officer, Kgomotso Dibetso, at{" "}
               <a
-                href="mailto:kgomotso@tshiamisoastronauts.org"
+                href="mailto:info@tshiamisoastronauts.org"
                 className="text-brand-teal hover:text-brand-orange underline"
               >
-                kgomotso@tshiamisoastronauts.org
+                info@tshiamisoastronauts.org
               </a>
               , or write to us at 4206 Kopanong Street, Evaton West, Gauteng. If
               you are not happy with how we handle your information, you can
