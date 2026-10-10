@@ -241,7 +241,7 @@ export default function VolunteerPage() {
               <h3 className="text-2xl font-bold text-brand-navy mb-2">
                 Application Received!
               </h3>
-              <p className="text-gray-500 mb-6 leading-relaxed">
+              <p className="text-gray-500 mb-6 leading-relaxed" data-clarity-mask="true">
                 Thank you, {firstName}! We have received your volunteer application and
                 will be in touch at{" "}
                 <span className="text-brand-teal font-semibold">{email}</span> within

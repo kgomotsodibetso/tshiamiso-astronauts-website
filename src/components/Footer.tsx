@@ -1,3 +1,4 @@
+import CookieSettingsButton from "@/components/CookieSettingsButton";
 import Link from "next/link";
 import Image from "next/image";
 import FooterSubscribe from "@/components/subscribe/FooterSubscribe";
@@ -133,6 +134,8 @@ export default function Footer() {
             <Link href="/privacy" className="hover:text-gray-300 transition-colors">
               Privacy Policy
             </Link>
+            <span>|</span>
+            <CookieSettingsButton />
             <span>|</span>
             <span>POPIA Compliant</span>
           </div>

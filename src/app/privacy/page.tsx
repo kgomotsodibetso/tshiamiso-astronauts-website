@@ -85,18 +85,19 @@ export default function PrivacyPolicyPage() {
               </li>
             </ul>
             <p className="mt-3">
-              We also collect limited technical information automatically when
-              you visit our website, including your IP address and pages visited,
-              through Vercel Speed Insights for performance monitoring purposes.
-              This information is aggregated and is not used to identify you
-              personally.
+              When you visit, we and our providers collect limited technical
+              information, including your IP address, device and browser, and the
+              pages you view, through Vercel Speed Insights, Cloudflare Web
+              Analytics and Google Analytics. Our Google Ads measurement also
+              records that a visit led to a donation attempt or a contact
+              message, and which advert it came from. See Section 5.
             </p>
             <p className="mt-3">
-              Our Google Ads conversion measurement also records that a visit led
-              to a donation attempt or a contact message, and which advert the
-              visit came from. We do not send your
-              name, email address, message or donation amount to Google for this
-              purpose.
+              We also use Microsoft Clarity to
+              understand how visitors use our website (for example clicks,
+              scrolling and session recordings). Clarity masks sensitive
+              information typed into forms, and we do not use it to identify you
+              personally.
             </p>
           </section>
 
@@ -130,6 +131,10 @@ export default function PrivacyPolicyPage() {
                 enquiries, so we can run them effectively and report results to
                 our funders.
               </li>
+              <li>
+                To understand how people use our website and which adverts work,
+                so we can run them well and report results to our funders.
+              </li>
             </ul>
             <p className="mt-3">
               We will not use your personal information for direct marketing
@@ -150,6 +155,11 @@ export default function PrivacyPolicyPage() {
               <li>
                 <strong>Consent</strong> — where you have given us specific
                 consent (e.g., subscribing to updates).
+              </li>
+              <li>
+                <strong>Consent</strong> — for analytics and advertising cookies
+                (Google Analytics, Google Ads and Microsoft Clarity), for
+                visitors in the EEA and UK.
               </li>
               <li>
                 <strong>Contractual necessity</strong> — where processing is
@@ -174,34 +184,77 @@ export default function PrivacyPolicyPage() {
               5. Cookies and tracking technologies
             </h2>
             <p>
-              Our website uses cookies and similar tracking technologies. These
-              fall into the following categories:
+              Our website uses cookies and similar technologies. Here is what
+              each group does.
             </p>
             <ul className="list-disc pl-6 mt-2 space-y-1">
               <li>
-                <strong>Strictly necessary cookies</strong> — required for the
-                website to function (e.g., session management). These cannot be
-                disabled.
+                <strong>Strictly necessary.</strong> These make the site work,
+                for example remembering that you closed a pop-up or what you
+                chose on our cookie notice. They cannot be switched off.
               </li>
               <li>
-                <strong>Performance cookies</strong> — used by Vercel Speed
-                Insights to collect anonymised usage data so we can improve site
-                performance. No personally identifiable information is captured.
+                <strong>
+                  Performance (Vercel Speed Insights and Cloudflare Web
+                  Analytics).
+                </strong>{" "}
+                These show us how quickly pages load and roughly how many people
+                visit. They give us combined figures. We do not use them to
+                identify you.
               </li>
               <li>
-                <strong>Advertising measurement cookies</strong> &ndash; our
-                website uses Google Ads conversion measurement (the Google tag).
-                Google sets cookies on your device to recognise that you arrived
-                from one of our adverts and later started a donation or sent us
-                a message. We use this to see which adverts work. See the
-                paragraph below for how to opt out.
+                <strong>Website analytics (Google Analytics).</strong> This shows
+                us which pages people read. Google sets cookies on your device
+                to do this.
+              </li>
+              <li>
+                <strong>Advertising measurement (Google Ads and the Google tag).</strong>{" "}
+                Google sets cookies to recognise that you arrived from one of our
+                adverts and later started a donation or sent us a message. We use
+                this to see which adverts work. It also lets us show our adverts
+                to people who have visited our website before.
+              </li>
+              <li>
+                <strong>Usage analytics (Microsoft Clarity).</strong> This records
+                how visitors click and scroll, including session recordings, so we
+                can improve the site, and it sets cookies to do so. Clarity masks
+                sensitive information typed into forms, and we do not use it to
+                identify you. It follows your cookie choice, as set out below.
               </li>
             </ul>
             <p className="mt-3">
-              The performance and advertising measurement described above runs on
-              every page of the website. The cookie notice is for information
-              only and does not switch these tools off. To opt out, you can block or
-              delete cookies in your browser settings, manage how Google uses
+              <strong>How the Google tag loads.</strong> We load the Google tag
+              through our own website address, with the help of Cloudflare. This
+              makes the site more reliable. It does not change what is
+              collected: Google still receives the data and the tag still sets
+              cookies when you allow them.
+            </p>
+            <p className="mt-3">
+              <strong>What we do not send to Google.</strong> We do not send your
+              name, email address, message, donation amount or newsletter
+              sign-up details to Google.
+            </p>
+            <p className="mt-3">
+              <strong>Your choice.</strong> Our cookie notice lets you choose{" "}
+              <strong>Accept</strong> or <strong>Decline</strong> for the Google
+              Analytics, Google Ads and Microsoft Clarity cookies.
+            </p>
+            <ul className="list-disc pl-6 mt-2 space-y-1">
+              <li>
+                If you are in the European Economic Area (EEA) or the United
+                Kingdom (UK), these cookies stay off until you choose Accept.
+              </li>
+              <li>
+                Everywhere else, these cookies are on unless you choose Decline.
+              </li>
+            </ul>
+            <p className="mt-3">
+              If you decline, Google Analytics and Google Ads do not set cookies
+              on your device and do not use your visit to build advert audiences,
+              and Microsoft Clarity stops recording and is removed from your
+              visit.
+              You can change your choice at any time with &ldquo;Cookie
+              settings&rdquo; in the footer. You can also manage how Google uses
               your data for adverts at{" "}
               <a
                 href="https://adssettings.google.com"
@@ -217,9 +270,8 @@ export default function PrivacyPolicyPage() {
                 className="text-brand-teal hover:text-brand-orange underline"
               >
                 info@tshiamisoastronauts.org
-              </a>{" "}
-              and we will help. Blocking these cookies will not affect your
-              ability to use the website.
+              </a>
+              . Declining does not affect your ability to use the website.
             </p>
           </section>
 
@@ -334,6 +386,10 @@ export default function PrivacyPolicyPage() {
                 deliver our responses.
               </li>
               <li>
+                <strong>monday.com</strong> — where we keep our records of
+                newsletter sign-ups.
+              </li>
+              <li>
                 <strong>PayFast</strong> — our payment processor. Your financial
                 details are passed directly to PayFast and are governed by{" "}
                 <a
@@ -352,8 +408,27 @@ export default function PrivacyPolicyPage() {
                 course of delivering our website.
               </li>
               <li>
-                <strong>Google (Google Ads)</strong> &ndash; used to measure
-                advert performance, as described in section 5. Google acts under{" "}
+                <strong>Cloudflare</strong> — website security, speed and
+                analytics.
+              </li>
+              <li>
+                <strong>Microsoft (Clarity)</strong> &ndash; used to analyse
+                website usage, only if you accept our cookies. Microsoft acts
+                under{" "}
+                <a
+                  href="https://privacy.microsoft.com/privacystatement"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-brand-teal hover:text-brand-orange underline"
+                >
+                  its own Privacy Statement
+                </a>
+                .
+              </li>
+              <li>
+                <strong>Google (Analytics and Ads)</strong> &ndash; used to
+                understand how people use our website and to measure and run our
+                adverts, as described in section 5. Google acts under{" "}
                 <a
                   href="https://policies.google.com/privacy"
                   target="_blank"
@@ -470,7 +545,60 @@ export default function PrivacyPolicyPage() {
           {/* 11 */}
           <section>
             <h2 className="text-xl font-bold text-brand-navy mb-3">
-              11. Changes to this policy
+              11. Visitors from the European Economic Area and the United Kingdom
+            </h2>
+            <p>
+              We are a South African non-profit. Our work is for communities in
+              South Africa, and some of our adverts are shown to people in South
+              Africa, the United States and the United Kingdom. If you visit our
+              website from the EEA or the UK, this section explains how your
+              information is handled and what you can ask us.
+            </p>
+            <ul className="list-disc pl-6 mt-2 space-y-1">
+              <li>
+                <strong>Cookies and consent.</strong> Google Analytics, Google
+                Ads and Microsoft Clarity cookies stay off until you choose Accept on our cookie
+                notice. You can withdraw your consent at any time
+                with &ldquo;Cookie settings&rdquo; in the footer.
+              </li>
+              <li>
+                <strong>Other uses of your information.</strong> To answer your
+                message, process a donation, or manage a volunteer application,
+                we use your information because it is needed for that request or
+                because of our legitimate interest in running the organisation.
+                For our newsletter, we rely on your consent.
+              </li>
+              <li>
+                <strong>Where your information goes.</strong> Your information is
+                processed in South Africa and by our providers (Google,
+                Cloudflare, Vercel, Resend, monday.com and PayFast), some of whom
+                process it elsewhere, including the United States.
+              </li>
+              <li>
+                <strong>Your rights.</strong> You can ask us for access to your
+                information, correction, deletion, restriction of use, a portable
+                copy, or to object to our use of it. Email{" "}
+                <a
+                  href="mailto:info@tshiamisoastronauts.org"
+                  className="text-brand-teal hover:text-brand-orange underline"
+                >
+                  info@tshiamisoastronauts.org
+                </a>
+                . We will reply within 30 days.
+              </li>
+              <li>
+                <strong>Complaints.</strong> You can complain to the Information
+                Regulator of South Africa, or to the data protection authority
+                where you live. In the UK, that is the Information
+                Commissioner&apos;s Office.
+              </li>
+            </ul>
+          </section>
+
+          {/* 12 */}
+          <section>
+            <h2 className="text-xl font-bold text-brand-navy mb-3">
+              12. Changes to this policy
             </h2>
             <p>
               We may update this Privacy Policy from time to time. Any changes

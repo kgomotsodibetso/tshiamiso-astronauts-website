@@ -154,7 +154,7 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
             <div className="text-center py-4">
               <div className="text-5xl mb-3">🚀</div>
               <h3 className="text-xl font-bold text-brand-navy mb-2">You&apos;re registered!</h3>
-              <p className="text-gray-500 text-sm leading-relaxed mb-6">
+              <p className="text-gray-500 text-sm leading-relaxed mb-6" data-clarity-mask="true">
                 Thank you, {firstName}! We have received your RSVP for{" "}
                 <strong>{event.name}</strong>. We will be in touch at{" "}
                 <span className="text-brand-teal font-semibold">{email}</span>.

@@ -4,7 +4,9 @@ import "./globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
+import ClarityLoader from "@/components/ClarityLoader";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { consentInitScript } from "@/lib/consent";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -30,12 +32,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Google Consent Mode defaults. Must run before the Google tag, so it sits first in <head>. */}
+        <script dangerouslySetInnerHTML={{ __html: consentInitScript() }} />
+      </head>
       <body className={`${montserrat.variable} font-sans antialiased bg-brand-white text-brand-navy`}>
+        {/* First in the page order so keyboard and screen-reader users meet the cookie choices straight away.
+            It is fixed to the bottom of the screen, so it still looks like a bottom banner. */}
+        <CookieBanner />
         <Navigation />
         <main id="main-content" className="pt-16">{children}</main>
         <Footer />
-        <CookieBanner />
         <SpeedInsights />
+        {/* Microsoft Clarity: production only, and only after the visitor accepts the cookie banner. */}
+        <ClarityLoader enabled={process.env.VERCEL_ENV === "production"} projectId="yvjvmf0lhi" />
       </body>
     </html>
   );
