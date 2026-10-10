@@ -6,14 +6,20 @@ import { openToken, sealToken } from "@/lib/subscribe/token";
 
 export const dynamic = "force-dynamic";
 
-// The confirm link in the email lands here. Idempotent: a second click finds the contact and
-// row already there, updates them quietly and sends no second welcome email.
-export async function GET(req: NextRequest) {
+// A person pressed "Confirm my subscription". The encrypted token is the credential, so no other
+// check is needed. Idempotent: a second press finds the contact and row already there, updates them
+// quietly and sends no second welcome email.
+export async function POST(req: NextRequest) {
   const base = siteUrl();
   const expired = () => NextResponse.redirect(`${base}/subscribe/expired`, 303);
 
-  const t = req.nextUrl.searchParams.get("t");
-  if (!t || t.length > 4096) return expired();
+  let t: FormDataEntryValue | null = null;
+  try {
+    t = (await req.formData()).get("t");
+  } catch {
+    return expired();
+  }
+  if (typeof t !== "string" || t.length === 0 || t.length > 4096) return expired();
 
   const opened = openToken<ConfirmPayload>(t, "confirm", TOKEN_TTL_MS);
   if (!opened.ok) return expired();

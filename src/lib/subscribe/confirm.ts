@@ -41,7 +41,7 @@ export async function completeSignup(p: ConfirmPayload, issuedAt: number): Promi
 
   const resendOutcome = await retryOnce("Resend contact", tag, () => upsertContact(p));
   if (resendOutcome?.sendWelcome) {
-    await retryOnce("Resend welcome event", tag, () => fireWelcomeEvent(p.email, p.variant));
+    await retryOnce("Resend welcome event", tag, () => fireWelcomeEvent(p.email, p.topics));
   }
 
   const row = await retryOnce("monday row", tag, () => upsertAudienceRow({ ...p, ref: issuedAt.toString(36) }));

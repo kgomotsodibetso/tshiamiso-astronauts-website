@@ -147,7 +147,7 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/donate"
-              className="bg-brand-orange text-white font-bold px-8 py-4 rounded-lg text-lg hover:opacity-90 transition-opacity"
+              className="bg-brand-orange text-brand-navy font-bold px-8 py-4 rounded-lg text-lg hover:opacity-90 transition-opacity"
             >
               Donate Now
             </Link>

@@ -51,7 +51,7 @@ export const AUDIENCES: Record<
   school: {
     label: "School or partner",
     resendSegmentId: "46d570e2-66c9-45de-92fc-e248098f336a", // Partners and Supporters
-    mondaySegment: "School liaison",
+    mondaySegment: "Sponsor/Partner",
   },
   supporter: {
     label: "Supporter or other",

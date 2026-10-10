@@ -74,7 +74,7 @@ export default function Navigation() {
           </Link>
           <Link
             href="/donate"
-            className="inline-block bg-brand-orange text-white text-sm font-bold px-3 xl:px-5 py-2 rounded-lg hover:opacity-90 transition-opacity"
+            className="inline-block bg-brand-orange text-brand-navy text-sm font-bold px-3 xl:px-5 py-2 rounded-lg hover:opacity-90 transition-opacity"
           >
             Donate Now
           </Link>
@@ -140,7 +140,7 @@ export default function Navigation() {
             <Link
               href="/donate"
               onClick={() => setMenuOpen(false)}
-              className="block w-full bg-brand-orange text-white text-sm font-bold px-4 py-3 rounded-lg text-center hover:opacity-90 transition-opacity"
+              className="block w-full bg-brand-orange text-brand-navy text-sm font-bold px-4 py-3 rounded-lg text-center hover:opacity-90 transition-opacity"
             >
               Donate Now
             </Link>

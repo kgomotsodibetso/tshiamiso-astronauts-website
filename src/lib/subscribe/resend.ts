@@ -87,10 +87,12 @@ export async function upsertContact(s: SignupData): Promise<ResendOutcome> {
   return { sendWelcome: wasUnsubscribed, created: false };
 }
 
-export async function fireWelcomeEvent(email: string, variant: SubscribeVariant): Promise<void> {
-  const { error } = await resend().events.send({
-    event: variant === "full" ? RESEND.eventFull : RESEND.eventNewsletterOnly,
-    email,
-  });
+// The full welcome email promises all four kinds of email, so it only goes to people who ticked all
+// four. Everyone else gets the newsletter-only welcome.
+export const welcomeEventFor = (topics: TopicKey[]) =>
+  TOPIC_KEYS.every((k) => topics.includes(k)) ? RESEND.eventFull : RESEND.eventNewsletterOnly;
+
+export async function fireWelcomeEvent(email: string, topics: TopicKey[]): Promise<void> {
+  const { error } = await resend().events.send({ event: welcomeEventFor(topics), email });
   if (error) throw new Error(`welcome event failed: ${error.name}`);
 }

@@ -113,7 +113,7 @@ export default function Footer() {
             <div className="mt-4 flex flex-col gap-2">
               <Link
                 href="/donate"
-                className="inline-block bg-brand-orange text-white text-sm font-semibold px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-center"
+                className="inline-block bg-brand-orange text-brand-navy text-sm font-semibold px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-center"
               >
                 Donate Now
               </Link>
