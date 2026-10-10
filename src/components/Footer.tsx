@@ -1,6 +1,6 @@
+import CookieSettingsButton from "@/components/CookieSettingsButton";
 import Link from "next/link";
 import Image from "next/image";
-import CookieSettingsButton from "@/components/CookieSettingsButton";
 
 export default function Footer() {
   return (
