@@ -8,7 +8,7 @@ import { readConsent, saveConsent } from "@/lib/consent";
 const buttonBase =
   "min-h-[44px] min-w-[8.5rem] rounded-lg px-6 py-2.5 text-sm font-bold transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-light-teal";
 
-// Cookie choices for Google Analytics and Google Ads. Accept and Decline are the same size and equally easy to
+// Cookie choices for Google Analytics, Google Ads and Microsoft Clarity. Accept and Decline are the same size and equally easy to
 // reach. In the EEA and UK nothing is switched on until the visitor accepts; elsewhere it is on until they decline. The choice can be
 // changed at any time from "Cookie settings" in the footer.
 export default function CookieBanner() {
@@ -51,9 +51,10 @@ export default function CookieBanner() {
         <div id="cookie-choices-text" className="flex-1 text-sm leading-relaxed text-gray-200">
           <p className="font-bold text-white">Your cookie choices</p>
           <p className="mt-1">
-            We use Google Analytics and Google Ads cookies to see which pages people read and which adverts work, and
-            to show our adverts to past visitors. In the EEA and UK they stay off until you accept. Everywhere else
-            they are on unless you decline. You can change your choice at any time from Cookie settings in the footer.{" "}
+            We use Google Analytics, Google Ads and Microsoft Clarity cookies to see which pages people read, how they
+            use the site and which adverts work, and to show our adverts to past visitors. Microsoft Clarity stays off
+            until you accept. In the EEA and UK the Google cookies do too; everywhere else they are on unless you
+            decline. You can change your choice at any time from Cookie settings in the footer.{" "}
             <Link href="/privacy" className="text-brand-light-teal underline hover:text-white">
               Read our Privacy Policy
             </Link>

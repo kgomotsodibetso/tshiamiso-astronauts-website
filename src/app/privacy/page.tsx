@@ -92,6 +92,13 @@ export default function PrivacyPolicyPage() {
               records that a visit led to a donation attempt or a contact
               message, and which advert it came from. See Section 5.
             </p>
+            <p className="mt-3">
+              If you accept our cookies, we also use Microsoft Clarity to
+              understand how visitors use our website (for example clicks,
+              scrolling and session recordings). Clarity masks sensitive
+              information typed into forms, and we do not use it to identify you
+              personally.
+            </p>
           </section>
 
           {/* 3 */}
@@ -154,6 +161,10 @@ export default function PrivacyPolicyPage() {
                 for visitors in the EEA and UK.
               </li>
               <li>
+                <strong>Consent</strong> — for Microsoft Clarity, for all
+                visitors.
+              </li>
+              <li>
                 <strong>Contractual necessity</strong> — where processing is
                 required to fulfil a transaction you initiated (e.g., processing
                 a donation).
@@ -206,6 +217,14 @@ export default function PrivacyPolicyPage() {
                 this to see which adverts work. It also lets us show our adverts
                 to people who have visited our website before.
               </li>
+              <li>
+                <strong>Usage analytics (Microsoft Clarity).</strong> This records
+                how visitors click and scroll, including session recordings, so we
+                can improve the site, and it sets cookies to do so. Clarity masks
+                sensitive information typed into forms, and we do not use it to
+                identify you. It stays off for every visitor until you choose
+                Accept.
+              </li>
             </ul>
             <p className="mt-3">
               <strong>How the Google tag loads.</strong> We load the Google tag
@@ -222,7 +241,7 @@ export default function PrivacyPolicyPage() {
             <p className="mt-3">
               <strong>Your choice.</strong> Our cookie notice lets you choose{" "}
               <strong>Accept</strong> or <strong>Decline</strong> for the Google
-              Analytics and Google Ads cookies.
+              Analytics, Google Ads and Microsoft Clarity cookies.
             </p>
             <ul className="list-disc pl-6 mt-2 space-y-1">
               <li>
@@ -230,12 +249,18 @@ export default function PrivacyPolicyPage() {
                 Kingdom (UK), these cookies stay off until you choose Accept.
               </li>
               <li>
-                Everywhere else, they are on unless you choose Decline.
+                Everywhere else, the Google cookies are on unless you choose
+                Decline.
+              </li>
+              <li>
+                Microsoft Clarity stays off for every visitor until you choose
+                Accept.
               </li>
             </ul>
             <p className="mt-3">
               If you decline, Google Analytics and Google Ads do not set cookies
-              on your device and do not use your visit to build advert audiences.
+              on your device and do not use your visit to build advert audiences,
+              and Microsoft Clarity does not load.
               You can change your choice at any time with &ldquo;Cookie
               settings&rdquo; in the footer. You can also manage how Google uses
               your data for adverts at{" "}
@@ -299,6 +324,20 @@ export default function PrivacyPolicyPage() {
               <li>
                 <strong>Cloudflare</strong> — website security, speed and
                 analytics.
+              </li>
+              <li>
+                <strong>Microsoft (Clarity)</strong> &ndash; used to analyse
+                website usage, only if you accept our cookies. Microsoft acts
+                under{" "}
+                <a
+                  href="https://privacy.microsoft.com/privacystatement"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-brand-teal hover:text-brand-orange underline"
+                >
+                  its own Privacy Statement
+                </a>
+                .
               </li>
               <li>
                 <strong>Google (Analytics and Ads)</strong> &ndash; used to
@@ -433,8 +472,9 @@ export default function PrivacyPolicyPage() {
               <li>
                 <strong>Cookies and consent.</strong> Google Analytics and Google
                 Ads cookies stay off until you choose Accept on our cookie
-                notice. You can withdraw your consent at any time with
-                &ldquo;Cookie settings&rdquo; in the footer.
+                notice, and Microsoft Clarity stays off for every visitor until
+                they choose Accept. You can withdraw your consent at any time
+                with &ldquo;Cookie settings&rdquo; in the footer.
               </li>
               <li>
                 <strong>Other uses of your information.</strong> To answer your

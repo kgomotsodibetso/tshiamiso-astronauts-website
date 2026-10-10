@@ -4,6 +4,7 @@ import "./globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
+import ClarityLoader from "@/components/ClarityLoader";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { consentInitScript } from "@/lib/consent";
 
@@ -43,6 +44,8 @@ export default function RootLayout({
         <main id="main-content" className="pt-16">{children}</main>
         <Footer />
         <SpeedInsights />
+        {/* Microsoft Clarity: production only, and only after the visitor accepts the cookie banner. */}
+        <ClarityLoader enabled={process.env.VERCEL_ENV === "production"} projectId="yvjvmf0lhi" />
       </body>
     </html>
   );
