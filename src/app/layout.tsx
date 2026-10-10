@@ -4,8 +4,9 @@ import "./globals.css";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import CookieBanner from "@/components/CookieBanner";
-import Script from "next/script";
+import ClarityLoader from "@/components/ClarityLoader";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { consentInitScript } from "@/lib/consent";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -31,21 +32,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Google Consent Mode defaults. Must run before the Google tag, so it sits first in <head>. */}
+        <script dangerouslySetInnerHTML={{ __html: consentInitScript() }} />
+      </head>
       <body className={`${montserrat.variable} font-sans antialiased bg-brand-white text-brand-navy`}>
+        {/* First in the page order so keyboard and screen-reader users meet the cookie choices straight away.
+            It is fixed to the bottom of the screen, so it still looks like a bottom banner. */}
+        <CookieBanner />
         <Navigation />
         <main id="main-content" className="pt-16">{children}</main>
         <Footer />
-        <CookieBanner />
         <SpeedInsights />
-        {process.env.VERCEL_ENV === "production" && (
-          <Script id="microsoft-clarity" strategy="afterInteractive">
-            {`(function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-          })(window, document, "clarity", "script", "yvjvmf0lhi");`}
-          </Script>
-        )}
+        {/* Microsoft Clarity: production only, and only after the visitor accepts the cookie banner. */}
+        <ClarityLoader enabled={process.env.VERCEL_ENV === "production"} projectId="yvjvmf0lhi" />
       </body>
     </html>
   );
