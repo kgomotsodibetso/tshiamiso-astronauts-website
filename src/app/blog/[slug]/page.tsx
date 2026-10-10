@@ -6,6 +6,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { fetchPostBySlug, fetchPublishedPosts } from "../actions";
 import { formatDate } from "@/lib/formatDate";
+import BlogSubscribeCard from "@/components/subscribe/BlogSubscribeCard";
+import SubscribePopup from "@/components/subscribe/SubscribePopup";
 
 export const revalidate = 3600;
 
@@ -209,6 +211,9 @@ export default async function BlogPostPage({
             </div>
           )}
 
+          {/* Subscribe */}
+          <BlogSubscribeCard />
+
           {/* Share + partner */}
           <div className="mt-12 pt-8 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             <div className="flex flex-wrap items-center gap-3">
@@ -245,6 +250,8 @@ export default async function BlogPostPage({
         </div>
       </section>
 
+      <SubscribePopup />
+
       {/* CTA STRIP */}
       <section className="py-16 px-6 bg-brand-navy">
         <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-6 text-center">
@@ -255,7 +262,7 @@ export default async function BlogPostPage({
             </p>
             <Link
               href="/donate"
-              className="inline-block bg-brand-orange text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-opacity"
+              className="inline-block bg-brand-orange text-brand-navy font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-opacity"
             >
               Donate Now
             </Link>

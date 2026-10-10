@@ -153,7 +153,7 @@ export default function DonatePage() {
                     }}
                     className={`py-4 rounded-xl font-bold text-lg transition-colors ${
                       selectedAmount === amt
-                        ? "bg-brand-orange text-white"
+                        ? "bg-brand-orange text-brand-navy"
                         : "bg-gray-100 text-brand-navy hover:bg-orange-50"
                     }`}
                   >
@@ -248,7 +248,7 @@ export default function DonatePage() {
               <button
                 type="submit"
                 disabled={loading || !finalAmount || finalAmount < 10}
-                className="w-full bg-brand-orange text-white font-bold py-5 rounded-xl text-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-brand-orange text-brand-navy font-bold py-5 rounded-xl text-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading
                   ? "Redirecting to PayFast…"

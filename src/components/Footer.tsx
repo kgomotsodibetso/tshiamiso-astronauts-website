@@ -1,9 +1,12 @@
 import CookieSettingsButton from "@/components/CookieSettingsButton";
 import Link from "next/link";
 import Image from "next/image";
+import FooterSubscribe from "@/components/subscribe/FooterSubscribe";
 
 export default function Footer() {
   return (
+    <>
+    <FooterSubscribe />
     <footer className="bg-brand-navy text-brand-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -111,7 +114,7 @@ export default function Footer() {
             <div className="mt-4 flex flex-col gap-2">
               <Link
                 href="/donate"
-                className="inline-block bg-brand-orange text-white text-sm font-semibold px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-center"
+                className="inline-block bg-brand-orange text-brand-navy text-sm font-semibold px-4 py-2 rounded-md hover:opacity-90 transition-opacity text-center"
               >
                 Donate Now
               </Link>
@@ -139,5 +142,6 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+    </>
   );
 }

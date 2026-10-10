@@ -148,7 +148,7 @@ export default async function EventsPage() {
             </p>
             <Link
               href="/donate"
-              className="inline-block bg-brand-orange text-white font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-opacity"
+              className="inline-block bg-brand-orange text-brand-navy font-bold px-8 py-3 rounded-xl hover:opacity-90 transition-opacity"
             >
               Donate Now
             </Link>

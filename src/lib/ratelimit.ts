@@ -12,7 +12,9 @@ function makeRatelimit(prefix: string, limiter: Ratelimit["limiter"]): Ratelimit
   return new Ratelimit({
     redis: Redis.fromEnv(),
     limiter,
-    analytics: true,
+    // Off on purpose: Upstash analytics keeps every visitor's IP address with no expiry. The rate-limit
+    // keys themselves expire on their own (about 2 hours for the hourly window, 2 days for the daily one).
+    analytics: false,
     prefix,
   });
 }
@@ -22,3 +24,8 @@ export const formRatelimit = makeRatelimit("rl:form", Ratelimit.slidingWindow(5,
 
 // PayFast ITN: 30 requests per minute per IP (PayFast retries on non-200)
 export const payfastRatelimit = makeRatelimit("rl:payfast", Ratelimit.slidingWindow(30, "1 m"));
+
+// Subscribe form: 5 sign-ups an hour per IP, and 3 confirmation emails a day per address
+// (stops anyone using us to flood one inbox, and protects the 100 emails a day Resend allows).
+export const subscribeIpRatelimit = makeRatelimit("rl:subscribe-ip", Ratelimit.slidingWindow(5, "1 h"));
+export const subscribeEmailRatelimit = makeRatelimit("rl:subscribe-email", Ratelimit.slidingWindow(3, "1 d"));
