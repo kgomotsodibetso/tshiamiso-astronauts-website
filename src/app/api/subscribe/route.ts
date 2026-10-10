@@ -13,6 +13,13 @@ export const dynamic = "force-dynamic";
 const json = (body: Record<string, unknown>, status = 200) =>
   NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
 
+// Every refusal is logged with a reason (never the visitor's details) and returns a short code the
+// form shows as "Ref: ..." so a screenshot is enough to see which check said no.
+const refuse = (code: string, status: number, detail = "", error: string = MESSAGES.generic) => {
+  console.warn(`[Subscribe] refused code=${code}${detail ? ` ${detail}` : ""}`);
+  return json({ ok: false, error, code }, status);
+};
+
 // Same message every time, whether or not the address is already on our list.
 const ALMOST_THERE = { ok: true } as const;
 
@@ -28,39 +35,40 @@ function sameOrigin(req: NextRequest): boolean {
 }
 
 export async function POST(req: NextRequest) {
-  if (!sameOrigin(req)) return json({ ok: false, error: MESSAGES.generic }, 403);
+  if (!sameOrigin(req)) {
+    return refuse("origin", 403, `origin=${req.headers.get("origin") ?? "none"} host=${req.headers.get("host") ?? "none"}`);
+  }
 
   let body: SubscribeBody;
   try {
     body = (await req.json()) as SubscribeBody;
   } catch {
-    return json({ ok: false, error: MESSAGES.generic }, 400);
+    return refuse("bad_request", 400, "body is not JSON");
   }
-  if (!body || typeof body !== "object") return json({ ok: false, error: MESSAGES.generic }, 400);
+  if (!body || typeof body !== "object") return refuse("bad_request", 400, "body is not an object");
 
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || null;
 
   // 1. Cheap bot signals first. A filled honeypot gets the normal "Almost there" reply so bots
   //    learn nothing, but no email is sent. A too-fast submit gets a retryable error.
   if (honeypotFilled(body)) return json(ALMOST_THERE);
-  if (submittedTooFast(body)) return json({ ok: false, error: MESSAGES.generic }, 400);
+  if (submittedTooFast(body)) return refuse("too_fast", 400, `elapsedMs=${String(body.elapsedMs)}`);
 
   // 2. Turnstile. Missing or failed token = rejected.
-  if (!(await verifyTurnstile(body.turnstileToken, ip))) {
-    return json({ ok: false, error: MESSAGES.generic }, 400);
-  }
+  const human = await verifyTurnstile(body.turnstileToken, ip);
+  if (!human.ok) return refuse("captcha", 400, `reason=${human.reason}`);
 
   // 3. Rate limits (fail open if Redis is unreachable; Turnstile still stands).
   try {
     const byIp = await subscribeIpRatelimit.limit(ip ?? "anonymous");
-    if (!byIp.success) return json({ ok: false, error: MESSAGES.tooMany }, 429);
+    if (!byIp.success) return refuse("rate_limit", 429, "ip", MESSAGES.tooMany);
   } catch (err) {
     console.warn("[Subscribe] IP rate limit check failed, failing open:", (err as Error).message);
   }
 
   // 4. Validate.
   const result = validateSignup(body);
-  if (!result.ok) return json({ ok: false, error: result.error, field: result.field }, 400);
+  if (!result.ok) return json({ ok: false, error: result.error, field: result.field, code: "invalid" }, 400);
   const s = result.value;
   const tag = emailTag(s.email);
 
@@ -87,6 +95,6 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     const msg = String((err as Error)?.message ?? err).replace(/[^\s@]+@[^\s@]+/g, "[email]");
     console.error(`[Subscribe] confirmation failed for ${tag}: ${msg}`);
-    return json({ ok: false, error: MESSAGES.generic }, 500);
+    return json({ ok: false, error: MESSAGES.generic, code: "send_failed" }, 500);
   }
 }

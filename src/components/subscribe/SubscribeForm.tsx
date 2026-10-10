@@ -49,7 +49,7 @@ const inputClass =
 const labelClass = "block text-sm font-semibold text-brand-navy mb-1";
 const errorClass = "mt-1 text-sm font-semibold text-red-800";
 
-type Errors = Partial<Record<"firstName" | "email" | "consent" | "topics" | "form", string>>;
+type Errors = Partial<Record<"firstName" | "email" | "consent" | "topics" | "form" | "ref", string>>;
 
 export interface SubscribeFormProps {
   variant: SubscribeVariant;
@@ -67,6 +67,7 @@ export default function SubscribeForm({ variant, placement, onSubmitted, stacked
   const widgetEl = useRef<HTMLDivElement>(null);
   const widgetId = useRef<string | null>(null);
   const tokenRef = useRef<string>("");
+  const widgetError = useRef<string>("");
   const doneRef = useRef<HTMLDivElement>(null);
 
   const [firstName, setFirstName] = useState("");
@@ -92,9 +93,16 @@ export default function SubscribeForm({ variant, placement, onSubmitted, stacked
         widgetId.current = window.turnstile.render(widgetEl.current, {
           sitekey: siteKey,
           appearance: "interaction-only",
-          callback: (t: string) => (tokenRef.current = t),
+          callback: (t: string) => {
+            tokenRef.current = t;
+            widgetError.current = "";
+          },
           "expired-callback": () => (tokenRef.current = ""),
-          "error-callback": () => (tokenRef.current = ""),
+          "error-callback": (code?: unknown) => {
+            tokenRef.current = "";
+            widgetError.current = String(code ?? "error");
+            return true;
+          },
         });
       })
       .catch(() => undefined);
@@ -133,6 +141,18 @@ export default function SubscribeForm({ variant, placement, onSubmitted, stacked
 
       setBusy(true);
       try {
+        // The security check normally finishes in a second or two. Give it a moment before giving up.
+        for (let i = 0; i < 20 && !tokenRef.current && !widgetError.current; i++) {
+          await new Promise((r) => setTimeout(r, 250));
+        }
+        if (!tokenRef.current) {
+          setErrors({
+            form: "The security check has not finished. Please wait a moment and try again, or email info@tshiamisoastronauts.org.",
+            ref: widgetError.current ? `captcha-widget-${widgetError.current}` : "captcha-pending",
+          });
+          if (window.turnstile && widgetId.current) window.turnstile.reset(widgetId.current);
+          return;
+        }
         const src = new URLSearchParams(window.location.search).get("src") ?? undefined;
         const res = await fetch("/api/subscribe", {
           method: "POST",
@@ -153,13 +173,17 @@ export default function SubscribeForm({ variant, placement, onSubmitted, stacked
             turnstileToken: tokenRef.current,
           }),
         });
-        const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; field?: keyof Errors };
+        const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; field?: keyof Errors; code?: string };
         if (res.ok && data.ok) {
           markSubscribed();
           setSubmitted(true);
           onSubmitted?.();
         } else {
-          setErrors(data.field ? { [data.field]: data.error } : { form: data.error ?? MESSAGES.generic });
+          setErrors(
+            data.field
+              ? { [data.field]: data.error }
+              : { form: data.error ?? MESSAGES.generic, ref: data.code ?? `http-${res.status}` },
+          );
           if (window.turnstile && widgetId.current) window.turnstile.reset(widgetId.current);
           tokenRef.current = "";
         }
@@ -304,7 +328,10 @@ export default function SubscribeForm({ variant, placement, onSubmitted, stacked
       <div ref={widgetEl} className="mt-2 empty:hidden" />
 
       {errors.form && (
-        <p role="alert" className={`${errorClass} mt-3`}>{errors.form}</p>
+        <div role="alert" className="mt-3">
+          <p className={errorClass}>{errors.form}</p>
+          {errors.ref && <p className="mt-1 text-xs">Ref: {errors.ref}</p>}
+        </div>
       )}
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
