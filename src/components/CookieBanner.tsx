@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { COOKIE_ACK_EVENT } from "@/config/subscribe";
 
 export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
@@ -17,8 +16,6 @@ export default function CookieBanner() {
   function dismiss() {
     localStorage.setItem("cookie-consent", "acknowledged");
     setVisible(false);
-    // Lets the subscribe pop-up know the notice has been answered.
-    window.dispatchEvent(new Event(COOKIE_ACK_EVENT));
   }
 
   if (!visible) return null;

@@ -58,7 +58,13 @@ export default function SubscribePopup() {
       if (cancelled || opened || !dwellDone) return;
       if (document.visibilityState !== "visible") return;
       if (!(scrolled || (desktop && exitIntent))) return;
-      if (!cookieNoticeAnswered()) return; // wait for the cookie notice to be answered
+      if (!cookieNoticeAnswered()) {
+        // Wait for the cookie notice to be answered. The banner may or may not announce its answer,
+        // so look again every second as well as listening for the announcement.
+        window.clearTimeout(retry);
+        retry = window.setTimeout(check, 1000);
+        return;
+      }
       if (otherOverlayVisible(null)) {
         window.clearTimeout(retry);
         retry = window.setTimeout(check, 2000);
