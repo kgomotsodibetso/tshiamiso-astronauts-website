@@ -17,10 +17,11 @@ export const GOOGLE_CONSENT_SIGNALS = [
 
 // Visitors in these places start with everything switched off until they accept. Google works out
 // the visitor's country itself, so we do not need our own location lookup.
-// EU member states, Iceland, Liechtenstein, Norway (EEA), the United Kingdom and Switzerland.
+// The EEA (EU member states plus Iceland, Liechtenstein and Norway) and the United Kingdom, as approved
+// for the privacy policy. Switzerland is not included; add "CH" here if you decide to treat it the same way.
 export const CONSENT_DEFAULT_DENIED_REGIONS = [
   "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR", "HU", "IE", "IT", "LV", "LT",
-  "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "IS", "LI", "NO", "GB", "CH",
+  "LU", "MT", "NL", "PL", "PT", "RO", "SK", "SI", "ES", "SE", "IS", "LI", "NO", "GB",
 ] as const;
 
 export interface StoredConsent {
