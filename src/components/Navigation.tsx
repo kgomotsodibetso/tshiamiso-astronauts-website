@@ -43,7 +43,7 @@ export default function Navigation() {
         </Link>
 
         {/* Desktop links */}
-        <ul className="hidden lg:flex items-center gap-1">
+        <ul className="hidden lg:flex items-center gap-0 xl:gap-1">
           {navLinks.map(({ href, label }) => {
             const isActive =
               href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -51,7 +51,7 @@ export default function Navigation() {
               <li key={href}>
                 <Link
                   href={href}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  className={`px-2 xl:px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                     isActive
                       ? "text-brand-orange border-b-2 border-brand-orange"
                       : "text-brand-navy hover:text-brand-orange"
@@ -64,13 +64,21 @@ export default function Navigation() {
           })}
         </ul>
 
-        {/* Desktop Donate CTA */}
-        <Link
-          href="/donate"
-          className="hidden lg:inline-block bg-brand-orange text-white text-sm font-bold px-5 py-2 rounded-lg hover:opacity-90 transition-opacity flex-shrink-0"
-        >
-          Donate Now
-        </Link>
+        {/* Desktop Subscribe + Donate CTAs */}
+        <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 flex-shrink-0">
+          <Link
+            href="/subscribe"
+            className="inline-block bg-brand-orange text-brand-navy text-sm font-bold px-3 xl:px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+          >
+            Subscribe
+          </Link>
+          <Link
+            href="/donate"
+            className="inline-block bg-brand-orange text-white text-sm font-bold px-3 xl:px-5 py-2 rounded-lg hover:opacity-90 transition-opacity"
+          >
+            Donate Now
+          </Link>
+        </div>
 
         {/* Mobile hamburger */}
         <button
@@ -121,13 +129,22 @@ export default function Navigation() {
               );
             })}
           </ul>
-          <Link
-            href="/donate"
-            onClick={() => setMenuOpen(false)}
-            className="block w-full bg-brand-orange text-white text-sm font-bold px-4 py-3 rounded-lg text-center hover:opacity-90 transition-opacity"
-          >
-            Donate Now
-          </Link>
+          <div className="flex flex-col gap-2">
+            <Link
+              href="/subscribe"
+              onClick={() => setMenuOpen(false)}
+              className="block w-full bg-brand-orange text-brand-navy text-sm font-bold px-4 py-3 rounded-lg text-center hover:opacity-90 transition-opacity"
+            >
+              Subscribe
+            </Link>
+            <Link
+              href="/donate"
+              onClick={() => setMenuOpen(false)}
+              className="block w-full bg-brand-orange text-white text-sm font-bold px-4 py-3 rounded-lg text-center hover:opacity-90 transition-opacity"
+            >
+              Donate Now
+            </Link>
+          </div>
         </div>
       )}
     </header>
