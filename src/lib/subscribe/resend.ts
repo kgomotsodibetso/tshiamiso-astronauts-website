@@ -1,10 +1,13 @@
 import { Resend } from "resend";
 import { AUDIENCES, RESEND, TOPICS, TOPIC_KEYS, type AudienceKey, type SubscribeVariant, type TopicKey } from "@/config/subscribe";
 
+// The subscribe routes use their own full-access key (contacts, segments, events). The contact
+// form keeps using RESEND_API_KEY, which is left alone.
 let client: Resend | null = null;
 function resend(): Resend {
-  if (!process.env.RESEND_API_KEY) throw new Error("RESEND_API_KEY is not set");
-  return (client ??= new Resend(process.env.RESEND_API_KEY));
+  const key = process.env.RESEND_SUBSCRIBE_API_KEY;
+  if (!key) throw new Error("RESEND_SUBSCRIBE_API_KEY is not set");
+  return (client ??= new Resend(key));
 }
 
 export async function sendConfirmationEmail(to: string, firstName: string, confirmUrl: string): Promise<void> {
