@@ -153,3 +153,4 @@ export const POPUP_STORAGE = {
   session: "ta_sub_shown",
 } as const;
 export const POPUP_SNOOZE_MS = 30 * 24 * 60 * 60 * 1000;
+export const COOKIE_ACK_EVENT = "ta:cookie-ack";

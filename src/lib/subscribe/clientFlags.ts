@@ -1,5 +1,4 @@
 import { POPUP_SNOOZE_MS, POPUP_STORAGE } from "@/config/subscribe";
-import { readConsent } from "@/lib/consent";
 
 // Pop-up memory. localStorage/sessionStorage only, no personal data. Every call is guarded:
 // storage can be blocked (private windows, blocked site data) and the page must still work.
@@ -31,5 +30,4 @@ export const snooze = (now = Date.now()) => write("local", POPUP_STORAGE.dismiss
 export const shownThisSession = () => read("session", POPUP_STORAGE.session) !== null;
 export const markShownThisSession = () => write("session", POPUP_STORAGE.session, "1");
 
-// Answered = the visitor has made a choice in the cookie banner (Accept or Reject).
-export const cookieNoticeAnswered = () => readConsent() !== null;
+export const cookieNoticeAnswered = () => read("local", "cookie-consent") !== null;
