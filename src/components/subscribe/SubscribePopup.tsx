@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { COOKIE_ACK_EVENT } from "@/config/subscribe";
+import { COOKIE_ACK_EVENT } from "@/config/consent";
 import {
   cookieNoticeAnswered,
   isSnoozed,
