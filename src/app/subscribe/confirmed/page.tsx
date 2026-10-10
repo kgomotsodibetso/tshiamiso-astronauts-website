@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { CONFIRMED_COOKIE } from "@/lib/subscribe/cookies";
 import { openToken } from "@/lib/subscribe/token";
 
 export const metadata: Metadata = {
@@ -9,8 +11,9 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function ConfirmedPage({ searchParams }: { searchParams: Promise<{ c?: string }> }) {
-  const { c } = await searchParams;
+export default async function ConfirmedPage() {
+  const jar = await cookies();
+  const c = jar.get(CONFIRMED_COOKIE)?.value;
   const opened = c && c.length < 2048 ? openToken<{ n?: string; a?: boolean }>(c, "confirmed", 15 * 60 * 1000) : null;
   const name = opened?.ok ? opened.data.n : undefined;
   const already = opened?.ok ? opened.data.a === true : false;
