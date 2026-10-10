@@ -30,4 +30,7 @@ export const snooze = (now = Date.now()) => write("local", POPUP_STORAGE.dismiss
 export const shownThisSession = () => read("session", POPUP_STORAGE.session) !== null;
 export const markShownThisSession = () => write("session", POPUP_STORAGE.session, "1");
 
-export const cookieNoticeAnswered = () => read("local", "cookie-consent") !== null;
+// Answered = the visitor has made a choice in the cookie banner. Works with the current OK notice
+// ("cookie-consent") and with the Accept/Reject banner ("ta_consent"), so the two can ship in any order.
+export const cookieNoticeAnswered = () =>
+  read("local", "cookie-consent") !== null || read("local", "ta_consent") !== null;
