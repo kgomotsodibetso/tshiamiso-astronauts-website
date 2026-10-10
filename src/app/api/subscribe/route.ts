@@ -47,7 +47,10 @@ export async function POST(req: NextRequest) {
   }
   if (!body || typeof body !== "object") return refuse("bad_request", 400, "body is not an object");
 
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() || null;
+  // The site sits behind Cloudflare, so x-forwarded-for carries a Cloudflare edge address shared by many
+  // visitors. Cloudflare puts the real visitor address in cf-connecting-ip, so prefer that.
+  const ip =
+    req.headers.get("cf-connecting-ip")?.trim() || req.headers.get("x-forwarded-for")?.split(",")[0].trim() || null;
 
   // 1. Cheap bot signals first. A filled honeypot gets the normal "Almost there" reply so bots
   //    learn nothing, but no email is sent. A too-fast submit gets a retryable error.
