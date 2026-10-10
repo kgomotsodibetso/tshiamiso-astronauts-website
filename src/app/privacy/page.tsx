@@ -249,7 +249,10 @@ export default function PrivacyPolicyPage() {
               pre-ticked) and click the confirmation link we email to you. We
               keep a record of when you agreed, which page you signed up on, and
               the version of the wording you saw. We do not store your IP
-              address.
+              address in our records of your consent. To protect the sign-up
+              form from spam, Cloudflare Turnstile checks your IP address, and
+              our rate limiter (Upstash) holds it for up to about two hours,
+              after which it is deleted automatically.
             </p>
             <p className="mt-3">
               <strong>Who helps us.</strong> We use two services to run this, and
