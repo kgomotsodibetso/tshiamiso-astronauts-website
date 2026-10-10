@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "How Tshiamiso Astronauts NPC collects, uses, and protects your personal information in accordance with POPIA.",
 };
 
-const LAST_UPDATED = "10 October 2026";
+const LAST_UPDATED = "9 October 2026";
 
 export default function PrivacyPolicyPage() {
   return (
@@ -224,100 +224,9 @@ export default function PrivacyPolicyPage() {
           </section>
 
           {/* 6 */}
-          <section id="newsletter-and-emails" className="scroll-mt-24">
-            <h2 className="text-xl font-bold text-brand-navy mb-3">
-              6. Our newsletter and emails
-            </h2>
-            <p>
-              When you sign up for updates from Tshiamiso Astronauts (TA), we ask
-              for your <strong>first name</strong> and{" "}
-              <strong>email address</strong>. You can also choose what you are
-              (for example parent or guardian, volunteer, or supporter), which
-              topics you want to hear about, and, on the full sign-up page, your
-              preferred language. We only ask for what we need to send you the
-              right updates.
-            </p>
-            <p className="mt-3">
-              <strong>Why we collect it.</strong> To send you the TA newsletter
-              and, if you choose them, invitations to events, volunteer
-              opportunities, and ways to support our work. We only email you
-              about the topics you picked.
-            </p>
-            <p className="mt-3">
-              <strong>How we get your consent.</strong> We only add you to our
-              list after you tick the consent box yourself (it is never
-              pre-ticked) and click the confirmation link we email to you. We
-              keep a record of when you agreed, which page you signed up on, and
-              the version of the wording you saw. We do not store your IP
-              address.
-            </p>
-            <p className="mt-3">
-              <strong>Who helps us.</strong> We use two services to run this, and
-              they handle your details only on our instructions:
-            </p>
-            <ul className="list-disc pl-6 mt-2 space-y-1">
-              <li>
-                <strong>Resend</strong> sends our emails and holds your name,
-                email address and topic choices.
-              </li>
-              <li>
-                <strong>monday.com</strong> is where TA keeps its records of who
-                has agreed to hear from us.
-              </li>
-            </ul>
-            <p className="mt-3">
-              We also use <strong>Cloudflare Turnstile</strong> on the sign-up
-              form to stop automated spam. It checks that a real person is
-              filling in the form.
-            </p>
-            <p className="mt-3">
-              These services may store information on servers outside South
-              Africa. We only use providers that apply appropriate data
-              protection safeguards. We do not sell your details or share them
-              for anyone else&apos;s marketing.
-            </p>
-            <p className="mt-3">
-              <strong>How long we keep it.</strong> We keep your details until
-              you unsubscribe or ask us to delete them. If you unsubscribe, we
-              keep a minimal record of your email address only so that we do not
-              email you again by mistake.
-            </p>
-            <p className="mt-3">
-              <strong>Your choices and rights.</strong> Every email has a
-              one-click unsubscribe link and a link to change what you receive.
-              Under POPIA (the Protection of Personal Information Act, 4 of
-              2013) you can ask to see the information we hold about you, ask us
-              to correct or delete it, and withdraw your consent at any time.
-              Email our Information Officer, Kgomotso Dibetso, at{" "}
-              <a
-                href="mailto:kgomotso@tshiamisoastronauts.org"
-                className="text-brand-teal hover:text-brand-orange underline"
-              >
-                kgomotso@tshiamisoastronauts.org
-              </a>
-              , or write to us at 4206 Kopanong Street, Evaton West, Gauteng. If
-              you are not happy with how we handle your information, you can
-              complain to the Information Regulator of South Africa (
-              <a
-                href="https://inforegulator.org.za"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-brand-teal hover:text-brand-orange underline"
-              >
-                inforegulator.org.za
-              </a>
-              ).
-            </p>
-            <p className="mt-3 italic">
-              We never publish learners&apos; names or photos in our emails
-              without a parent or guardian&apos;s written consent.
-            </p>
-          </section>
-
-          {/* 7 */}
           <section>
             <h2 className="text-xl font-bold text-brand-navy mb-3">
-              7. How we share your information
+              6. How we share your information
             </h2>
             <p>
               We do not sell, rent, or trade your personal information. We may
@@ -369,10 +278,10 @@ export default function PrivacyPolicyPage() {
             </p>
           </section>
 
-          {/* 8 */}
+          {/* 7 */}
           <section>
             <h2 className="text-xl font-bold text-brand-navy mb-3">
-              8. How long we keep your information
+              7. How long we keep your information
             </h2>
             <ul className="list-disc pl-6 mt-2 space-y-1">
               <li>
@@ -394,10 +303,10 @@ export default function PrivacyPolicyPage() {
             </p>
           </section>
 
-          {/* 9 */}
+          {/* 8 */}
           <section>
             <h2 className="text-xl font-bold text-brand-navy mb-3">
-              9. Your rights under POPIA
+              8. Your rights under POPIA
             </h2>
             <p>
               As a data subject you have the following rights, which you may
@@ -442,10 +351,10 @@ export default function PrivacyPolicyPage() {
             </p>
           </section>
 
-          {/* 10 */}
+          {/* 9 */}
           <section>
             <h2 className="text-xl font-bold text-brand-navy mb-3">
-              10. Information Regulator
+              9. Information Regulator
             </h2>
             <p>
               If you are not satisfied with our response, you may contact the
@@ -464,10 +373,10 @@ export default function PrivacyPolicyPage() {
             </address>
           </section>
 
-          {/* 11 */}
+          {/* 10 */}
           <section>
             <h2 className="text-xl font-bold text-brand-navy mb-3">
-              11. Changes to this policy
+              10. Changes to this policy
             </h2>
             <p>
               We may update this Privacy Policy from time to time. Any changes
