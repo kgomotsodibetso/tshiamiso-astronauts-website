@@ -52,9 +52,8 @@ export default function CookieBanner() {
           <p className="font-bold text-white">Your cookie choices</p>
           <p className="mt-1">
             We use Google Analytics, Google Ads and Microsoft Clarity cookies to see which pages people read, how they
-            use the site and which adverts work, and to show our adverts to past visitors. Microsoft Clarity stays off
-            until you accept. In the EEA and UK the Google cookies do too; everywhere else they are on unless you
-            decline. You can change your choice at any time from Cookie settings in the footer.{" "}
+            use the site and which adverts work, and to show our adverts to past visitors. In the EEA and UK these
+            stay off until you accept; everywhere else they are on unless you decline. You can change your choice at any time from Cookie settings in the footer.{" "}
             <Link href="/privacy" className="text-brand-light-teal underline hover:text-white">
               Read our Privacy Policy
             </Link>

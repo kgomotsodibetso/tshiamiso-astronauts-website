@@ -12,9 +12,10 @@ declare global {
 
 let loaded = false;
 
-// Microsoft Clarity records clicks, scrolling and sessions and sets cookies, so it stays completely off,
-// with no request to Microsoft, until the visitor has chosen Accept in the cookie banner. This holds for
-// every visitor, not only the EEA and UK, so it needs no location check.
+// Microsoft Clarity records clicks, scrolling and sessions and sets cookies. It follows the same rule as
+// the Google cookies: in the EEA and UK it stays completely off (no request to Microsoft) until the visitor
+// chooses Accept; everywhere else it is on unless the visitor chooses Decline. The visitor's country comes
+// from /api/region (Cloudflare's country header). If the country cannot be told, the opt-in rule applies.
 function load(projectId: string) {
   if (loaded) return;
   loaded = true;
@@ -49,16 +50,36 @@ function stop() {
   }
 }
 
+async function needsOptIn(): Promise<boolean> {
+  try {
+    const res = await fetch("/api/region", { cache: "no-store" });
+    if (!res.ok) return true;
+    const data = (await res.json()) as { optIn?: boolean };
+    return data.optIn !== false;
+  } catch {
+    return true;
+  }
+}
+
 export default function ClarityLoader({ enabled, projectId }: { enabled: boolean; projectId: string }) {
   useEffect(() => {
     if (!enabled) return;
-    const sync = () => {
-      if (readConsent()?.ads === true) load(projectId);
-      else if (loaded) stop();
+    let cancelled = false;
+    const sync = async () => {
+      const choice = readConsent();
+      if (choice?.ads === true) return load(projectId);
+      if (choice?.ads === false) return loaded ? stop() : undefined;
+      // No choice yet: on by default only outside the EEA and UK.
+      if (await needsOptIn()) return;
+      if (!cancelled && readConsent() === null) load(projectId);
     };
-    sync();
-    window.addEventListener(COOKIE_ACK_EVENT, sync);
-    return () => window.removeEventListener(COOKIE_ACK_EVENT, sync);
+    void sync();
+    const onAck = () => void sync();
+    window.addEventListener(COOKIE_ACK_EVENT, onAck);
+    return () => {
+      cancelled = true;
+      window.removeEventListener(COOKIE_ACK_EVENT, onAck);
+    };
   }, [enabled, projectId]);
 
   return null;
