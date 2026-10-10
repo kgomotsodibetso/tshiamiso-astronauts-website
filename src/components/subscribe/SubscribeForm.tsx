@@ -293,7 +293,7 @@ export default function SubscribeForm({ variant, placement, onSubmitted, stacked
           />
           <span>
             {CONSENT_TEXT[variant]}{" "}
-            <Link href="/privacy" target="_blank" rel="noopener" className="font-semibold text-brand-navy underline hover:text-brand-teal">
+            <Link href="/privacy#newsletter-and-emails" target="_blank" rel="noopener" className="font-semibold text-brand-navy underline hover:text-brand-teal">
               Privacy Policy<span className="sr-only"> (opens in a new tab)</span>
             </Link>
           </span>
