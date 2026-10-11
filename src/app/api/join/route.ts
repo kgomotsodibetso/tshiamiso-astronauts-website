@@ -1,10 +1,11 @@
 import { createHmac } from "crypto";
 import { NextResponse, type NextRequest } from "next/server";
-import { JOIN_MESSAGES } from "@/config/join";
+import { FAMILY_BOARD, JOIN_MESSAGES } from "@/config/join";
 import { clientIpFrom } from "@/lib/clientIp";
 import { createFamilyRow } from "@/lib/join/monday";
 import { honeypotFilled, submittedTooFast, validateJoin, type JoinBody } from "@/lib/join/validate";
 import { joinIpRatelimit, joinPhoneRatelimit } from "@/lib/ratelimit";
+import { sendFamilySignupNotification } from "@/lib/resend";
 import { verifyTurnstile } from "@/lib/subscribe/turnstile";
 
 export const dynamic = "force-dynamic";
@@ -82,8 +83,24 @@ export async function POST(req: NextRequest) {
 
   // 6. Save to the private board.
   try {
-    const id = await createFamilyRow(family);
+    const { id, callDue } = await createFamilyRow(family);
     console.log(`[Join] created item ${id} source=${family.source}`);
+
+    // 7. Staff alert. The family is already saved, so a failed email must never turn this into an error.
+    try {
+      await sendFamilySignupNotification({
+        parentName: family.name,
+        phone: family.phone,
+        contactVia: family.contactVia,
+        bestTime: family.bestTime,
+        programmes: family.programmes,
+        source: family.source,
+        callDue,
+        itemUrl: FAMILY_BOARD.itemUrl(id),
+      });
+    } catch (err) {
+      console.error(`[Join] staff alert failed for item ${id}:`, (err as Error).message);
+    }
     return json({ ok: true });
   } catch (err) {
     console.error(`[Join] save failed: ${(err as Error).message}`);

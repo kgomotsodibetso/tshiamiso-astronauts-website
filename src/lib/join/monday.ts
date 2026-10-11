@@ -17,7 +17,7 @@ const sastParts = (d: Date) =>
     .format(d)
     .replace(",", ""); // "YYYY-MM-DD HH:mm"
 
-export async function createFamilyRow(f: CleanJoin): Promise<string> {
+export async function createFamilyRow(f: CleanJoin): Promise<{ id: string; callDue: string }> {
   const token = process.env.MONDAY_API_TOKEN;
   if (!token) throw new Error("MONDAY_API_TOKEN is not set");
 
@@ -25,6 +25,7 @@ export async function createFamilyRow(f: CleanJoin): Promise<string> {
   const now = new Date();
   const due = new Date(now.getTime() + FAMILY_BOARD.callDueDays * 24 * 60 * 60 * 1000);
 
+  const callDue = sastParts(due).slice(0, 10);
   const values: Record<string, unknown> = {
     [c.relationship]: { label: f.relationship },
     [c.phone]: { phone: f.phone, countryShortName: "ZA" },
@@ -41,7 +42,7 @@ export async function createFamilyRow(f: CleanJoin): Promise<string> {
     [c.consentAt]: `${sastParts(now)} SAST`,
     [c.submittedVia]: FAMILY_BOARD.submittedVia,
     [c.followUpStatus]: { label: FAMILY_BOARD.followUpStatusNew },
-    [c.callDue]: { date: sastParts(due).slice(0, 10) },
+    [c.callDue]: { date: callDue },
   };
   if (f.email) values[c.email] = { email: f.email, text: f.email };
   if (f.area) values[c.area] = f.area;
@@ -70,5 +71,5 @@ export async function createFamilyRow(f: CleanJoin): Promise<string> {
   }
   const id = json.data?.create_item?.id;
   if (!id) throw new Error("monday: no item id returned");
-  return id;
+  return { id, callDue };
 }

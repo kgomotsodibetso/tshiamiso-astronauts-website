@@ -36,6 +36,7 @@ export const FAMILY_BOARD = {
     consentAt: "text_mm8192ge",
     submittedVia: "text_mm81t46n",
   },
+  itemUrl: (itemId: string) => `https://tshiamisoastronauts.monday.com/boards/5105828999/pulses/${itemId}`,
   followUpStatusNew: "Not yet called",
   callDueDays: 7,
   submittedVia: "Website form",
