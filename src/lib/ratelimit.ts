@@ -29,3 +29,8 @@ export const payfastRatelimit = makeRatelimit("rl:payfast", Ratelimit.slidingWin
 // (stops anyone using us to flood one inbox, and protects the 100 emails a day Resend allows).
 export const subscribeIpRatelimit = makeRatelimit("rl:subscribe-ip", Ratelimit.slidingWindow(5, "1 h"));
 export const subscribeEmailRatelimit = makeRatelimit("rl:subscribe-email", Ratelimit.slidingWindow(3, "1 d"));
+
+// Join form: 15 sign-ups an hour per IP (a school desk or a shared hotspot may sign up several families),
+// and 3 a day per cell number (stops one number being flooded, and a double-tap adds nothing).
+export const joinIpRatelimit = makeRatelimit("rl:join-ip", Ratelimit.slidingWindow(15, "1 h"));
+export const joinPhoneRatelimit = makeRatelimit("rl:join-phone", Ratelimit.slidingWindow(3, "1 d"));

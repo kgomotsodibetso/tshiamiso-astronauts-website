@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { BookOpen, GraduationCap, Users } from "lucide-react";
-import { getJoinFormConfig, SUPPORT_EMAIL } from "@/config/join";
-import JoinCta from "./JoinCta";
+import JoinForm from "@/components/join/JoinForm";
 
 const TITLE = "Join the Astronauts | Tshiamiso Astronauts";
 const DESCRIPTION =
@@ -23,8 +21,7 @@ export const metadata: Metadata = {
   },
 };
 
-// This page is static (built once, served from the CDN). The sign-up form address is read when the site is built,
-// so after changing JOIN_FORM_URL, redeploy. The ?s= source is read in the browser by JoinCta.
+// This page is static (built once, served from the CDN). The ?s= source is read in the browser by the form.
 
 const CARDS = [
   {
@@ -52,8 +49,6 @@ const STEPS = [
 ];
 
 export default function JoinPage() {
-  const { formUrl, opensOn } = getJoinFormConfig();
-
   return (
     <>
       <section className="bg-brand-navy px-6 py-16 sm:py-20">
@@ -65,6 +60,12 @@ export default function JoinPage() {
           <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white">
             Tell us about your family and we will help you find the right place to start.
           </p>
+          <a
+            href="#family-form"
+            className="mt-8 inline-flex min-h-[48px] items-center justify-center rounded-lg bg-brand-orange px-8 py-3 text-lg font-bold text-brand-navy hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            Tell us about your family
+          </a>
         </div>
       </section>
 
@@ -101,32 +102,13 @@ export default function JoinPage() {
         </div>
       </section>
 
-      <section className="bg-brand-white px-6 py-12 sm:py-16">
-        <div className="mx-auto max-w-2xl text-center">
-          {formUrl ? (
-            <JoinCta />
-          ) : (
-            <p className="rounded-2xl bg-brand-card p-6 text-lg leading-relaxed text-brand-navy" role="status">
-              {opensOn ? `Our sign-up form opens on ${opensOn}.` : "Our sign-up form opens soon."} Email{" "}
-              <a href={`mailto:${SUPPORT_EMAIL}`} className="font-bold underline">
-                {SUPPORT_EMAIL}
-              </a>{" "}
-              to tell us about your family.
-            </p>
-          )}
-
-          <p className="mt-8 text-sm leading-relaxed text-brand-navy">
-            We use what you tell us only to contact you about TA programmes for your family. We do not ask for photo
-            permission on this form. Read our{" "}
-            <Link href="/privacy" className="font-semibold underline">
-              Privacy Policy
-            </Link>
-            . Questions, or want your details removed? Email our Information Officer at{" "}
-            <a href={`mailto:${SUPPORT_EMAIL}`} className="font-semibold underline">
-              {SUPPORT_EMAIL}
-            </a>
-            .
-          </p>
+      <section id="family-form" className="scroll-mt-20 bg-brand-white px-6 py-12 sm:py-16">
+        <div className="mx-auto max-w-2xl">
+          <h2 className="text-2xl font-bold text-brand-navy md:text-3xl">Tell us about your family</h2>
+          <p className="mb-6 mt-2 text-brand-navy">It takes about 5 minutes. A member of our team will call you within 7 days.</p>
+          <div className="rounded-2xl bg-brand-card p-5 sm:p-8">
+            <JoinForm />
+          </div>
         </div>
       </section>
     </>
