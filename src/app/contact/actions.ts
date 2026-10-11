@@ -1,6 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
+import { clientIpFrom } from "@/lib/clientIp";
 import { formRatelimit } from "@/lib/ratelimit";
 import { sendContactConfirmation, sendContactNotification } from "@/lib/resend";
 
@@ -142,7 +143,7 @@ export async function submitContactForm(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const headersList = await headers();
-    const ip = headersList.get("x-forwarded-for")?.split(",")[0].trim() ?? "anonymous";
+    const ip = clientIpFrom(headersList) ?? "anonymous";
 
     let allowed = true;
     try {

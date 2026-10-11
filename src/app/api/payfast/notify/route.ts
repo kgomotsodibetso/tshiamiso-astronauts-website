@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
+import { clientIpFrom } from "@/lib/clientIp";
 import { payfastRatelimit } from "@/lib/ratelimit";
 import { sendDonorReceipt, sendDonorNotification } from "@/lib/resend";
 
@@ -63,9 +64,9 @@ function verifySignature(
 export async function POST(req: NextRequest) {
   try {
     // ── 1. Rate limit ───────────────────────────────────────────────────────
-    const forwardedFor = req.headers.get("x-forwarded-for");
-    const realIp = req.headers.get("x-real-ip");
-    const sourceIp = (forwardedFor ? forwardedFor.split(",")[0] : realIp ?? "").trim();
+    // Behind Cloudflare, x-forwarded-for starts with a Cloudflare edge address, not PayFast's.
+    // The real sender is in cf-connecting-ip.
+    const sourceIp = clientIpFrom(req.headers) ?? "";
 
     const { success: allowed } = await payfastRatelimit.limit(sourceIp || "anonymous");
     if (!allowed) {

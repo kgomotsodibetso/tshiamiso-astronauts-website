@@ -1,5 +1,9 @@
 "use server";
 
+import { headers } from "next/headers";
+import { clientIpFrom } from "@/lib/clientIp";
+import { formRatelimit } from "@/lib/ratelimit";
+import { verifyTurnstile } from "@/lib/subscribe/turnstile";
 import { sendVolunteerConfirmation, sendVolunteerNotification } from "@/lib/resend";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,6 +36,32 @@ const LANGUAGE_ID_MAP: Record<string, number> = {
 };
 const VALID_LANGUAGES = Object.keys(LANGUAGE_ID_MAP);
 
+// ── Upload checks ──────────────────────────────────────────────────────────────
+// Only CVs and qualification documents are accepted. The extension, size and the file's own first
+// bytes must all agree, so a renamed program or script is turned away.
+const MAX_FILE_BYTES = 4 * 1024 * 1024;
+const FILE_RULES: Record<string, { magic: number[][]; label: string }> = {
+  pdf:  { magic: [[0x25, 0x50, 0x44, 0x46]], label: "PDF" },
+  doc:  { magic: [[0xd0, 0xcf, 0x11, 0xe0]], label: "DOC" },
+  docx: { magic: [[0x50, 0x4b, 0x03, 0x04]], label: "DOCX" },
+  jpg:  { magic: [[0xff, 0xd8, 0xff]], label: "JPG" },
+  jpeg: { magic: [[0xff, 0xd8, 0xff]], label: "JPG" },
+  png:  { magic: [[0x89, 0x50, 0x4e, 0x47]], label: "PNG" },
+};
+
+async function checkUpload(file: File | null, allowed: string[], what: string): Promise<string | null> {
+  if (!file || file.size === 0) return null;
+  if (file.size > MAX_FILE_BYTES) return `${what} must be smaller than 4 MB.`;
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+  const rule = FILE_RULES[ext];
+  if (!rule || !allowed.includes(ext)) return `${what}: please upload a ${allowed.map((e) => e.toUpperCase()).join(", ")} file.`;
+  const head = new Uint8Array(await file.slice(0, 8).arrayBuffer());
+  if (!rule.magic.some((m) => m.every((b, i) => head[i] === b))) return `${what} does not look like a valid ${rule.label} file.`;
+  return null;
+}
+
+const safeFileName = (name: string) => name.replace(/[^\w.\- ]+/g, "_").slice(-100) || "upload";
+
 async function uploadFileToMonday(
   token: string,
   itemId: string,
@@ -44,7 +74,7 @@ async function uploadFileToMonday(
 
   const fd = new FormData();
   fd.append("query", query);
-  fd.append("variables[file]", file, file.name);
+  fd.append("variables[file]", file, safeFileName(file.name));
 
   const res = await fetch("https://api.monday.com/v2/file", {
     method: "POST",
@@ -67,21 +97,41 @@ export async function submitVolunteerApplication(
   const token = process.env.MONDAY_API_TOKEN;
   const boardId = process.env.MONDAY_VOLUNTEER_BOARD_ID;
 
+  // Bot and abuse checks first: rate limit by visitor, then the Cloudflare human check.
+  const ip = clientIpFrom(await headers());
+  try {
+    const { success } = await formRatelimit.limit(ip ?? "anonymous");
+    if (!success) return { success: false, error: "Too many requests. Please try again later." };
+  } catch (err) {
+    console.warn("[Volunteer] Rate limit check failed, failing open:", err);
+  }
+  const human = await verifyTurnstile(formData.get("turnstileToken"), ip);
+  if (!human.ok) {
+    console.warn(`[Volunteer] refused: captcha ${human.reason}`);
+    return { success: false, error: "We couldn't confirm you're human. Please refresh the page and try again." };
+  }
+
   if (!token || !boardId) {
     console.error("[Volunteer] Missing MONDAY_API_TOKEN or MONDAY_VOLUNTEER_BOARD_ID");
     return { success: false, error: "Server configuration error. Please contact us directly." };
   }
 
-  const firstName = (formData.get("firstName") as string)?.trim() ?? "";
-  const lastName = (formData.get("lastName") as string)?.trim() ?? "";
-  const email = (formData.get("email") as string)?.trim() ?? "";
-  const phone = (formData.get("phone") as string)?.trim() ?? "";
-  const role = (formData.get("role") as string) ?? "";
-  const availability = (formData.get("availability") as string) ?? "";
-  const message = (formData.get("message") as string)?.trim() ?? "";
-  const languages: string[] = JSON.parse((formData.get("languages") as string) || "[]");
-  const cvFile = formData.get("cv") as File | null;
-  const qualFile = formData.get("qualification") as File | null;
+  const firstName = String(formData.get("firstName") ?? "").trim();
+  const lastName = String(formData.get("lastName") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim();
+  const phone = String(formData.get("phone") ?? "").trim();
+  const role = String(formData.get("role") ?? "");
+  const availability = String(formData.get("availability") ?? "");
+  const message = String(formData.get("message") ?? "").trim();
+  let languages: string[] = [];
+  try {
+    const parsed = JSON.parse((formData.get("languages") as string) || "[]");
+    if (Array.isArray(parsed)) languages = parsed.filter((l): l is string => typeof l === "string");
+  } catch { /* ignore a malformed list */ }
+  const cvEntry = formData.get("cv");
+  const qualEntry = formData.get("qualification");
+  const cvFile = cvEntry instanceof File ? cvEntry : null;
+  const qualFile = qualEntry instanceof File ? qualEntry : null;
 
   if (!firstName || firstName.length > 100) return { success: false, error: "First name is required (max 100 chars)." };
   if (!lastName || lastName.length > 100) return { success: false, error: "Last name is required (max 100 chars)." };
@@ -90,6 +140,11 @@ export async function submitVolunteerApplication(
   if (!role || !ROLES.includes(role)) return { success: false, error: "Please select a valid role." };
   if (!availability || !AVAILABILITY.includes(availability)) return { success: false, error: "Please select a valid availability option." };
   if (message && message.length > 2000) return { success: false, error: "Message must be under 2000 characters." };
+
+  const uploadError =
+    (await checkUpload(cvFile, ["pdf", "doc", "docx"], "CV")) ??
+    (await checkUpload(qualFile, ["pdf", "doc", "docx", "jpg", "jpeg", "png"], "Qualification"));
+  if (uploadError) return { success: false, error: uploadError };
 
   const validLanguages = languages.filter((l) => VALID_LANGUAGES.includes(l));
   const fullName = `${firstName} ${lastName}`;

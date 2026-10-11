@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import TurnstileWidget, { type TurnstileHandle } from "@/components/TurnstileWidget";
 import Link from "next/link";
 import Image from "next/image";
 import { BookOpen, Handshake, Sprout, Trophy, Rocket } from "lucide-react";
@@ -80,6 +81,8 @@ export default function VolunteerPage() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const turnstileToken = useRef("");
+  const turnstile = useRef<TurnstileHandle>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -100,6 +103,7 @@ export default function VolunteerPage() {
     formData.append("availability", availability);
     formData.append("languages", JSON.stringify(languages));
     formData.append("message", message.trim());
+    formData.append("turnstileToken", turnstileToken.current);
     if (cvFile) formData.append("cv", cvFile, cvFile.name);
     if (qualFile) formData.append("qualification", qualFile, qualFile.name);
 
@@ -113,6 +117,7 @@ export default function VolunteerPage() {
     } catch {
       setError("Something went wrong. Please try again or contact us directly.");
     } finally {
+      turnstile.current?.reset(); // each token works once
       setLoading(false);
     }
   }
@@ -412,7 +417,7 @@ export default function VolunteerPage() {
                     onChange={(e) => setCvFile(e.target.files?.[0] ?? null)}
                     className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-navy file:text-white hover:file:opacity-90 cursor-pointer"
                   />
-                  <p className="text-xs text-gray-400 mt-1">PDF, DOC or DOCX</p>
+                  <p className="text-xs text-gray-400 mt-1">PDF, DOC or DOCX, max 4 MB</p>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-600 mb-1">
@@ -424,9 +429,11 @@ export default function VolunteerPage() {
                     onChange={(e) => setQualFile(e.target.files?.[0] ?? null)}
                     className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-navy file:text-white hover:file:opacity-90 cursor-pointer"
                   />
-                  <p className="text-xs text-gray-400 mt-1">PDF, DOC, DOCX or image</p>
+                  <p className="text-xs text-gray-400 mt-1">PDF, DOC, DOCX or image, max 4 MB</p>
                 </div>
               </div>
+
+              <TurnstileWidget ref={turnstile} onToken={(t) => (turnstileToken.current = t)} />
 
               {error && (
                 <p className="text-red-500 text-sm font-semibold text-center">{error}</p>
