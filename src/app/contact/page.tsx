@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import TurnstileWidget, { type TurnstileHandle } from "@/components/TurnstileWidget";
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Phone, MapPin, Rocket } from "lucide-react";
@@ -80,6 +81,8 @@ export default function ContactPage() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const turnstileToken = useRef("");
+  const turnstile = useRef<TurnstileHandle>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -99,6 +102,7 @@ export default function ContactPage() {
         phone: phone.trim(),
         subject,
         message: message.trim(),
+        turnstileToken: turnstileToken.current,
       });
       if (result.success) {
         setSubmitted(true);
@@ -110,6 +114,7 @@ export default function ContactPage() {
     } catch {
       setError("Something went wrong. Please try again or email us directly at info@tshiamisoastronauts.org");
     } finally {
+      turnstile.current?.reset(); // each token works once
       setLoading(false);
     }
   }
@@ -348,6 +353,8 @@ export default function ContactPage() {
                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-brand-navy focus:outline-none focus:border-brand-teal resize-none"
                   />
                 </div>
+
+                <TurnstileWidget ref={turnstile} onToken={(t) => (turnstileToken.current = t)} />
 
                 {error && (
                   <p className="text-red-500 text-sm font-semibold">{error}</p>

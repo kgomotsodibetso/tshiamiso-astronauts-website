@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { clientIpFrom } from "@/lib/clientIp";
+import { verifyTurnstile } from "@/lib/subscribe/turnstile";
 import { formRatelimit } from "@/lib/ratelimit";
 
 // ── Column IDs ────────────────────────────────────────────────────────────────
@@ -103,6 +104,7 @@ export interface RsvpInput {
   phone: string;
   attendees: number;
   organisation: string;
+  turnstileToken?: string;
 }
 
 // ── Server-side event verification ───────────────────────────────────────────
@@ -170,6 +172,12 @@ export async function submitRsvp(
   const ip = clientIpFrom(headersList) ?? "anonymous";
   const { success: allowed } = await formRatelimit.limit(ip);
   if (!allowed) return { success: false, error: "Too many requests. Please try again later." };
+
+  const human = await verifyTurnstile(input.turnstileToken, ip);
+  if (!human.ok) {
+    console.warn(`[RSVP] refused: captcha ${human.reason}`);
+    return { success: false, error: "We couldn't confirm you're human. Please refresh the page and try again." };
+  }
 
   const token       = process.env.MONDAY_API_TOKEN;
   const rsvpBoardId = process.env.MONDAY_RSVP_BOARD_ID;

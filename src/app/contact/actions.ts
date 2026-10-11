@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { clientIpFrom } from "@/lib/clientIp";
+import { verifyTurnstile } from "@/lib/subscribe/turnstile";
 import { formRatelimit } from "@/lib/ratelimit";
 import { sendContactConfirmation, sendContactNotification } from "@/lib/resend";
 
@@ -12,6 +13,7 @@ export interface ContactInput {
   phone: string;
   subject: string;
   message: string;
+  turnstileToken?: string;
 }
 
 // ── Server-side validation ─────────────────────────────────────────────────────
@@ -154,6 +156,12 @@ export async function submitContactForm(
     }
 
     if (!allowed) return { success: false, error: "Too many requests. Please try again later." };
+
+    const human = await verifyTurnstile(input.turnstileToken, ip);
+    if (!human.ok) {
+      console.warn(`[Contact] refused: captcha ${human.reason}`);
+      return { success: false, error: "We couldn't confirm you're human. Please refresh the page and try again." };
+    }
 
     const validationError = validate(input);
     if (validationError) return { success: false, error: validationError };

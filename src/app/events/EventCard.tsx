@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
+import TurnstileWidget, { type TurnstileHandle } from "@/components/TurnstileWidget";
 import { submitRsvp, type MondayEvent } from "./actions";
 import { formatDate } from "@/lib/formatDate";
 
@@ -98,6 +99,8 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const turnstileToken = useRef("");
+  const turnstile = useRef<TurnstileHandle>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -115,7 +118,9 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
       phone: phone.trim(),
       attendees: parseInt(attendees, 10) || 1,
       organisation: organisation.trim(),
+      turnstileToken: turnstileToken.current,
     });
+    turnstile.current?.reset(); // each token works once
     setLoading(false);
     if (result.success) {
       setSubmitted(true);
@@ -219,6 +224,7 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
                   className="w-full px-3 py-2.5 border-2 border-gray-200 rounded-xl text-brand-navy text-sm focus:outline-none focus:border-brand-orange"
                 />
               </div>
+              <TurnstileWidget ref={turnstile} onToken={(t) => (turnstileToken.current = t)} />
               {error && <p className="text-red-500 text-xs font-semibold">{error}</p>}
               <button
                 type="submit" disabled={loading}
