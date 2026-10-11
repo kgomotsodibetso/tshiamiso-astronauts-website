@@ -80,6 +80,7 @@ function FormInner() {
 
   const mountedAt = useRef(0);
   const tokenRef = useRef("");
+  const widgetProblem = useRef("");
   const widget = useRef<TurnstileHandle>(null);
   const [f, setF] = useState<Form>(EMPTY);
   const [honeypot, setHoneypot] = useState("");
@@ -109,9 +110,17 @@ function FormInner() {
       setBusy(true);
       try {
         // The security check normally finishes in a second or two. Give it a moment before giving up.
-        for (let i = 0; i < 24 && !tokenRef.current; i++) await new Promise((r) => setTimeout(r, 250));
+        for (let i = 0; i < 24 && !tokenRef.current && !widgetProblem.current; i++) await new Promise((r) => setTimeout(r, 250));
         if (!tokenRef.current) {
-          setErrors({ form: `The security check has not finished. Please wait a moment and try again, or email ${SUPPORT_EMAIL}.`, ref: "captcha-pending" });
+          // The Ref says which it was, so a screenshot is enough to tell a missing key from a blocked address.
+          const ref = widgetProblem.current ? `captcha-widget-${widgetProblem.current}` : "captcha-pending";
+          setErrors({
+            form: widgetProblem.current
+              ? `The security check could not start. Please refresh the page and try again, or email ${SUPPORT_EMAIL}.`
+              : `The security check has not finished. Please wait a moment and try again, or email ${SUPPORT_EMAIL}.`,
+            ref,
+          });
+          widgetProblem.current = "";
           widget.current?.reset();
           return;
         }
@@ -307,7 +316,14 @@ function FormInner() {
         </section>
       </div>
 
-      <TurnstileWidget ref={widget} onToken={(t) => (tokenRef.current = t)} />
+      <TurnstileWidget
+        ref={widget}
+        onToken={(t) => {
+          tokenRef.current = t;
+          if (t) widgetProblem.current = "";
+        }}
+        onProblem={(reason) => (widgetProblem.current = reason)}
+      />
 
       {errors.form && (
         <p role="alert" className="mt-4 rounded-lg border border-red-800 bg-white p-3 text-sm font-semibold text-red-800">
