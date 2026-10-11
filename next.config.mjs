@@ -25,6 +25,9 @@ const nextConfig = {
       { source: "/support-literacy-and-learning-for-the-youth-volunteer", destination: "/volunteer", permanent: true },
       { source: "/get-in-touch-support-literacy", destination: "/contact", permanent: true },
       { source: "/support-our-cause-your-donation-matters", destination: "/donate", permanent: true },
+      // Short links for print and WhatsApp. Temporary on purpose, so they can be re-pointed later. The query string (?s=) is kept.
+      { source: "/signup", destination: "/join", permanent: false },
+      { source: "/families", destination: "/join", permanent: false },
     ];
   },
   async rewrites() {
