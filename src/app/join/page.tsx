@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
-import { BookOpen, GraduationCap, Users } from "lucide-react";
+import Link from "next/link";
+import { Clock, MapPin, Wallet } from "lucide-react";
 import JoinForm from "@/components/join/JoinForm";
+import { SUPPORT_EMAIL } from "@/config/join";
 
-const TITLE = "Join the Astronauts | Tshiamiso Astronauts";
+const TITLE = "Homework Assistance in Evaton West | Tshiamiso Astronauts";
 const DESCRIPTION =
-  "Tell Tshiamiso Astronauts about your family. Reading clubs, homework help, digital skills and university application support for learners and adults in Evaton West.";
+  "Homework help after school in Evaton West. Trained tutors, weekdays 14h00 to 17h00, R150 per learner per month. Register your child with Tshiamiso Astronauts.";
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: "https://tshiamisoastronauts.org/join" },
   openGraph: {
-    title: "Join the Astronauts",
-    description: "Tell us about your family and we will call you within 7 days.",
+    title: "Homework help after school. Join the Astronauts.",
+    description: DESCRIPTION,
     url: "https://tshiamisoastronauts.org/join",
     siteName: "Tshiamiso Astronauts NPC",
     images: [{ url: "/images/social/social-media.png", width: 1200, height: 630, alt: "Tshiamiso Astronauts" }],
@@ -23,29 +25,17 @@ export const metadata: Metadata = {
 
 // This page is static (built once, served from the CDN). The ?s= source is read in the browser by the form.
 
-const CARDS = [
-  {
-    Icon: BookOpen,
-    title: "For learners",
-    body: "Kids Reading Club, homework help for Grades 1 to 12, and a place to grow in confidence with other young readers.",
-  },
-  {
-    Icon: Users,
-    title: "For parents and guardians",
-    body: "Steady support for your child outside school, and one friendly person at TA you can talk to. Tell us about your family and we will explain what fits.",
-  },
-  {
-    Icon: GraduationCap,
-    title: "For older learners and adults",
-    body: "University application help for matriculants, digital skills in coding, UX and data, and the TA Book Club.",
-  },
+const FACTS = [
+  { Icon: Clock, label: "When", value: "Weekdays, 14h00 to 17h00" },
+  { Icon: MapPin, label: "Where", value: "4206 Kopanong Street, Evaton West" },
+  { Icon: Wallet, label: "Cost", value: "R150 per learner per month" },
 ];
 
 const STEPS = [
+  "Register, about 3 minutes.",
   "We call you within 7 days.",
-  "Your child comes to a taster session.",
-  "After we speak, we set up the debit order.",
-  "Learning starts.",
+  "Your child starts.",
+  "Pay by EFT or cash at our centre.",
 ];
 
 export default function JoinPage() {
@@ -54,17 +44,18 @@ export default function JoinPage() {
       <section className="bg-brand-navy px-6 py-16 sm:py-20">
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-brand-light-teal">
-            Tshiamiso Astronauts, Evaton West
+            Homework Assistance, Evaton West
           </p>
-          <h1 className="text-balance text-4xl font-bold leading-tight text-white md:text-5xl">Join the Astronauts</h1>
+          <h1 className="text-balance text-4xl font-bold leading-tight text-white md:text-5xl">Homework help after school.</h1>
+          <p className="mt-3 text-2xl font-semibold text-brand-light-teal md:text-3xl">Join the Astronauts.</p>
           <p className="mx-auto mt-5 max-w-xl text-lg leading-relaxed text-white">
-            Tell us about your family and we will help you find the right place to start.
+            Trained tutors help learners finish their homework, understand their schoolwork and prepare for tests.
           </p>
           <a
-            href="#family-form"
+            href="#register"
             className="mt-8 inline-flex min-h-[48px] items-center justify-center rounded-lg bg-brand-orange px-8 py-3 text-lg font-bold text-brand-navy hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
           >
-            Tell us about your family
+            Register your child
           </a>
         </div>
       </section>
@@ -72,11 +63,11 @@ export default function JoinPage() {
       <section className="bg-brand-white px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-5xl">
           <ul className="grid gap-5 md:grid-cols-3">
-            {CARDS.map(({ Icon, title, body }) => (
-              <li key={title} className="rounded-2xl bg-brand-card p-6">
+            {FACTS.map(({ Icon, label, value }) => (
+              <li key={label} className="rounded-2xl bg-brand-card p-6">
                 <Icon className="h-8 w-8 text-brand-teal" aria-hidden="true" />
-                <h2 className="mt-4 text-xl font-bold text-brand-navy">{title}</h2>
-                <p className="mt-2 leading-relaxed text-brand-navy">{body}</p>
+                <h2 className="mt-4 text-sm font-semibold uppercase tracking-widest text-brand-navy">{label}</h2>
+                <p className="mt-1 text-xl font-bold leading-snug text-brand-navy">{value}</p>
               </li>
             ))}
           </ul>
@@ -102,13 +93,31 @@ export default function JoinPage() {
         </div>
       </section>
 
-      <section id="family-form" className="scroll-mt-20 bg-brand-white px-6 py-12 sm:py-16">
+      <section className="bg-brand-card px-6 py-8">
+        <p className="mx-auto max-w-3xl text-center text-lg font-semibold leading-relaxed text-brand-navy">
+          Also available to Homework Assistance families: Kids Reading Club, TA Book Club and Digital Skills.
+        </p>
+      </section>
+
+      <section id="register" className="scroll-mt-20 bg-brand-white px-6 py-12 sm:py-16">
         <div className="mx-auto max-w-2xl">
-          <h2 className="text-2xl font-bold text-brand-navy md:text-3xl">Tell us about your family</h2>
-          <p className="mb-6 mt-2 text-brand-navy">It takes about 5 minutes. A member of our team will call you within 7 days.</p>
+          <h2 className="text-2xl font-bold text-brand-navy md:text-3xl">Register your child</h2>
+          <p className="mb-6 mt-2 text-brand-navy">It takes about 3 minutes. A member of our team will call you within 7 days.</p>
           <div className="rounded-2xl bg-brand-card p-5 sm:p-8">
             <JoinForm />
           </div>
+          <p className="mt-8 text-sm leading-relaxed text-brand-navy">
+            Nobody asks for payment at a desk or event. We only use your details to contact you about TA programmes. Read
+            our{" "}
+            <Link href="/privacy" className="font-semibold underline">
+              Privacy Policy
+            </Link>
+            . Questions? Email{" "}
+            <a href={`mailto:${SUPPORT_EMAIL}`} className="font-semibold underline">
+              {SUPPORT_EMAIL}
+            </a>
+            .
+          </p>
         </div>
       </section>
     </>

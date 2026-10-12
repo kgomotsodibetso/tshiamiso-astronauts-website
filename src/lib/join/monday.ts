@@ -27,14 +27,11 @@ export async function createFamilyRow(f: CleanJoin): Promise<{ id: string; callD
 
   const callDue = sastParts(due).slice(0, 10);
   const values: Record<string, unknown> = {
-    [c.relationship]: { label: f.relationship },
     [c.phone]: { phone: f.phone, countryShortName: "ZA" },
     [c.whatsapp]: { label: f.whatsapp },
-    [c.contactVia]: { labels: f.contactVia },
     [c.learnerName]: f.learnerName,
     [c.learnerSchool]: f.learnerSchool,
     [c.learnerGrade]: f.learnerGrade,
-    [c.programmes]: { labels: f.programmes },
     [c.source]: f.source,
     [c.consent]: { checked: "true" },
     [c.consentWording]: { text: JOIN_CONSENT_TEXT },
@@ -46,11 +43,7 @@ export async function createFamilyRow(f: CleanJoin): Promise<{ id: string; callD
   };
   if (f.email) values[c.email] = { email: f.email, text: f.email };
   if (f.area) values[c.area] = f.area;
-  if (f.bestTime) values[c.bestTime] = { label: f.bestTime };
-  if (f.otherLearners) values[c.otherLearners] = { text: f.otherLearners };
-  if (f.familyInterest.length) values[c.familyInterest] = { labels: f.familyInterest };
-  if (f.notes) values[c.notes] = { text: f.notes };
-  if (f.heardAbout) values[c.heardAbout] = { label: f.heardAbout };
+  if (f.otherChildren) values[c.otherChildren] = { text: f.otherChildren };
 
   const res = await fetch("https://api.monday.com/v2", {
     method: "POST",

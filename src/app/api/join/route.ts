@@ -91,9 +91,7 @@ export async function POST(req: NextRequest) {
       await sendFamilySignupNotification({
         parentName: family.name,
         phone: family.phone,
-        contactVia: family.contactVia,
-        bestTime: family.bestTime,
-        programmes: family.programmes,
+        whatsapp: family.whatsapp,
         source: family.source,
         callDue,
         itemUrl: FAMILY_BOARD.itemUrl(id),

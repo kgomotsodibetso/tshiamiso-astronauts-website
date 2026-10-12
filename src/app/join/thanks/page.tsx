@@ -14,8 +14,8 @@ export default function JoinThanksPage() {
       <div className="mx-auto max-w-xl text-center text-brand-navy">
         <h1 className="text-3xl font-bold md:text-4xl">Thank you. We have your details.</h1>
         <p className="mt-5 text-lg leading-relaxed">
-          Someone from Tshiamiso Astronauts will call you within 7 days to talk about your family and book a taster
-          session.
+          A member of our team will call you within 7 days to confirm the days and answer your questions. Nothing is paid
+          today.
         </p>
         <p className="mt-4 leading-relaxed">
           Need to change something, or have a question? Email{" "}

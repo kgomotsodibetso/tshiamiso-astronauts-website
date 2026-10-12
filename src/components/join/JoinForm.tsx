@@ -3,18 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useCallback, useEffect, useId, useRef, useState } from "react";
-import {
-  BEST_TIMES,
-  CONTACT_METHODS,
-  FAMILY_INTERESTS,
-  GRADES,
-  HEARD_ABOUT,
-  JOIN_CONSENT_TEXT,
-  JOIN_MESSAGES,
-  PROGRAMMES,
-  RELATIONSHIPS,
-  SUPPORT_EMAIL,
-} from "@/config/join";
+import { GRADES, JOIN_CONSENT_TEXT, JOIN_MESSAGES, SUPPORT_EMAIL } from "@/config/join";
 import { cleanSource } from "@/lib/join/source";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/TurnstileWidget";
 
@@ -26,27 +15,19 @@ const errorClass = "mt-1 text-sm font-semibold text-red-800";
 
 type Form = {
   name: string;
-  relationship: string;
   phone: string;
   whatsapp: string;
   email: string;
   area: string;
-  contactVia: string[];
-  bestTime: string;
   learnerName: string;
   learnerSchool: string;
   learnerGrade: string;
-  programmes: string[];
-  otherLearners: string;
-  familyInterest: string[];
-  notes: string;
-  heardAbout: string;
+  otherChildren: string;
   consent: boolean;
 };
 const EMPTY: Form = {
-  name: "", relationship: "", phone: "", whatsapp: "", email: "", area: "", contactVia: [], bestTime: "",
-  learnerName: "", learnerSchool: "", learnerGrade: "", programmes: [], otherLearners: "", familyInterest: [],
-  notes: "", heardAbout: "", consent: false,
+  name: "", phone: "", whatsapp: "", email: "", area: "",
+  learnerName: "", learnerSchool: "", learnerGrade: "", otherChildren: "", consent: false,
 };
 type Errors = Partial<Record<keyof Form | "form" | "ref", string>>;
 
@@ -56,16 +37,12 @@ const PHONE_RE = /^(?:\+27|0027|27|0)[1-8]\d{8}$/;
 function validate(f: Form): Errors {
   const e: Errors = {};
   if (!f.name.trim()) e.name = "Please enter your full name.";
-  if (!f.relationship) e.relationship = "Please choose how you are related to the learner.";
   if (!PHONE_RE.test(f.phone.replace(/[\s\-().]/g, ""))) e.phone = "Please enter a South African cell number, for example 082 123 4567.";
   if (!f.whatsapp) e.whatsapp = "Please tell us if this number is on WhatsApp.";
   if (f.email.trim() && !EMAIL_RE.test(f.email.trim())) e.email = "Please enter a valid email address, or leave it blank.";
-  if (f.contactVia.length === 0) e.contactVia = "Please choose at least one way for us to contact you.";
-  else if (f.contactVia.includes("Email") && !f.email.trim()) e.email = "You chose email, so please enter your email address.";
   if (!f.learnerName.trim()) e.learnerName = "Please enter the learner's first name and surname.";
   if (!f.learnerSchool.trim()) e.learnerSchool = "Please enter the learner's school.";
   if (!f.learnerGrade) e.learnerGrade = "Please choose the learner's grade.";
-  if (f.programmes.length === 0) e.programmes = 'Please choose at least one programme, or choose "Not sure yet".';
   if (!f.consent) e.consent = "Please tick the box so we know you agree.";
   return e;
 }
@@ -92,8 +69,6 @@ function FormInner() {
   }, []);
 
   const set = <K extends keyof Form>(k: K, v: Form[K]) => setF((cur) => ({ ...cur, [k]: v }));
-  const toggle = (k: "contactVia" | "programmes" | "familyInterest", v: string) =>
-    setF((cur) => ({ ...cur, [k]: cur[k].includes(v) ? cur[k].filter((x) => x !== v) : [...cur[k], v] }));
 
   const submit = useCallback(
     async (e: React.FormEvent) => {
@@ -157,41 +132,6 @@ function FormInner() {
   const describe = (k: keyof Errors) => (errors[k] ? id(`${k}-err`) : undefined);
   const Err = ({ k }: { k: keyof Errors }) => (errors[k] ? <p id={id(`${k}-err`)} className={errorClass}>{errors[k]}</p> : null);
 
-  const checkGroup = (
-    k: "contactVia" | "programmes" | "familyInterest",
-    legend: string,
-    options: readonly string[],
-    hint?: string,
-  ) => (
-    <fieldset id={id(k)} tabIndex={-1} aria-describedby={describe(k)} className="min-w-0">
-      <legend className={labelClass}>{legend}</legend>
-      {hint && <p className={hintClass}>{hint}</p>}
-      <div>
-        {options.map((o) => (
-          <label key={o} className="flex min-h-[44px] cursor-pointer items-center gap-3 text-base">
-            <input type="checkbox" checked={f[k].includes(o)} onChange={() => toggle(k, o)} className="h-5 w-5 shrink-0 accent-brand-teal" />
-            {o}
-          </label>
-        ))}
-      </div>
-      <Err k={k} />
-    </fieldset>
-  );
-
-  const select = (k: "relationship" | "bestTime" | "learnerGrade" | "heardAbout", label: string, options: readonly string[], optional = false) => (
-    <div>
-      <label htmlFor={id(k)} className={labelClass}>
-        {label}
-        {optional && <span className="font-normal"> (optional)</span>}
-      </label>
-      <select id={id(k)} value={f[k]} onChange={(e) => set(k, e.target.value)} aria-invalid={!!errors[k]} aria-describedby={describe(k)} className={inputClass}>
-        <option value="">Choose one</option>
-        {options.map((o) => <option key={o} value={o}>{o}</option>)}
-      </select>
-      <Err k={k} />
-    </div>
-  );
-
   const text = (
     k: "name" | "phone" | "email" | "area" | "learnerName" | "learnerSchool",
     label: string,
@@ -219,26 +159,6 @@ function FormInner() {
     </div>
   );
 
-  const area = (k: "otherLearners" | "notes", label: string, hint?: string) => (
-    <div>
-      <label htmlFor={id(k)} className={labelClass}>
-        {label} <span className="font-normal">(optional)</span>
-      </label>
-      {hint && <p className={hintClass}>{hint}</p>}
-      <textarea
-        id={id(k)}
-        rows={3}
-        maxLength={1000}
-        value={f[k]}
-        onChange={(e) => set(k, e.target.value)}
-        aria-invalid={!!errors[k]}
-        aria-describedby={describe(k)}
-        className={inputClass}
-      />
-      <Err k={k} />
-    </div>
-  );
-
   return (
     <form onSubmit={submit} noValidate className="text-brand-navy">
       {/* Honeypot: real people never see or reach this field. */}
@@ -253,7 +173,6 @@ function FormInner() {
         <section className="space-y-4" aria-labelledby={id("h-you")}>
           <h3 id={id("h-you")} className="text-lg font-bold">About you</h3>
           {text("name", "Your full name (parent or guardian)", { auto: "name", max: 100 })}
-          {select("relationship", "Your relationship to the learner(s)", RELATIONSHIPS)}
           {text("phone", "Your cell number", { type: "tel", inputMode: "tel", auto: "tel", max: 20, hint: "We will call this number within 7 days." })}
           <fieldset id={id("whatsapp")} tabIndex={-1} aria-describedby={describe("whatsapp")} className="min-w-0">
             <legend className={labelClass}>Is this number on WhatsApp?</legend>
@@ -269,36 +188,55 @@ function FormInner() {
           </fieldset>
           {text("email", "Your email address", { optional: true, type: "email", inputMode: "email", auto: "email", max: 254 })}
           {text("area", "Your area or suburb", { optional: true, auto: "address-level2", max: 100 })}
-          {checkGroup("contactVia", "How would you like us to contact you?", CONTACT_METHODS)}
-          {select("bestTime", "Best time to call", BEST_TIMES, true)}
         </section>
 
         <section className="space-y-4" aria-labelledby={id("h-learner")}>
-          <h3 id={id("h-learner")} className="text-lg font-bold">About the learner</h3>
-          {text("learnerName", "Learner 1: first name and surname", { max: 100 })}
-          {text("learnerSchool", "Learner 1: school", { max: 120 })}
-          {select("learnerGrade", "Learner 1: grade", GRADES)}
-          {checkGroup("programmes", "Learner 1: programmes of interest", PROGRAMMES, "Tick all that apply. Not sure? Choose the last option and we will help you decide.")}
-          {area("otherLearners", "Other learners", "More than one child? Write one learner per line: first name and surname, school, grade, and the programme you are interested in.")}
-        </section>
-
-        <section className="space-y-4" aria-labelledby={id("h-more")}>
-          <h3 id={id("h-more")} className="text-lg font-bold">A little more</h3>
-          {checkGroup("familyInterest", "Is anyone in your family interested in these too?", FAMILY_INTERESTS, "Optional. Tick any that apply.")}
-          {area("notes", "Anything else we should know?", "For example: home language, or days that work best.")}
-          {select("heardAbout", "How did you hear about TA?", HEARD_ABOUT, true)}
+          <h3 id={id("h-learner")} className="text-lg font-bold">About your child</h3>
+          {text("learnerName", "Learner's first name and surname", { max: 100 })}
+          {text("learnerSchool", "Learner's school", { max: 120 })}
+          <div>
+            <label htmlFor={id("learnerGrade")} className={labelClass}>Learner&apos;s grade</label>
+            <select
+              id={id("learnerGrade")}
+              value={f.learnerGrade}
+              onChange={(e) => set("learnerGrade", e.target.value)}
+              aria-invalid={!!errors.learnerGrade}
+              aria-describedby={describe("learnerGrade")}
+              className={inputClass}
+            >
+              <option value="">Choose a grade</option>
+              {GRADES.map((g) => <option key={g} value={g}>{g}</option>)}
+            </select>
+            <Err k="learnerGrade" />
+          </div>
+          <div>
+            <label htmlFor={id("otherChildren")} className={labelClass}>
+              Other children who need homework help <span className="font-normal">(optional)</span>
+            </label>
+            <p className={hintClass}>One child per line: first name and surname, school, grade.</p>
+            <textarea
+              id={id("otherChildren")}
+              rows={3}
+              maxLength={1000}
+              value={f.otherChildren}
+              onChange={(e) => set("otherChildren", e.target.value)}
+              aria-invalid={!!errors.otherChildren}
+              aria-describedby={describe("otherChildren")}
+              className={inputClass}
+            />
+            <Err k="otherChildren" />
+          </div>
         </section>
 
         <section aria-labelledby={id("h-privacy")} className="rounded-xl bg-white p-4">
           <h3 id={id("h-privacy")} className="text-lg font-bold">Privacy and photos</h3>
           <p className="mt-1 text-sm leading-relaxed">
-            We only use your details to contact you about TA programmes. We do not sell or share them. This form does not
-            give permission for photographs; we have a separate photography consent form. Read our{" "}
+            We do not sell or share your details. This form does not give permission for photographs; we have a separate
+            photography consent form. Read our{" "}
             <Link href="/privacy" target="_blank" rel="noopener" className="font-semibold underline">
               Privacy Policy<span className="sr-only"> (opens in a new tab)</span>
             </Link>
-            . Information Officer:{" "}
-            <a href={`mailto:${SUPPORT_EMAIL}`} className="font-semibold underline">{SUPPORT_EMAIL}</a>.
+            .
           </p>
           <label className="mt-3 flex cursor-pointer items-start gap-3 text-sm leading-relaxed">
             <input
@@ -337,7 +275,7 @@ function FormInner() {
         disabled={busy}
         className="mt-6 inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-brand-orange px-8 py-3 text-lg font-bold text-brand-navy hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-navy disabled:opacity-60 sm:w-auto"
       >
-        {busy ? "Sending..." : "Send my details"}
+        {busy ? "Sending..." : "Register your child"}
       </button>
     </form>
   );

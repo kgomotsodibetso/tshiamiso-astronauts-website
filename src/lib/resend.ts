@@ -118,9 +118,7 @@ export const sendVolunteerNotification = async (input: { firstName: string; last
 export const sendFamilySignupNotification = async (input: {
   parentName: string;
   phone: string;
-  contactVia: string[];
-  bestTime: string | null;
-  programmes: string[];
+  whatsapp: string;
   source: string;
   callDue: string;
   itemUrl: string;
@@ -134,9 +132,8 @@ export const sendFamilySignupNotification = async (input: {
         <h2 style="color: #ff6b35;">New family sign-up</h2>
         <p><strong>Call by:</strong> ${esc(input.callDue)} (within 7 days)</p>
         <p><strong>Parent or guardian:</strong> ${esc(input.parentName)}</p>
-        <p><strong>Cell number:</strong> ${esc(input.phone)}</p>
-        <p><strong>Prefers:</strong> ${esc(input.contactVia.join(", "))}${input.bestTime ? ` (best time to call: ${esc(input.bestTime)})` : ""}</p>
-        <p><strong>Programmes of interest:</strong> ${esc(input.programmes.join(", "))}</p>
+        <p><strong>Cell number:</strong> ${esc(input.phone)} (on WhatsApp: ${esc(input.whatsapp)})</p>
+        <p><strong>Programme:</strong> Homework Assistance</p>
         <p><strong>Link source:</strong> ${esc(input.source)}</p>
         <p><a href="${esc(input.itemUrl)}" style="display: inline-block; background: #0A8A9D; color: #ffffff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold;">Open the full row on monday.com</a></p>
         <p style="font-size: 13px; color: #555;">Details are on the private Family Interest board. Please do not forward this email.</p>
