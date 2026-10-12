@@ -147,7 +147,14 @@ export const sendDonorReceipt = async (email: string, firstName: string, amount:
   });
 };
 
-export const sendDonorNotification = async (firstName: string, lastName: string, email: string, amount: string, cert?: CertificateEmail) => {
+export const sendDonorNotification = async (
+  firstName: string,
+  lastName: string,
+  email: string,
+  amount: string,
+  cert?: CertificateEmail,
+  registerSaved?: boolean,
+) => {
   return sendEmailSafely({
     from: FROM_EMAIL,
     to: ADMIN_EMAIL,
@@ -164,6 +171,13 @@ export const sendDonorNotification = async (firstName: string, lastName: string,
           cert
             ? `<p><strong>Section 18A certificate ${esc(cert.receiptNumber)}</strong> was emailed to the donor automatically. A copy is attached for the records.</p>`
             : `<p><strong style="color:#b3261e;">No Section 18A certificate was sent automatically.</strong> Please issue one manually.</p>`
+        }
+        ${
+          registerSaved === undefined
+            ? ""
+            : registerSaved
+              ? `<p>Saved to the Monday.com Donations Register.</p>`
+              : `<p><strong style="color:#b3261e;">Not saved to the Monday.com Donations Register.</strong> Please add this donation to the register by hand.</p>`
         }
       </div>
     `,

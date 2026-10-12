@@ -5,6 +5,7 @@ import { phpUrlencode } from "@/lib/payfastEncode";
 import { payfastRatelimit } from "@/lib/ratelimit";
 import { sendDonorReceipt, sendDonorNotification, type CertificateEmail } from "@/lib/resend";
 import { buildCertificatePdf } from "@/lib/certificate";
+import { markDonorEmailed, saveDonation, type RegisterResult } from "@/lib/donationsRegister";
 import { alreadySent, markSent, receiptNumberFor, receiptStore } from "@/lib/receipts";
 
 // PayFast ITN source IPs we know about. Informational only: the list is out of date (PayFast now also
@@ -196,11 +197,36 @@ export async function POST(req: NextRequest) {
         console.warn("[PayFast ITN] Receipt store (Upstash) not configured; no 18A certificate issued");
       }
 
+      // Donations Register (Monday.com). Best effort: if it fails the donor still gets their email and the
+      // admin copy says the row needs adding by hand.
+      let register: RegisterResult | null = null;
+      if (paymentId) {
+        try {
+          register = await saveDonation(store, {
+            paymentId,
+            receiptNumber: cert?.receiptNumber,
+            certificatePdf: cert?.pdf,
+            date: new Date(),
+            donorName: `${firstName} ${lastName}`.trim(),
+            donorEmail,
+            address: params["custom_str1"] || undefined,
+            idNumber: params["custom_str2"] || undefined,
+            gross: Number(amount),
+            fee: Math.abs(Number(params["amount_fee"]) || 0),
+            net: Number(params["amount_net"]) || 0,
+            recurring: !!params["token"],
+          });
+        } catch (err) {
+          console.error("[PayFast ITN] Could not save to Donations Register:", (err as Error).message);
+        }
+      }
+
       const results = await Promise.all([
         sendDonorReceipt(donorEmail, firstName, amount, cert),
-        sendDonorNotification(firstName, lastName, donorEmail, amount, cert),
+        sendDonorNotification(firstName, lastName, donorEmail, amount, cert, !!register),
       ]);
       const donorSent = !!results[0] && !results[0].error;
+      if (donorSent && register) await markDonorEmailed(register.itemId).catch((err) => console.error("[Register] Could not mark donor emailed:", (err as Error).message));
       if (donorSent && store && paymentId) await markSent(store, paymentId).catch(() => undefined);
       if (!donorSent) {
         // Let PayFast retry: the receipt number is already saved for this payment, so the retry reuses it.
