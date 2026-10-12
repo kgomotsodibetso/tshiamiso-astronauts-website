@@ -5,6 +5,8 @@ const nextConfig = {
     "/blog": ["./content/blog/**/*", "./public/images/blog/**/*"],
     "/blog/[slug]": ["./content/blog/**/*", "./public/images/blog/**/*"],
     "/sitemap.xml": ["./content/blog/**/*"],
+    // Section 18A certificate fonts and logo are read from disk when a donation notification arrives.
+    "/api/payfast/notify": ["./src/lib/certificate-assets/**/*"],
   },
   experimental: {
     serverActions: {

@@ -183,7 +183,8 @@ export async function POST(req: NextRequest) {
             donorEmail,
             amount: Number(amount).toFixed(2),
             date: now,
-            recurring: !!params["token"],
+            donorAddress: params["custom_str1"] || undefined,
+            donorId: params["custom_str2"] || undefined,
           });
           cert = { receiptNumber, pdf };
         } catch (err) {
