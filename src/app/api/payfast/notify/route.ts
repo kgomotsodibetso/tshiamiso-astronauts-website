@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { clientIpFrom } from "@/lib/clientIp";
+import { phpUrlencode } from "@/lib/payfastEncode";
 import { payfastRatelimit } from "@/lib/ratelimit";
 import { sendDonorReceipt, sendDonorNotification, type CertificateEmail } from "@/lib/resend";
 import { buildCertificatePdf } from "@/lib/certificate";
@@ -31,7 +32,8 @@ const PAYFAST_VALID_IPS = new Set([
  * Verify the PayFast ITN signature.
  *
  * Algorithm (from PayFast docs):
- *   1. Take all posted fields except "signature", drop empty values.
+ *   1. Take all posted fields except "signature". Empty values STAY in: PayFast posts many blank
+ *      fields (custom_str1..5, custom_int1..5, m_payment_id, ...) and signs them.
  *   2. Build a URL-encoded query string preserving the received field order.
  *   3. If PAYFAST_PASSPHRASE is configured, append &passphrase=<value>.
  *   4. MD5-hash the string and compare to the posted "signature" field.
@@ -42,12 +44,12 @@ function verifySignature(
   passphrase: string | undefined
 ): boolean {
   const pairs = Object.entries(params)
-    .filter(([key, val]) => key !== "signature" && val !== "")
-    .map(([key, val]) => `${key}=${encodeURIComponent(val).replace(/%20/g, "+")}`);
+    .filter(([key]) => key !== "signature")
+    .map(([key, val]) => `${key}=${phpUrlencode(val)}`);
 
   const queryString = pairs.join("&");
   const stringToHash = passphrase
-    ? `${queryString}&passphrase=${encodeURIComponent(passphrase).replace(/%20/g, "+")}`
+    ? `${queryString}&passphrase=${phpUrlencode(passphrase.trim())}`
     : queryString;
 
   const computed = crypto.createHash("md5").update(stringToHash).digest("hex");
@@ -67,7 +69,7 @@ function verifySignature(
 async function payfastConfirms(params: Record<string, string>): Promise<boolean> {
   const body = Object.entries(params)
     .filter(([key]) => key !== "signature")
-    .map(([key, val]) => `${key}=${encodeURIComponent(val).replace(/%20/g, "+")}`)
+    .map(([key, val]) => `${key}=${phpUrlencode(val)}`)
     .join("&");
   const res = await fetch("https://www.payfast.co.za/eng/query/validate", {
     method: "POST",

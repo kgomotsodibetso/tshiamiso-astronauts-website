@@ -1,6 +1,7 @@
 "use server";
 
 import crypto from "crypto";
+import { phpUrlencode } from "@/lib/payfastEncode";
 
 interface DonateInput {
   firstName: string;
@@ -54,7 +55,7 @@ function buildSignature(params: Record<string, string>, passphrase?: string): st
   }
 
   const paramString = entries
-    .map(([k, v]) => `${k}=${encodeURIComponent(v).replace(/%20/g, "+")}`)
+    .map(([k, v]) => `${k}=${phpUrlencode(v)}`)
     .join("&");
 
   return crypto.createHash("md5").update(paramString).digest("hex");
