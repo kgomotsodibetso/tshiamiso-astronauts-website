@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { clientIpFrom } from "@/lib/clientIp";
 import { payfastRatelimit } from "@/lib/ratelimit";
-import { sendDonorReceipt, sendDonorNotification } from "@/lib/resend";
+import { sendDonorReceipt, sendDonorNotification, type CertificateEmail } from "@/lib/resend";
+import { buildCertificatePdf } from "@/lib/certificate";
+import { alreadySent, markSent, receiptNumberFor, receiptStore } from "@/lib/receipts";
 
 // PayFast published ITN source IPs.
 // Verify these are current at: https://developers.payfast.co.za/docs#step_5_itn
@@ -61,6 +63,21 @@ function verifySignature(
   }
 }
 
+// PayFast's own server confirms the notification is genuine (guards against a forged request).
+async function payfastConfirms(params: Record<string, string>): Promise<boolean> {
+  const body = Object.entries(params)
+    .filter(([key]) => key !== "signature")
+    .map(([key, val]) => `${key}=${encodeURIComponent(val).replace(/%20/g, "+")}`)
+    .join("&");
+  const res = await fetch("https://www.payfast.co.za/eng/query/validate", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body,
+    cache: "no-store",
+  });
+  return res.ok && (await res.text()).trim() === "VALID";
+}
+
 export async function POST(req: NextRequest) {
   try {
     // ── 1. Rate limit ───────────────────────────────────────────────────────
@@ -113,14 +130,80 @@ export async function POST(req: NextRequest) {
     );
 
     if (paymentStatus === "COMPLETE") {
+      // The payment must be to our own PayFast account, for a real amount.
+      const merchantId = process.env.NEXT_PUBLIC_PAYFAST_MERCHANT_ID;
+      if (!merchantId || params["merchant_id"] !== merchantId) {
+        console.warn("[PayFast ITN] Rejected: merchant_id mismatch");
+        return new NextResponse("Bad Request", { status: 400 });
+      }
+      if (!Number.isFinite(Number(amount)) || Number(amount) <= 0) {
+        console.warn("[PayFast ITN] Rejected: invalid amount");
+        return new NextResponse("Bad Request", { status: 400 });
+      }
+
+      // Only in production: PayFast's own check that this notification is real. If PayFast can't be
+      // reached we answer 500 so it retries later; nothing is issued until it says VALID.
+      if (process.env.NODE_ENV === "production") {
+        let valid = false;
+        try {
+          valid = await payfastConfirms(params);
+        } catch (err) {
+          console.error("[PayFast ITN] Could not reach PayFast to confirm:", err);
+          return new NextResponse("Try again", { status: 500 });
+        }
+        if (!valid) {
+          console.warn("[PayFast ITN] Rejected: PayFast did not confirm this notification");
+          return new NextResponse("Bad Request", { status: 400 });
+        }
+      }
+
       const donorEmail = params["email_address"];
       const firstName = params["name_first"] || "Donor";
       const lastName = params["name_last"] || "";
+      const paymentId = params["pf_payment_id"] || params["m_payment_id"] || "";
+      const store = receiptStore();
 
-      await Promise.all([
-        sendDonorReceipt(donorEmail, firstName, amount),
-        sendDonorNotification(firstName, lastName, donorEmail, amount)
-      ]).catch(err => console.error("[PayFast ITN] Email notification failed:", err));
+      // A repeated notification for a payment we already handled sends nothing a second time.
+      if (store && paymentId && (await alreadySent(store, paymentId))) {
+        console.log(`[PayFast ITN] Already handled payment ${paymentId}`);
+        return new NextResponse("OK", { status: 200 });
+      }
+
+      // Section 18A certificate: numbered in sequence, built as a PDF and attached to both emails.
+      // If it cannot be made, the thank-you still goes out and the admin email says to issue one by hand.
+      let cert: CertificateEmail | undefined;
+      if (store && paymentId) {
+        try {
+          const now = new Date();
+          const year = Number(new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Johannesburg", year: "numeric" }).format(now));
+          const receiptNumber = await receiptNumberFor(store, paymentId, year);
+          const pdf = await buildCertificatePdf({
+            receiptNumber,
+            donorName: `${firstName} ${lastName}`.trim(),
+            donorEmail,
+            amount: Number(amount).toFixed(2),
+            date: now,
+            recurring: !!params["token"],
+          });
+          cert = { receiptNumber, pdf };
+        } catch (err) {
+          console.error("[PayFast ITN] Could not issue 18A certificate:", err);
+        }
+      } else {
+        console.warn("[PayFast ITN] Receipt store (Upstash) not configured; no 18A certificate issued");
+      }
+
+      const results = await Promise.all([
+        sendDonorReceipt(donorEmail, firstName, amount, cert),
+        sendDonorNotification(firstName, lastName, donorEmail, amount, cert),
+      ]);
+      const donorSent = !!results[0] && !results[0].error;
+      if (donorSent && store && paymentId) await markSent(store, paymentId).catch(() => undefined);
+      if (!donorSent) {
+        // Let PayFast retry: the receipt number is already saved for this payment, so the retry reuses it.
+        console.error("[PayFast ITN] Donor email failed; asking PayFast to retry");
+        return new NextResponse("Try again", { status: 500 });
+      }
     }
 
     // Always return 200 to acknowledge receipt — PayFast retries on non-200
