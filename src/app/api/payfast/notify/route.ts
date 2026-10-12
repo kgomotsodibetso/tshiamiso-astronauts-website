@@ -6,8 +6,8 @@ import { sendDonorReceipt, sendDonorNotification, type CertificateEmail } from "
 import { buildCertificatePdf } from "@/lib/certificate";
 import { alreadySent, markSent, receiptNumberFor, receiptStore } from "@/lib/receipts";
 
-// PayFast published ITN source IPs.
-// Verify these are current at: https://developers.payfast.co.za/docs#step_5_itn
+// PayFast ITN source IPs we know about. Informational only: the list is out of date (PayFast now also
+// sends from other addresses), so an address outside it is logged, not rejected.
 const PAYFAST_VALID_IPS = new Set([
   "197.97.145.144",
   "197.97.145.145",
@@ -91,13 +91,13 @@ export async function POST(req: NextRequest) {
       return new NextResponse("Too Many Requests", { status: 429 });
     }
 
-    // ── 2. Verify source IP ─────────────────────────────────────────────────
-    const isLocalDev = process.env.NODE_ENV !== "production";
-    const ipAllowed = isLocalDev || PAYFAST_VALID_IPS.has(sourceIp);
-
-    if (!ipAllowed) {
-      console.warn(`[PayFast ITN] Rejected: unexpected source IP ${sourceIp}`);
-      return new NextResponse("Forbidden", { status: 403 });
+    // ── 2. Note the source IP ───────────────────────────────────────────────
+    // PayFast's sending addresses change (real notifications arrive from addresses outside the list
+    // below), so the address alone must not decide. What protects this route is the secret-passphrase
+    // signature (step 4) and PayFast's own server confirming the payment (step 5). An address we do not
+    // recognise is only logged, so it can be reviewed.
+    if (process.env.NODE_ENV === "production" && !PAYFAST_VALID_IPS.has(sourceIp)) {
+      console.warn(`[PayFast ITN] Source IP not in our list (continuing; signature and PayFast confirmation decide): ${sourceIp}`);
     }
 
     // ── 3. Parse body — preserve field order for signature verification ─────
