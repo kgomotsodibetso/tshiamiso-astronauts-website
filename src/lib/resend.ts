@@ -111,6 +111,37 @@ export const sendVolunteerNotification = async (input: { firstName: string; last
   });
 };
 
+// ── Family sign-up (/join) ────────────────────────────────────────────────
+
+// Staff alert. Kept to what is needed to start the follow-up call. Learner names, schools and notes stay on
+// the private monday board; the link below opens the full row there.
+export const sendFamilySignupNotification = async (input: {
+  parentName: string;
+  phone: string;
+  whatsapp: string;
+  source: string;
+  callDue: string;
+  itemUrl: string;
+}) => {
+  return sendEmailSafely({
+    from: FROM_EMAIL,
+    to: ADMIN_EMAIL,
+    subject: `New family sign-up: ${oneLine(input.parentName, 80)}`,
+    html: `
+      <div style="font-family: sans-serif; color: #1c2e4a; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #ff6b35;">New family sign-up</h2>
+        <p><strong>Call by:</strong> ${esc(input.callDue)} (within 7 days)</p>
+        <p><strong>Parent or guardian:</strong> ${esc(input.parentName)}</p>
+        <p><strong>Cell number:</strong> ${esc(input.phone)} (on WhatsApp: ${esc(input.whatsapp)})</p>
+        <p><strong>Programme:</strong> Homework Assistance</p>
+        <p><strong>Link source:</strong> ${esc(input.source)}</p>
+        <p><a href="${esc(input.itemUrl)}" style="display: inline-block; background: #0A8A9D; color: #ffffff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold;">Open the full row on monday.com</a></p>
+        <p style="font-size: 13px; color: #555;">Details are on the private Family Interest board. Please do not forward this email.</p>
+      </div>
+    `,
+  });
+};
+
 // ── Donor Templates ───────────────────────────────────────────────────────
 
 export interface CertificateEmail {
