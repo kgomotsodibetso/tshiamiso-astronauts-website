@@ -1,11 +1,5 @@
 import Link from "next/link";
-import {
-  getBoardForms,
-  isProductionDeployment,
-  resolveBoardSource,
-  resolveBoardState,
-  withSource,
-} from "@/config/board";
+import { boardPath, isProductionDeployment, resolveBoardSource, resolveBoardState } from "@/config/board";
 
 // Read at request time: the closing date, `?state=` and `?s=` all depend on the request.
 export const dynamic = "force-dynamic";
@@ -45,25 +39,25 @@ const focus =
 function ApplyButton({ href }: { href: string }) {
   // Navy text on orange: white on orange fails contrast.
   return (
-    <a
+    <Link
       href={href}
       className={`inline-flex min-h-[48px] w-full items-center justify-center rounded-md bg-brand-orange px-8 py-3 text-base font-bold text-brand-navy transition-opacity hover:opacity-90 sm:w-auto ${focus}`}
     >
       Apply now
-    </a>
+    </Link>
   );
 }
 
 function NominateButton({ href, onNavy = false }: { href: string; onNavy?: boolean }) {
   return (
-    <a
+    <Link
       href={href}
       className={`inline-flex min-h-[48px] w-full items-center justify-center rounded-md border-2 border-brand-teal px-8 py-3 text-base font-bold transition-colors sm:w-auto ${
         onNavy ? "text-white hover:bg-white/10" : "text-brand-navy hover:bg-brand-pale-teal"
       } ${focus}`}
     >
       Nominate someone
-    </a>
+    </Link>
   );
 }
 
@@ -76,23 +70,13 @@ export default async function BoardPage({
   const source = resolveBoardSource(params.s);
   const { state, overridden } = resolveBoardState(params.state);
   const production = isProductionDeployment();
-  const forms = getBoardForms();
 
-  const formsReady = forms.apply !== null && forms.nominate !== null;
-  // Until Cowork supplies the live links, preview buttons point at a placeholder on this page.
-  const placeholder = "#forms-not-open";
-  const applyHref = forms.apply ? withSource(forms.apply, forms.passSource, source) : placeholder;
-  const nominateHref = forms.nominate ? withSource(forms.nominate, forms.passSource, source) : placeholder;
-  // Safety net: a production deploy with no live links must not show buttons that go nowhere.
-  const showButtons = state === "open" && (formsReady || !production);
-
-  const ribbon = !production
-    ? !formsReady
-      ? "Preview, forms not yet open"
-      : overridden
-        ? `Preview, showing the ${state} state`
-        : null
-    : null;
+  // The forms live on this site (/board/apply and /board/nominate). The source code travels with the visitor.
+  const applyHref = boardPath("/board/apply", source);
+  const nominateHref = boardPath("/board/nominate", source);
+  const showButtons = state === "open";
+  // Preview only: say when the closed or open state is being forced with ?state=.
+  const ribbon = !production && overridden ? `Preview, showing the ${state} state` : null;
 
   return (
     <article>
@@ -139,15 +123,6 @@ export default async function BoardPage({
                   <ApplyButton href={applyHref} />
                   <NominateButton href={nominateHref} />
                 </div>
-              )}
-              {!showButtons && (
-                <p className="mt-8 text-base">
-                  Questions? Write to{" "}
-                  <a href={`mailto:${SUPPORT_EMAIL}`} className="inline-flex min-h-[44px] items-center font-semibold underline">
-                    {SUPPORT_EMAIL}
-                  </a>
-                  .
-                </p>
               )}
             </>
           ) : (

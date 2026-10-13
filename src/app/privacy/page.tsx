@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "How Tshiamiso Astronauts NPC collects, uses, and protects your personal information in accordance with POPIA.",
 };
 
-const LAST_UPDATED = "10 October 2026";
+const LAST_UPDATED = "13 October 2026";
 
 export default function PrivacyPolicyPage() {
   return (
@@ -83,6 +83,21 @@ export default function PrivacyPolicyPage() {
                 email address, phone number, role preference, availability, and
                 relevant skills or experience.
               </li>
+              <li>
+                <strong>Board application</strong> &ndash; your name, email
+                address, cell number, suburb and city, your link to TA, skills,
+                experience and professional registrations, your CV, your
+                answers to our questions, referee details if you give them, and
+                your declarations about your availability, conflicts of
+                interest and criminal record. You may also choose to tell us
+                your gender, which we use only in aggregate.
+              </li>
+              <li>
+                <strong>Board nomination</strong> &ndash; your name, email
+                address and relationship to the nominee, and the nominee&apos;s
+                name, email address, cell number (optional), skill area and the
+                reasons you give for nominating them.
+              </li>
             </ul>
             <p className="mt-3">
               When you visit, we and our providers collect limited technical
@@ -120,6 +135,11 @@ export default function PrivacyPolicyPage() {
               <li>
                 To manage your volunteer application and communicate with you
                 about placement opportunities.
+              </li>
+              <li>
+                To run our Board recruitment: to screen and interview
+                applicants and nominees, to invite nominees to apply, and to
+                confirm appointments at a meeting of our members.
               </li>
               <li>
                 To comply with our legal obligations (e.g., maintaining donation
@@ -389,7 +409,7 @@ export default function PrivacyPolicyPage() {
               </li>
               <li>
                 <strong>monday.com</strong> — where we keep our records of
-                newsletter sign-ups.
+                newsletter sign-ups and of Board applications and nominations.
               </li>
               <li>
                 <strong>PayFast</strong> — our payment processor. Your financial
