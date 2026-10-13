@@ -19,6 +19,7 @@ const config: Config = {
         "brand-light-teal": "#00DCDC",
         "brand-rose-beige": "#C39585",
         "brand-card": "#E8F3F4",
+        "brand-pale-teal": "#E3F4F6",
       },
       fontFamily: {
         sans: ["var(--font-montserrat)", "Arial", "Poppins", "sans-serif"],

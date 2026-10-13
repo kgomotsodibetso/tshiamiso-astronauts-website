@@ -27,6 +27,11 @@ const nextConfig = {
       { source: "/support-literacy-and-learning-for-the-youth-volunteer", destination: "/volunteer", permanent: true },
       { source: "/get-in-touch-support-literacy", destination: "/contact", permanent: true },
       { source: "/support-our-cause-your-donation-matters", destination: "/donate", permanent: true },
+      // Board recruitment: one front door at /board. Temporary redirects, so they can change after the campaign.
+      // Next.js keeps the query string (?s=poster etc.) on a redirect with no query of its own.
+      { source: "/board-vacancies", destination: "/board", permanent: false },
+      { source: "/nominate", destination: "/board", permanent: false },
+      { source: "/join-our-board", destination: "/board", permanent: false },
     ];
   },
   async rewrites() {

@@ -124,11 +124,17 @@ export default function Footer() {
               >
                 Volunteer
               </Link>
+              <Link
+                href="/board?s=website"
+                className="inline-flex min-h-[44px] items-center justify-center text-sm text-gray-300 underline hover:text-brand-orange transition-colors"
+              >
+                Join our Board
+              </Link>
             </div>
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500">
+        <div className="mt-10 pt-6 border-t border-gray-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
           <span>&copy; 2026 Tshiamiso Astronauts NPC. All rights reserved.</span>
           <div className="flex gap-4">
             <Link href="/privacy" className="hover:text-gray-300 transition-colors">
