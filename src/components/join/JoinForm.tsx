@@ -32,12 +32,12 @@ const EMPTY: Form = {
 type Errors = Partial<Record<keyof Form | "form" | "ref", string>>;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const PHONE_RE = /^(?:\+27|0027|27|0)[1-8]\d{8}$/;
+const PHONE_RE = /^(?:\+27|0027|27|0)[6-8]\d{8}$/;
 
 function validate(f: Form): Errors {
   const e: Errors = {};
   if (!f.name.trim()) e.name = "Please enter your full name.";
-  if (!PHONE_RE.test(f.phone.replace(/[\s\-().]/g, ""))) e.phone = "Please enter a South African cell number, for example 082 123 4567.";
+  if (!PHONE_RE.test(f.phone.replace(/[\s\-().]/g, ""))) e.phone = "Please enter a South African cell number starting 06, 07 or 08, for example 082 123 4567. No cell phone? Email info@tshiamisoastronauts.org.";
   if (!f.whatsapp) e.whatsapp = "Please tell us if this number is on WhatsApp.";
   if (f.email.trim() && !EMAIL_RE.test(f.email.trim())) e.email = "Please enter a valid email address, or leave it blank.";
   if (!f.learnerName.trim()) e.learnerName = "Please enter the learner's first name and surname.";

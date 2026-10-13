@@ -47,11 +47,11 @@ function pickOne<T extends string>(v: unknown, allowed: readonly T[]): T | null 
   return typeof v === "string" && (allowed as readonly string[]).includes(v) ? (v as T) : null;
 }
 
-/** South African numbers only: 082 123 4567, +27 82 123 4567 and 27821234567 all become +27821234567. */
+/** South African cell numbers only (06, 07, 08): 082 123 4567, +27 82 123 4567 and 27821234567 all become +27821234567. */
 export function normalisePhone(raw: unknown): string | null {
   if (typeof raw !== "string" || raw.length > 30) return null;
   const digits = raw.replace(/[\s\-().]/g, "");
-  const m = /^(?:\+27|0027|27|0)([1-8]\d{8})$/.exec(digits);
+  const m = /^(?:\+27|0027|27|0)([6-8]\d{8})$/.exec(digits);
   return m ? `+27${m[1]}` : null;
 }
 
@@ -66,7 +66,7 @@ export function validateJoin(b: JoinBody): JoinValidation {
   if (!name || name.length > 100) return fail("name", "Please enter your full name.");
 
   const phone = normalisePhone(b.phone);
-  if (!phone) return fail("phone", "Please enter a South African cell number, for example 082 123 4567.");
+  if (!phone) return fail("phone", "Please enter a South African cell number starting 06, 07 or 08, for example 082 123 4567. No cell phone? Email info@tshiamisoastronauts.org.");
 
   const whatsapp = pickOne(b.whatsapp, ["Yes", "No"] as const);
   if (!whatsapp) return fail("whatsapp", "Please tell us if this number is on WhatsApp.");

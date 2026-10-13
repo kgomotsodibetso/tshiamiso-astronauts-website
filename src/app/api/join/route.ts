@@ -54,7 +54,11 @@ export async function POST(req: NextRequest) {
 
   // 1. Cheap bot signals. A filled honeypot gets the normal success reply so bots learn nothing, but nothing is saved.
   if (honeypotFilled(body)) return json({ ok: true });
-  if (submittedTooFast(body)) return refuse("too_fast", 400, `elapsedMs=${String(body.elapsedMs)}`);
+  if (submittedTooFast(body)) {
+    // Log a number only. The raw value comes from the request and is never written to the log.
+    const ms = typeof body.elapsedMs === "number" && Number.isFinite(body.elapsedMs) ? Math.round(body.elapsedMs) : "invalid";
+    return refuse("too_fast", 400, `elapsedMs=${ms}`);
+  }
 
   // 2. Cloudflare human check. Fails closed.
   const human = await verifyTurnstile(body.turnstileToken, ip);
