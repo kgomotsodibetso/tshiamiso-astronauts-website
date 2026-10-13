@@ -113,7 +113,9 @@ export default function PrivacyPolicyPage() {
               </li>
               <li>
                 To process your donation and issue a Section 18A tax certificate
-                where applicable.
+                where applicable. If you choose to give your address and ID or
+                tax number, they appear on the certificate and are kept with our
+                donation records for tax and audit purposes.
               </li>
               <li>
                 To manage your volunteer application and communicate with you

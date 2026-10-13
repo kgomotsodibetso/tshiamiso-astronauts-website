@@ -14,6 +14,8 @@ export default function DonatePage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [donorAddress, setDonorAddress] = useState("");
+  const [donorId, setDonorId] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -43,6 +45,8 @@ export default function DonatePage() {
         email: email.trim(),
         amount: finalAmount,
         isRecurring,
+        donorAddress: donorAddress.trim(),
+        donorId: donorId.trim(),
       });
 
       // Build a hidden form and auto-submit to PayFast
@@ -224,6 +228,38 @@ export default function DonatePage() {
                 />
                 <p className="text-gray-400 text-xs mt-1">
                   Your Section 18A tax receipt will be sent to this address.
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-600 mb-1">
+                  Address <span className="font-normal text-gray-400">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  maxLength={200}
+                  autoComplete="street-address"
+                  value={donorAddress}
+                  onChange={(e) => setDonorAddress(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-brand-navy focus:outline-none focus:border-brand-orange"
+                  placeholder="Street, suburb, postal code"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-600 mb-1">
+                  ID or tax number <span className="font-normal text-gray-400">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  maxLength={20}
+                  value={donorId}
+                  onChange={(e) => setDonorId(e.target.value)}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl text-brand-navy focus:outline-none focus:border-brand-orange"
+                  placeholder="SA ID or SARS tax number"
+                />
+                <p className="text-gray-400 text-xs mt-1">
+                  Optional. If you give your address and ID or tax number, they appear on your Section 18A
+                  certificate, which you may need when claiming the deduction from SARS. Leave them blank if
+                  you prefer.
                 </p>
               </div>
             </div>

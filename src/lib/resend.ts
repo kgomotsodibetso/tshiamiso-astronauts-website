@@ -144,16 +144,32 @@ export const sendFamilySignupNotification = async (input: {
 
 // ── Donor Templates ───────────────────────────────────────────────────────
 
-export const sendDonorReceipt = async (email: string, firstName: string, amount: string) => {
+export interface CertificateEmail {
+  receiptNumber: string;
+  pdf: Uint8Array;
+}
+
+const certAttachment = (c: CertificateEmail) => ({
+  filename: `TA_18A_Certificate_${c.receiptNumber}.pdf`,
+  content: Buffer.from(c.pdf),
+});
+
+export const sendDonorReceipt = async (email: string, firstName: string, amount: string, cert?: CertificateEmail) => {
   return sendEmailSafely({
     from: FROM_EMAIL,
     to: email,
     subject: "Thank you for your donation! | Tshiamiso Astronauts",
+    ...(cert ? { attachments: [certAttachment(cert)] } : {}),
     html: `
       <div style="font-family: sans-serif; color: #1c2e4a; max-width: 600px; margin: 0 auto; padding: 20px;">
         <h2 style="color: #0b848c;">Hi ${esc(firstName)},</h2>
         <p>Thank you so much for your generous donation of <strong>R${esc(amount)}</strong> to Tshiamiso Astronauts.</p>
         <p>Your support directly funds books, tutors, and digital access for learners in Evaton West.</p>
+        ${
+          cert
+            ? `<p>Your <strong>Section 18A tax certificate</strong> (no. ${esc(cert.receiptNumber)}) is attached to this email as a PDF. Please keep it for your tax return.</p>`
+            : `<p>We will email your <strong>Section 18A tax certificate</strong> shortly. If you do not receive it within 48 hours, please contact info@tshiamisoastronauts.org.</p>`
+        }
         <br/>
         <p>Warm regards,</p>
         <p><strong>The Tshiamiso Astronauts Team</strong></p>
@@ -162,11 +178,19 @@ export const sendDonorReceipt = async (email: string, firstName: string, amount:
   });
 };
 
-export const sendDonorNotification = async (firstName: string, lastName: string, email: string, amount: string) => {
+export const sendDonorNotification = async (
+  firstName: string,
+  lastName: string,
+  email: string,
+  amount: string,
+  cert?: CertificateEmail,
+  registerSaved?: boolean,
+) => {
   return sendEmailSafely({
     from: FROM_EMAIL,
     to: ADMIN_EMAIL,
     subject: `New Donation Received: R${oneLine(amount, 20)}`,
+    ...(cert ? { attachments: [certAttachment(cert)] } : {}),
     html: `
       <div style="font-family: sans-serif; color: #1c2e4a; max-width: 600px; margin: 0 auto; padding: 20px;">
         <h2 style="color: #ff6b35;">New Donation Received!</h2>
@@ -174,6 +198,18 @@ export const sendDonorNotification = async (firstName: string, lastName: string,
         <p><strong>Email:</strong> ${esc(email)}</p>
         <p><strong>Amount:</strong> R${esc(amount)}</p>
         <p>The donation has been successfully processed via PayFast.</p>
+        ${
+          cert
+            ? `<p><strong>Section 18A certificate ${esc(cert.receiptNumber)}</strong> was emailed to the donor automatically. A copy is attached for the records.</p>`
+            : `<p><strong style="color:#b3261e;">No Section 18A certificate was sent automatically.</strong> Please issue one manually.</p>`
+        }
+        ${
+          registerSaved === undefined
+            ? ""
+            : registerSaved
+              ? `<p>Saved to the Monday.com Donations Register.</p>`
+              : `<p><strong style="color:#b3261e;">Not saved to the Monday.com Donations Register.</strong> Please add this donation to the register by hand.</p>`
+        }
       </div>
     `,
   });

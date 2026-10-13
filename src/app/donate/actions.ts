@@ -1,6 +1,7 @@
 "use server";
 
 import crypto from "crypto";
+import { phpUrlencode } from "@/lib/payfastEncode";
 
 interface DonateInput {
   firstName: string;
@@ -8,6 +9,9 @@ interface DonateInput {
   email: string;
   amount: number;
   isRecurring: boolean;
+  /** Optional, for the Section 18A certificate. */
+  donorAddress?: string;
+  donorId?: string;
 }
 
 // PayFast requires fields in this exact order for signature generation.
@@ -51,7 +55,7 @@ function buildSignature(params: Record<string, string>, passphrase?: string): st
   }
 
   const paramString = entries
-    .map(([k, v]) => `${k}=${encodeURIComponent(v).replace(/%20/g, "+")}`)
+    .map(([k, v]) => `${k}=${phpUrlencode(v)}`)
     .join("&");
 
   return crypto.createHash("md5").update(paramString).digest("hex");
@@ -81,6 +85,14 @@ export async function buildPayFastPayload(input: DonateInput): Promise<{
   if (!merchantKey) { console.error("[Donate] Missing env: PAYFAST_MERCHANT_KEY"); throw new Error("PAYFAST_MERCHANT_KEY is not configured"); }
   const amountStr   = input.amount.toFixed(2);
 
+  // Optional certificate details. Control characters are stripped; length and characters are limited.
+  const donorAddress = (input.donorAddress ?? "").replace(/[\r\n\t]+/g, " ").replace(/\s+/g, " ").trim();
+  const donorId      = (input.donorId ?? "").replace(/\s+/g, " ").trim();
+  if (donorAddress.length > 200) throw new Error("Address is too long (max 200 characters).");
+  if (donorId && (donorId.length > 20 || !/^[A-Za-z0-9 \/-]+$/.test(donorId))) {
+    throw new Error("ID or tax number can only contain letters, numbers, spaces, / and - (max 20 characters).");
+  }
+
   const params: Record<string, string> = {
     merchant_id:      merchantId,
     merchant_key:     merchantKey,
@@ -94,6 +106,10 @@ export async function buildPayFastPayload(input: DonateInput): Promise<{
     item_name:        "Donation – Tshiamiso Astronauts NPC",
     item_description: "Supporting literacy and education in Evaton West, Gauteng",
   };
+
+  // Travel with the payment and come back signed in the PayFast notification (custom_str1/2).
+  if (donorAddress) params.custom_str1 = donorAddress;
+  if (donorId)      params.custom_str2 = donorId;
 
   if (input.isRecurring) {
     // Monthly subscription

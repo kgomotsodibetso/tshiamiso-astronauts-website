@@ -5,6 +5,8 @@ const nextConfig = {
     "/blog": ["./content/blog/**/*", "./public/images/blog/**/*"],
     "/blog/[slug]": ["./content/blog/**/*", "./public/images/blog/**/*"],
     "/sitemap.xml": ["./content/blog/**/*"],
+    // Section 18A certificate fonts and logo are read from disk when a donation notification arrives.
+    "/api/payfast/notify": ["./src/lib/certificate-assets/**/*"],
   },
   experimental: {
     serverActions: {
@@ -28,6 +30,11 @@ const nextConfig = {
       // Short links for print and WhatsApp. Temporary on purpose, so they can be re-pointed later. The query string (?s=) is kept.
       { source: "/signup", destination: "/join", permanent: false },
       { source: "/families", destination: "/join", permanent: false },
+      // Board recruitment: one front door at /board. Temporary redirects, so they can change after the campaign.
+      // Next.js keeps the query string (?s=poster etc.) on a redirect with no query of its own.
+      { source: "/board-vacancies", destination: "/board", permanent: false },
+      { source: "/nominate", destination: "/board", permanent: false },
+      { source: "/join-our-board", destination: "/board", permanent: false },
     ];
   },
   async rewrites() {
