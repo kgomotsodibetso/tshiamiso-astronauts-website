@@ -34,3 +34,6 @@ export const subscribeEmailRatelimit = makeRatelimit("rl:subscribe-email", Ratel
 // and 3 a day per cell number (stops one number being flooded, and a double-tap adds nothing).
 export const joinIpRatelimit = makeRatelimit("rl:join-ip", Ratelimit.slidingWindow(15, "1 h"));
 export const joinPhoneRatelimit = makeRatelimit("rl:join-phone", Ratelimit.slidingWindow(3, "1 d"));
+
+// Join form confirmation email: 2 a day per address, so the form cannot be used to flood someone's inbox.
+export const joinEmailRatelimit = makeRatelimit("rl:join-email", Ratelimit.slidingWindow(2, "1 d"));

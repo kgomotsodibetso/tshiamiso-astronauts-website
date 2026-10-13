@@ -4,8 +4,8 @@ import { FAMILY_BOARD, JOIN_MESSAGES } from "@/config/join";
 import { clientIpFrom } from "@/lib/clientIp";
 import { createFamilyRow } from "@/lib/join/monday";
 import { honeypotFilled, submittedTooFast, validateJoin, type JoinBody } from "@/lib/join/validate";
-import { joinIpRatelimit, joinPhoneRatelimit } from "@/lib/ratelimit";
-import { sendFamilySignupNotification } from "@/lib/resend";
+import { joinEmailRatelimit, joinIpRatelimit, joinPhoneRatelimit } from "@/lib/ratelimit";
+import { sendFamilyConfirmation, sendFamilySignupNotification } from "@/lib/resend";
 import { verifyTurnstile } from "@/lib/subscribe/turnstile";
 
 export const dynamic = "force-dynamic";
@@ -31,10 +31,10 @@ function sameOrigin(req: NextRequest): boolean {
   }
 }
 
-// A keyed hash of the cell number, used only as a rate-limit key so the number itself is never stored in Redis.
-const phoneKey = (phone: string) =>
+// A keyed hash of a cell number or email address, used only as a rate-limit key so the value itself is never stored in Redis.
+const hashKey = (value: string) =>
   createHmac("sha256", process.env.SUBSCRIBE_TOKEN_SECRET || process.env.TURNSTILE_SECRET_KEY || "join")
-    .update(phone)
+    .update(value)
     .digest("hex")
     .slice(0, 24);
 
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
 
   // 5. Per-number limit. Over the limit looks like success: we already have this family.
   try {
-    const byPhone = await joinPhoneRatelimit.limit(phoneKey(family.phone));
+    const byPhone = await joinPhoneRatelimit.limit(hashKey(family.phone));
     if (!byPhone.success) return json({ ok: true });
   } catch (err) {
     console.warn("[Join] Phone rate limit check failed, failing open:", (err as Error).message);
@@ -102,6 +102,19 @@ export async function POST(req: NextRequest) {
       });
     } catch (err) {
       console.error(`[Join] staff alert failed for item ${id}:`, (err as Error).message);
+    }
+
+    // 8. Confirmation to the family, if they gave an email address. Capped per address so the form cannot be used
+    //    to flood someone's inbox. Over the cap, or if it fails, the sign-up is still saved and still succeeds.
+    if (family.email) {
+      try {
+        const byEmail = await joinEmailRatelimit.limit(hashKey(`email:${family.email}`));
+        if (byEmail.success) {
+          await sendFamilyConfirmation({ to: family.email, parentName: family.name, phone: family.phone, callDue });
+        }
+      } catch (err) {
+        console.error(`[Join] confirmation email failed for item ${id}:`, (err as Error).message);
+      }
     }
     return json({ ok: true });
   } catch (err) {

@@ -142,6 +142,44 @@ export const sendFamilySignupNotification = async (input: {
   });
 };
 
+// Confirmation to the parent who signed up, when they gave an email address. No banking details, no learner
+// names, and only the last four digits of the cell number.
+const longDate = (iso: string): string => {
+  const d = new Date(`${iso}T12:00:00Z`);
+  return Number.isNaN(d.getTime())
+    ? iso
+    : new Intl.DateTimeFormat("en-ZA", { timeZone: "UTC", day: "numeric", month: "long", year: "numeric" }).format(d);
+};
+
+export const sendFamilyConfirmation = async (input: { to: string; parentName: string; phone: string; callDue: string }) => {
+  const firstName = input.parentName.trim().split(/\s+/)[0] || "there";
+  const last4 = input.phone.replace(/\D/g, "").slice(-4);
+  return sendEmailSafely({
+    from: FROM_EMAIL,
+    to: input.to,
+    replyTo: ADMIN_EMAIL,
+    subject: "We have your details | Tshiamiso Astronauts",
+    html: `
+      <div style="font-family: sans-serif; color: #1c2e4a; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #0b848c;">Hi ${esc(firstName)},</h2>
+        <p>Thank you for registering your child for Homework Assistance with Tshiamiso Astronauts. We have your details.</p>
+        <p><strong>What happens next</strong></p>
+        <ol>
+          <li>A member of our team will call you by ${esc(longDate(input.callDue))}, on the number you gave us (ending ${esc(last4)}).</li>
+          <li>After we speak, your child starts.</li>
+          <li>Pay by EFT or cash at our centre. The cost is R150 per learner per month.</li>
+        </ol>
+        <p>Homework Assistance runs on weekdays, 14h00 to 17h00, at 4206 Kopanong Street, Evaton West.</p>
+        <p>Nothing is paid today, and nobody will ask you for payment at a desk or event.</p>
+        <p>Something wrong, or want your details changed or removed? Reply to this email or write to ${esc(ADMIN_EMAIL)}. You can ask to see, correct or delete your information at any time.</p>
+        <br/>
+        <p>Warm regards,</p>
+        <p><strong>The Tshiamiso Astronauts Team</strong></p>
+      </div>
+    `,
+  });
+};
+
 // ── Donor Templates ───────────────────────────────────────────────────────
 
 export interface CertificateEmail {

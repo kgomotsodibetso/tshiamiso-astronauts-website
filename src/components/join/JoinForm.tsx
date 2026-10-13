@@ -186,7 +186,7 @@ function FormInner() {
             </div>
             <Err k="whatsapp" />
           </fieldset>
-          {text("email", "Your email address", { optional: true, type: "email", inputMode: "email", auto: "email", max: 254 })}
+          {text("email", "Your email address", { optional: true, type: "email", inputMode: "email", auto: "email", max: 254, hint: "We will email you a confirmation." })}
           {text("area", "Your area or suburb", { optional: true, auto: "address-level2", max: 100 })}
         </section>
 
