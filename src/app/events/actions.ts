@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { clientIpFrom } from "@/lib/clientIp";
 import { verifyTurnstile } from "@/lib/subscribe/turnstile";
 import { formRatelimit } from "@/lib/ratelimit";
+import { isValidPhone, PHONE_ERROR } from "@/lib/events/phone";
 
 // ── Column IDs ────────────────────────────────────────────────────────────────
 // Events board (5093847317)
@@ -199,16 +200,14 @@ async function hasExistingRsvp(
 
 // ── Server-side validation ─────────────────────────────────────────────────────
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_RE = /^\+?[\d\s()-]+$/;
 
 function validate(input: RsvpInput): string | null {
   if (!input.firstName?.trim() || input.firstName.length > 100) return "First name is required.";
   if (!input.lastName?.trim() || input.lastName.length > 100)   return "Last name is required.";
   if (!input.email?.trim() || !EMAIL_RE.test(input.email) || input.email.length > 254) return "A valid email address is required.";
   const phone = input.phone?.trim() ?? "";
-  const phoneDigits = phone.replace(/\D/g, "").length;
   if (!phone) return "A phone number is required so we can reach you about the event.";
-  if (phone.length > 20 || !PHONE_RE.test(phone) || phoneDigits < 9 || phoneDigits > 15) return "Please enter a valid phone number.";
+  if (!isValidPhone(phone)) return PHONE_ERROR;
   if (input.organisation && input.organisation.length > 200) return "Organisation name is too long.";
   if (input.consent !== true) return "Please tick the box so we know you agree.";
   return null;

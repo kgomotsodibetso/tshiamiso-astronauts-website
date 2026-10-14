@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/TurnstileWidget";
 import { submitRsvp, type MondayEvent } from "./actions";
 import { formatDate } from "@/lib/formatDate";
+import { isValidPhone, PHONE_ERROR } from "@/lib/events/phone";
 
 const CONSENT_TEXT =
   "I agree that Tshiamiso Astronauts NPC may use my details to manage this RSVP and contact me about this event by call, SMS or email. I can ask to see, correct or delete my information at any time.";
@@ -163,6 +164,10 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
       setError("Please fill in all required fields.");
       return;
     }
+    if (!isValidPhone(phone)) {
+      setError(PHONE_ERROR);
+      return;
+    }
     if (!consent) {
       setError("Please tick the box so we know you agree.");
       return;
@@ -291,7 +296,7 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
               <div>
                 <label htmlFor={id("phone")} className={labelClass}>Phone Number *</label>
                 <input
-                  id={id("phone")} type="tel" required autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
+                  id={id("phone")} type="tel" inputMode="tel" required autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
                   placeholder="+27 82 000 0000"
                   className={inputClass}
                 />
