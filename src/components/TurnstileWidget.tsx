@@ -35,14 +35,20 @@ export interface TurnstileHandle {
 }
 
 /** Cloudflare Turnstile check. Invisible unless Cloudflare needs a click. */
-const TurnstileWidget = forwardRef<TurnstileHandle, { onToken: (token: string) => void }>(function TurnstileWidget(
-  { onToken },
-  ref,
-) {
+const TurnstileWidget = forwardRef<
+  TurnstileHandle,
+  {
+    onToken: (token: string) => void;
+    /** Optional. Called with a short reason when the check cannot run: "no-sitekey", "script-blocked", or Cloudflare's error code. */
+    onProblem?: (reason: string) => void;
+  }
+>(function TurnstileWidget({ onToken, onProblem }, ref) {
   const el = useRef<HTMLDivElement>(null);
   const widgetId = useRef<string | null>(null);
   const cb = useRef(onToken);
   cb.current = onToken;
+  const problem = useRef(onProblem);
+  problem.current = onProblem;
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
   useImperativeHandle(ref, () => ({
@@ -53,7 +59,11 @@ const TurnstileWidget = forwardRef<TurnstileHandle, { onToken: (token: string) =
   }));
 
   useEffect(() => {
-    if (!siteKey || !el.current) return;
+    if (!siteKey) {
+      problem.current?.("no-sitekey");
+      return;
+    }
+    if (!el.current) return;
     let cancelled = false;
     load()
       .then(() => {
@@ -63,13 +73,14 @@ const TurnstileWidget = forwardRef<TurnstileHandle, { onToken: (token: string) =
           appearance: "interaction-only",
           callback: (t: string) => cb.current(t),
           "expired-callback": () => cb.current(""),
-          "error-callback": () => {
+          "error-callback": (code?: unknown) => {
             cb.current("");
+            problem.current?.(String(code ?? "error"));
             return true;
           },
         });
       })
-      .catch(() => undefined);
+      .catch(() => problem.current?.("script-blocked"));
     return () => {
       cancelled = true;
       if (widgetId.current && window.turnstile) window.turnstile.remove(widgetId.current);

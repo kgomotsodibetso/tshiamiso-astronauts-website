@@ -33,3 +33,8 @@ export const subscribeEmailRatelimit = makeRatelimit("rl:subscribe-email", Ratel
 // Board nominee invitations: at most 3 emails a day to the same address (keyed by a hash, never the address),
 // so the nomination form cannot be used to flood one person's inbox.
 export const boardNomineeEmailRatelimit = makeRatelimit("rl:board-nominee-email", Ratelimit.slidingWindow(3, "1 d"));
+
+// Join form: 15 sign-ups an hour per IP (a school desk or a shared hotspot may sign up several families),
+// and 3 a day per cell number (stops one number being flooded, and a double-tap adds nothing).
+export const joinIpRatelimit = makeRatelimit("rl:join-ip", Ratelimit.slidingWindow(15, "1 h"));
+export const joinPhoneRatelimit = makeRatelimit("rl:join-phone", Ratelimit.slidingWindow(3, "1 d"));
