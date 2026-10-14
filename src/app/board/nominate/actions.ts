@@ -5,7 +5,8 @@ import { guardSubmission } from "@/lib/board/guard";
 import { createHash } from "node:crypto";
 import { addUpdate, createBoardItem } from "@/lib/board/monday";
 import { boardNomineeEmailRatelimit } from "@/lib/ratelimit";
-import { sendBoardNomineeInvitation } from "@/lib/resend";
+import { confirmationAllowed, mondayItemUrl } from "@/lib/board/notify";
+import { sendBoardNominationConfirmation, sendBoardNomineeInvitation, sendBoardStaffNotification } from "@/lib/resend";
 import { siteUrl } from "@/lib/subscribe/siteUrl";
 import { clean, isEmail, normaliseSaPhone } from "@/lib/board/validate";
 
@@ -104,6 +105,30 @@ export async function submitBoardNomination(formData: FormData): Promise<Nominat
         ? "Invitation email NOT sent: this address already received 3 invitations today. Please invite the nominee by hand if needed."
         : "Invitation email NOT sent automatically. Please invite the nominee by hand.",
     );
+  }
+  // Confirmation to the nominator and a heads-up to info@. Failures are logged and noted, never shown as a failed nomination.
+  const allowedConfirm = await confirmationAllowed(yourEmail);
+  const [confirmed, staffNotified] = await Promise.all([
+    allowedConfirm
+      ? sendBoardNominationConfirmation({ nominatorName: yourName, nomineeName, email: yourEmail, nomineeInvited: invited, privacyUrl: `${siteUrl()}/privacy` })
+      : Promise.resolve(false),
+    sendBoardStaffNotification({
+      kind: "nomination",
+      lines: [
+        ["Nominator", yourName],
+        ["Nominee", nomineeName],
+        ["Nominee's skill area", SKILL_AREAS[skillArea]],
+        ["Nominee knows", NOMINEE_KNOWS[knows]],
+        ["Source", source],
+        ["Invitation emailed to nominee", invited ? "Yes" : "NO: please invite them by hand"],
+      ],
+      itemUrl: mondayItemUrl(BOARD_MONDAY.nominationsBoardId, created.itemId),
+    }),
+  ]);
+  if (!staffNotified) console.warn("[Board:Nominations] staff notification email not sent");
+  if (!confirmed) {
+    console.warn(`[Board:Nominations] confirmation email to the nominator not sent (${allowedConfirm ? "send failed" : "daily limit for this address"})`);
+    await addUpdate(created.itemId, "Confirmation email to the nominator was NOT sent.");
   }
   return { success: true };
 }

@@ -12,6 +12,9 @@ import {
 } from "@/config/board";
 import { guardSubmission } from "@/lib/board/guard";
 import { addUpdate, attachFile, createBoardItem } from "@/lib/board/monday";
+import { confirmationAllowed, mondayItemUrl } from "@/lib/board/notify";
+import { sendBoardApplicationConfirmation, sendBoardStaffNotification } from "@/lib/resend";
+import { siteUrl } from "@/lib/subscribe/siteUrl";
 import { checkCv, clean, isEmail, normaliseLinkedIn, normaliseSaPhone, wordCount } from "@/lib/board/validate";
 
 export type BoardResult = { success: true; cvSaved: boolean } | { success: false; error: string };
@@ -121,6 +124,30 @@ export async function submitBoardApplication(formData: FormData): Promise<BoardR
   // The item exists now, so a CV problem must not make the applicant send everything twice.
   const cvSaved = await attachFile(created.itemId, CV_COLUMN, cv as File);
   if (!cvSaved) await addUpdate(created.itemId, "CV upload failed. Please ask the applicant to email their CV.");
+
+  // Emails. The application is already saved, so a failed email never loses it: a note on the Monday item says what to do.
+  const allowed = await confirmationAllowed(email);
+  const [confirmed, staffNotified] = await Promise.all([
+    allowed
+      ? sendBoardApplicationConfirmation({ name: fullName, email, cvSaved, privacyUrl: `${siteUrl()}/privacy` })
+      : Promise.resolve(false),
+    sendBoardStaffNotification({
+      kind: "application",
+      lines: [
+        ["Applicant", fullName],
+        ["Main skill area", SKILL_AREAS[skillArea]],
+        ["Committee", COMMITTEES[committee]],
+        ["Source", source],
+        ["CV uploaded", cvSaved ? "Yes" : "NO: ask the applicant to email it"],
+      ],
+      itemUrl: mondayItemUrl(BOARD_MONDAY.applicationsBoardId, created.itemId),
+    }),
+  ]);
+  if (!staffNotified) console.warn("[Board:Applications] staff notification email not sent");
+  if (!confirmed) {
+    console.warn(`[Board:Applications] confirmation email not sent (${allowed ? "send failed" : "daily limit for this address"})`);
+    await addUpdate(created.itemId, "Confirmation email to the applicant was NOT sent. Please confirm receipt by hand.");
+  }
 
   return { success: true, cvSaved };
 }

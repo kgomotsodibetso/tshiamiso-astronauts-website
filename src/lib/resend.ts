@@ -289,3 +289,133 @@ export const sendBoardNomineeInvitation = async (input: { nomineeName: string; n
   });
   return Boolean(result && "data" in result && result.data?.id);
 };
+
+// Shared look for the Board emails below (brand navy text, orange button, credentials line).
+const boardShell = (inner: string) => `
+  <div style="font-family: Montserrat, Arial, sans-serif; color: #000080; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.55;">
+    ${inner}
+    <p>Warm regards,<br/><strong>The Tshiamiso Astronauts Team</strong></p>
+    <hr style="border: 0; border-top: 1px solid #ccc; margin: 24px 0 12px;"/>
+    <p style="font-size: 12px; color: #333;">Tshiamiso Astronauts NPC | NPC 2022/460202/08 | NPO 294-255 | PBO 930083956</p>
+  </div>`;
+const CREDENTIALS = "Tshiamiso Astronauts NPC | NPC 2022/460202/08 | NPO 294-255 | PBO 930083956";
+const accepted = (r: Awaited<ReturnType<typeof sendEmailSafely>>): boolean => Boolean(r && "data" in r && r.data?.id);
+
+/** Confirmation to someone who has just applied for the Board. Returns true only if Resend accepted it. */
+export const sendBoardApplicationConfirmation = async (input: { name: string; email: string; cvSaved: boolean; privacyUrl: string }): Promise<boolean> => {
+  const name = oneLine(input.name, 150);
+  const info = "info@tshiamisoastronauts.org";
+  const cvHtml = input.cvSaved
+    ? ""
+    : `<p style="border-left: 4px solid #E9711E; padding-left: 12px;"><strong>Your CV did not upload.</strong> Your application was saved, but please reply to this email with your CV attached.</p>`;
+  const cvText = input.cvSaved ? [] : ["Your CV did not upload. Your application was saved, but please reply to this email with your CV attached.", ""];
+  return accepted(
+    await sendEmailSafely({
+      from: FROM_EMAIL,
+      replyTo: ADMIN_EMAIL,
+      to: input.email,
+      subject: "We have received your Board application",
+      html: boardShell(`
+        <p>Hello ${esc(name)},</p>
+        <p>Thank you for applying to join the Board of Directors of Tshiamiso Astronauts. We have received your application.</p>
+        ${cvHtml}
+        <p style="margin-bottom: 4px;"><strong>What happens next</strong></p>
+        <ol style="margin-top: 0;">
+          <li>A committee screens applications in early December.</li>
+          <li>Shortlisted candidates are interviewed.</li>
+          <li>Appointments are confirmed at a meeting of our members in the new year.</li>
+        </ol>
+        <p>We will contact you by email. If anything in your application changes, or you want to withdraw, reply to this email or write to <a href="mailto:${info}" style="color: #000080;">${info}</a>.</p>
+        <p style="margin-bottom: 4px;"><strong>Your details</strong></p>
+        <p style="margin-top: 0;">We use your details only for this recruitment, in line with POPIA. Our Privacy Policy is at <a href="${esc(input.privacyUrl)}" style="color: #000080;">${esc(input.privacyUrl.replace(/^https?:\/\//, ""))}</a>.</p>`),
+      text: [
+        `Hello ${name},`,
+        "",
+        "Thank you for applying to join the Board of Directors of Tshiamiso Astronauts. We have received your application.",
+        "",
+        ...cvText,
+        "What happens next",
+        "1. A committee screens applications in early December.",
+        "2. Shortlisted candidates are interviewed.",
+        "3. Appointments are confirmed at a meeting of our members in the new year.",
+        "",
+        `We will contact you by email. If anything in your application changes, or you want to withdraw, reply to this email or write to ${info}.`,
+        "",
+        "Your details",
+        `We use your details only for this recruitment, in line with POPIA. Our Privacy Policy is at ${input.privacyUrl}.`,
+        "",
+        "Warm regards,",
+        "The Tshiamiso Astronauts Team",
+        "",
+        CREDENTIALS,
+      ].join("\n"),
+    }),
+  );
+};
+
+/** Confirmation to someone who has just nominated a candidate. */
+export const sendBoardNominationConfirmation = async (input: { nominatorName: string; nomineeName: string; email: string; nomineeInvited: boolean; privacyUrl: string }): Promise<boolean> => {
+  const nominator = oneLine(input.nominatorName, 150);
+  const nominee = oneLine(input.nomineeName, 150);
+  const info = "info@tshiamisoastronauts.org";
+  const invitedHtml = input.nomineeInvited
+    ? `We have emailed ${esc(nominee)} an invitation to apply by Friday 27 November 2026.`
+    : `We will invite ${esc(nominee)} to apply by Friday 27 November 2026.`;
+  const invitedText = input.nomineeInvited
+    ? `We have emailed ${nominee} an invitation to apply by Friday 27 November 2026.`
+    : `We will invite ${nominee} to apply by Friday 27 November 2026.`;
+  return accepted(
+    await sendEmailSafely({
+      from: FROM_EMAIL,
+      replyTo: ADMIN_EMAIL,
+      to: input.email,
+      subject: "We have received your Board nomination",
+      html: boardShell(`
+        <p>Hello ${esc(nominator)},</p>
+        <p>Thank you for nominating ${esc(nominee)} for the Board of Directors of Tshiamiso Astronauts. We have received your nomination.</p>
+        <p>${invitedHtml} A nomination is an invitation to apply. Nobody is appointed on a nomination alone.</p>
+        <p style="margin-bottom: 4px;"><strong>Your details and your nominee's</strong></p>
+        <p style="margin-top: 0;">We use your details and ${esc(nominee)}'s only for this recruitment, in line with POPIA. If ${esc(nominee)} does not apply, we will delete their details after the recruitment closes on 27 November 2026. Our Privacy Policy is at <a href="${esc(input.privacyUrl)}" style="color: #000080;">${esc(input.privacyUrl.replace(/^https?:\/\//, ""))}</a>. Questions? Write to <a href="mailto:${info}" style="color: #000080;">${info}</a>.</p>`),
+      text: [
+        `Hello ${nominator},`,
+        "",
+        `Thank you for nominating ${nominee} for the Board of Directors of Tshiamiso Astronauts. We have received your nomination.`,
+        "",
+        `${invitedText} A nomination is an invitation to apply. Nobody is appointed on a nomination alone.`,
+        "",
+        "Your details and your nominee's",
+        `We use your details and ${nominee}'s only for this recruitment, in line with POPIA. If ${nominee} does not apply, we will delete their details after the recruitment closes on 27 November 2026. Our Privacy Policy is at ${input.privacyUrl}. Questions? Write to ${info}.`,
+        "",
+        "Warm regards,",
+        "The Tshiamiso Astronauts Team",
+        "",
+        CREDENTIALS,
+      ].join("\n"),
+    }),
+  );
+};
+
+/**
+ * Heads-up to info@ that something arrived. Only the facts needed to act, plus a link to the Monday item:
+ * no answers, email addresses or phone numbers.
+ */
+export const sendBoardStaffNotification = async (input: { kind: "application" | "nomination"; lines: [string, string][]; itemUrl: string }): Promise<boolean> => {
+  const title = input.kind === "application" ? "New Board application" : "New Board nomination";
+  const subjectName = oneLine(input.lines[0]?.[1] ?? "", 80);
+  const rows = input.lines.map(([k, v]) => `<tr><td style="padding: 4px 16px 4px 0; font-weight: bold; vertical-align: top;">${esc(k)}</td><td style="padding: 4px 0;">${esc(oneLine(v, 200))}</td></tr>`).join("");
+  return accepted(
+    await sendEmailSafely({
+      from: FROM_EMAIL,
+      to: ADMIN_EMAIL,
+      subject: `${title}: ${subjectName}`,
+      html: `
+        <div style="font-family: Montserrat, Arial, sans-serif; color: #000080; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.55;">
+          <h2 style="color: #000080; margin-top: 0;">${esc(title)}</h2>
+          <table style="border-collapse: collapse;">${rows}</table>
+          <p style="margin-top: 20px;"><a href="${esc(input.itemUrl)}" style="background-color: #E9711E; color: #000080; font-weight: bold; text-decoration: none; padding: 12px 24px; border-radius: 6px; display: inline-block;">Open in Monday</a></p>
+          <p style="font-size: 12px; color: #333;">Full details are on the board. They are not included in this email.</p>
+        </div>`,
+      text: [title, "", ...input.lines.map(([k, v]) => `${k}: ${oneLine(v, 200)}`), "", `Open in Monday: ${input.itemUrl}`, "", "Full details are on the board. They are not included in this email."].join("\n"),
+    }),
+  );
+};

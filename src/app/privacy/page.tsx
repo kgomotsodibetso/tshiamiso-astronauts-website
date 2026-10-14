@@ -408,8 +408,9 @@ export default function PrivacyPolicyPage() {
               <li>
                 <strong>Resend</strong> — our email delivery provider, used to
                 send you a copy of your contact or volunteer submission, to
-                deliver our responses, and to send Board invitations to
-                nominees.
+                deliver our responses, to send Board invitations to nominees,
+                and to confirm Board applications and nominations to the people
+                who make them.
               </li>
               <li>
                 <strong>monday.com</strong> — where we keep our records of
