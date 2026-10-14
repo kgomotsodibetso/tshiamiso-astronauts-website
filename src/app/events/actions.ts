@@ -146,6 +146,57 @@ async function fetchEventDetails(
   }
 }
 
+// ── Duplicate check ───────────────────────────────────────────────────────────
+// One RSVP per person per event. Looks for an existing row on the RSVPs board with the same email and the
+// same event name. Returns null if the lookup itself fails, so the caller can decide (we let the RSVP through:
+// the create call that follows would fail too if Monday.com is really down).
+async function hasExistingRsvp(
+  token: string,
+  boardId: string,
+  eventName: string,
+  email: string
+): Promise<boolean | null> {
+  const query = `
+    query FindRsvp($boardId: ID!, $columns: [ItemsPageByColumnValuesQuery!]!) {
+      items_page_by_column_values(board_id: $boardId, columns: $columns, limit: 5) {
+        items { id column_values(ids: ["${RSVP_EVENT}", "${RSVP_EMAIL}"]) { id text } }
+      }
+    }
+  `;
+  const variables = {
+    boardId,
+    columns: [
+      { column_id: RSVP_EMAIL, column_values: [email] },
+      { column_id: RSVP_EVENT, column_values: [eventName] },
+    ],
+  };
+
+  try {
+    const res = await fetch("https://api.monday.com/v2", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token,
+        "API-Version": "2024-01",
+      },
+      body: JSON.stringify({ query, variables }),
+      cache: "no-store",
+    });
+    const json = await res.json();
+    if (json.errors?.length) throw new Error(json.errors[0].message);
+    const items: Array<{ column_values?: Array<{ id: string; text: string | null }> }> =
+      json.data?.items_page_by_column_values?.items ?? [];
+    // Double-check the match ourselves (case-insensitive) rather than trusting the filter alone.
+    return items.some((item) => {
+      const text = (colId: string) => (item.column_values?.find((c) => c.id === colId)?.text ?? "").trim().toLowerCase();
+      return text(RSVP_EMAIL) === email && text(RSVP_EVENT) === eventName.trim().toLowerCase();
+    });
+  } catch (error) {
+    console.warn("[RSVP] Duplicate check failed:", error);
+    return null;
+  }
+}
+
 // ── Server-side validation ─────────────────────────────────────────────────────
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+?[\d\s()-]+$/;
@@ -199,6 +250,15 @@ export async function submitRsvp(
   }
 
   const eventName = details.name; // authoritative server-side name
+  const email     = input.email.trim().toLowerCase();
+
+  if (await hasExistingRsvp(token, rsvpBoardId, eventName, email)) {
+    return {
+      success: false,
+      error: "This email address has already RSVP'd for this event. If you need to change your details, please contact us.",
+    };
+  }
+
   // One person per RSVP: everyone attending must submit their own form, so the count is always 1.
   const attendees = 1;
   const fullName  = `${input.firstName.trim()} ${input.lastName.trim()}`;
@@ -220,7 +280,7 @@ export async function submitRsvp(
     itemName,
     columnValues: JSON.stringify({
       [RSVP_EVENT]: eventName,
-      [RSVP_EMAIL]: input.email.trim().toLowerCase(),
+      [RSVP_EMAIL]: email,
       [RSVP_PHONE]: input.phone.trim(),
       [RSVP_COUNT]: attendees,
       [RSVP_ORG]:   input.organisation.trim(),
