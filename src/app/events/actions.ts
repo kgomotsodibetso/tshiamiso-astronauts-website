@@ -102,7 +102,6 @@ export interface RsvpInput {
   lastName: string;
   email: string;
   phone: string;
-  attendees: number;
   organisation: string;
   consent: boolean;
   turnstileToken?: string;
@@ -159,8 +158,6 @@ function validate(input: RsvpInput): string | null {
   const phoneDigits = phone.replace(/\D/g, "").length;
   if (!phone) return "A phone number is required so we can reach you about the event.";
   if (phone.length > 20 || !PHONE_RE.test(phone) || phoneDigits < 9 || phoneDigits > 15) return "Please enter a valid phone number.";
-  const count = Number(input.attendees);
-  if (!Number.isInteger(count) || count < 1 || count > 20) return "Attendees must be between 1 and 20.";
   if (input.organisation && input.organisation.length > 200) return "Organisation name is too long.";
   if (input.consent !== true) return "Please tick the box so we know you agree.";
   return null;
@@ -202,7 +199,8 @@ export async function submitRsvp(
   }
 
   const eventName = details.name; // authoritative server-side name
-  const attendees = Math.round(Number(input.attendees));
+  // One person per RSVP: everyone attending must submit their own form, so the count is always 1.
+  const attendees = 1;
   const fullName  = `${input.firstName.trim()} ${input.lastName.trim()}`;
   const itemName  = `${fullName} — ${eventName}`;
 
@@ -246,7 +244,7 @@ export async function submitRsvp(
     console.log(`[RSVP] Created item ${mondayJson.data?.create_item?.id}`);
 
     // SMS notification — fire and forget, never block the RSVP success
-    sendRsvpSms(input, eventName, attendees, fullName).catch((err) =>
+    sendRsvpSms(input, eventName, fullName).catch((err) =>
       console.warn("[RSVP] SMS notification failed:", err)
     );
 
@@ -257,7 +255,7 @@ export async function submitRsvp(
   }
 }
 
-async function sendRsvpSms(input: RsvpInput, eventName: string, attendees: number, fullName: string): Promise<void> {
+async function sendRsvpSms(input: RsvpInput, eventName: string, fullName: string): Promise<void> {
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken  = process.env.TWILIO_AUTH_TOKEN;
   const from       = process.env.TWILIO_FROM_NUMBER;
@@ -277,7 +275,6 @@ async function sendRsvpSms(input: RsvpInput, eventName: string, attendees: numbe
   const smsBody =
     `New RSVP: ${name}\n` +
     `Event: ${safeEventName}\n` +
-    `Attendees: ${attendees}\n` +
     `Email: ${email}\n` +
     `Phone: ${phone}`;
 

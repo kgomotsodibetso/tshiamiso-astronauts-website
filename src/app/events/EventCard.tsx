@@ -109,7 +109,6 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [attendees, setAttendees] = useState("1");
   const [organisation, setOrganisation] = useState("");
   const [consent, setConsent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -160,7 +159,7 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
-    if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim() || !attendees) {
+    if (!firstName.trim() || !lastName.trim() || !email.trim() || !phone.trim()) {
       setError("Please fill in all required fields.");
       return;
     }
@@ -175,7 +174,6 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
       lastName: lastName.trim(),
       email: email.trim(),
       phone: phone.trim(),
-      attendees: parseInt(attendees, 10) || 1,
       organisation: organisation.trim(),
       consent,
       turnstileToken: turnstileToken.current,
@@ -290,22 +288,13 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
                   className={inputClass}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label htmlFor={id("phone")} className={labelClass}>Phone Number *</label>
-                  <input
-                    id={id("phone")} type="tel" required autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+27 82 000 0000"
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <label htmlFor={id("attendees")} className={labelClass}>Attendees *</label>
-                  <input
-                    id={id("attendees")} type="number" min="1" max="20" required value={attendees} onChange={(e) => setAttendees(e.target.value)}
-                    className={inputClass}
-                  />
-                </div>
+              <div>
+                <label htmlFor={id("phone")} className={labelClass}>Phone Number *</label>
+                <input
+                  id={id("phone")} type="tel" required autoComplete="tel" value={phone} onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+27 82 000 0000"
+                  className={inputClass}
+                />
               </div>
               <div>
                 <label htmlFor={id("org")} className={labelClass}>School / Organisation</label>
@@ -315,6 +304,9 @@ function RsvpModal({ event, onClose }: { event: MondayEvent; onClose: () => void
                   className={inputClass}
                 />
               </div>
+              <p className="text-xs font-semibold text-brand-navy bg-brand-orange/10 rounded-xl px-3 py-2.5">
+                One RSVP per person. Everyone attending must submit their own form. You cannot bring anyone who has not RSVP&apos;d.
+              </p>
               <label htmlFor={id("consent")} className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-gray-600">
                 <input
                   id={id("consent")} type="checkbox" required checked={consent} onChange={(e) => setConsent(e.target.checked)}
