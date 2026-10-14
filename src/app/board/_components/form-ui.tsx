@@ -153,6 +153,19 @@ export function Check({ id, name, children }: { id: string; name: string; childr
   );
 }
 
+export const HUMAN_CHECK_MESSAGE =
+  "The human check has not loaded. Please wait a moment and try again. If it keeps happening, switch off any ad blocker or privacy shield for this page and refresh, or email info@tshiamisoastronauts.org.";
+
+/** The Cloudflare check runs quietly in the background. Give it a few seconds before giving up. */
+export async function waitForHumanCheck(getToken: () => string, maxMs = 4000): Promise<boolean> {
+  const step = 200;
+  for (let waited = 0; waited <= maxMs; waited += step) {
+    if (getToken()) return true;
+    await new Promise((r) => setTimeout(r, step));
+  }
+  return Boolean(getToken());
+}
+
 export function FormError({ message }: { message: string }) {
   if (!message) return null;
   return (

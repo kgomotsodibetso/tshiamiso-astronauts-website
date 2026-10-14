@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/TurnstileWidget";
 import { NOMINEE_KNOWS, SKILL_AREAS, boardPath, type BoardSource } from "@/config/board";
-import { Card, Check, Field, FormError, Select, SubmitButton, TextArea, TextInput } from "../_components/form-ui";
+import { Card, Check, Field, FormError, HUMAN_CHECK_MESSAGE, Select, SubmitButton, TextArea, TextInput, waitForHumanCheck } from "../_components/form-ui";
 import { submitBoardNomination } from "./actions";
 
 export default function NominateForm({ source }: { source: BoardSource }) {
@@ -22,6 +22,13 @@ export default function NominateForm({ source }: { source: BoardSource }) {
     fd.set("turnstileToken", turnstileToken.current);
 
     setLoading(true);
+    // No token yet: wait a few seconds, then say so plainly instead of sending a request that will be refused.
+    if (!turnstileToken.current && !(await waitForHumanCheck(() => turnstileToken.current))) {
+      setError(HUMAN_CHECK_MESSAGE);
+      setLoading(false);
+      return;
+    }
+    fd.set("turnstileToken", turnstileToken.current);
     try {
       const result = await submitBoardNomination(fd);
       if (result.success) {

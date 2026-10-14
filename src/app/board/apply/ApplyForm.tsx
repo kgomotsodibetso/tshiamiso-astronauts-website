@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/TurnstileWidget";
 import { COMMITTEES, CV_MAX_BYTES, GENDERS, LINKS_TO_TA, SKILL_AREAS, WHY_MAX_WORDS, boardPath, type BoardSource } from "@/config/board";
 import { wordCount } from "@/lib/board/validate";
-import { Card, Check, Field, FormError, Select, SubmitButton, TextArea, TextInput, inputClass } from "../_components/form-ui";
+import { Card, Check, Field, FormError, HUMAN_CHECK_MESSAGE, Select, SubmitButton, TextArea, TextInput, inputClass, waitForHumanCheck } from "../_components/form-ui";
 import { submitBoardApplication } from "./actions";
 
 export default function ApplyForm({ source }: { source: BoardSource }) {
@@ -34,6 +34,13 @@ export default function ApplyForm({ source }: { source: BoardSource }) {
     }
 
     setLoading(true);
+    // No token yet: wait a few seconds, then say so plainly instead of sending a request that will be refused.
+    if (!turnstileToken.current && !(await waitForHumanCheck(() => turnstileToken.current))) {
+      setError(HUMAN_CHECK_MESSAGE);
+      setLoading(false);
+      return;
+    }
+    fd.set("turnstileToken", turnstileToken.current);
     try {
       const result = await submitBoardApplication(fd);
       if (result.success) {
