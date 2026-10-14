@@ -29,3 +29,7 @@ export const payfastRatelimit = makeRatelimit("rl:payfast", Ratelimit.slidingWin
 // (stops anyone using us to flood one inbox, and protects the 100 emails a day Resend allows).
 export const subscribeIpRatelimit = makeRatelimit("rl:subscribe-ip", Ratelimit.slidingWindow(5, "1 h"));
 export const subscribeEmailRatelimit = makeRatelimit("rl:subscribe-email", Ratelimit.slidingWindow(3, "1 d"));
+
+// Board nominee invitations: at most 3 emails a day to the same address (keyed by a hash, never the address),
+// so the nomination form cannot be used to flood one person's inbox.
+export const boardNomineeEmailRatelimit = makeRatelimit("rl:board-nominee-email", Ratelimit.slidingWindow(3, "1 d"));

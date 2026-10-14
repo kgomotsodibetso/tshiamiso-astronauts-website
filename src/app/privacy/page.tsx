@@ -96,7 +96,8 @@ export default function PrivacyPolicyPage() {
                 <strong>Board nomination</strong> &ndash; your name, email
                 address and relationship to the nominee, and the nominee&apos;s
                 name, email address, cell number (optional), skill area and the
-                reasons you give for nominating them.
+                reasons you give for nominating them. We email the nominee to invite
+                them to apply, using the name and contact details you gave us.
               </li>
             </ul>
             <p className="mt-3">
@@ -138,8 +139,10 @@ export default function PrivacyPolicyPage() {
               </li>
               <li>
                 To run our Board recruitment: to screen and interview
-                applicants and nominees, to invite nominees to apply, and to
-                confirm appointments at a meeting of our members.
+                applicants and nominees, to email nominees an invitation to apply
+                (we delete the details of nominees who do not apply after the
+                recruitment closes), and to confirm appointments at a meeting of
+                our members.
               </li>
               <li>
                 To comply with our legal obligations (e.g., maintaining donation
@@ -404,8 +407,9 @@ export default function PrivacyPolicyPage() {
             <ul className="list-disc pl-6 mt-2 space-y-1">
               <li>
                 <strong>Resend</strong> — our email delivery provider, used to
-                send you a copy of your contact or volunteer submission and to
-                deliver our responses.
+                send you a copy of your contact or volunteer submission, to
+                deliver our responses, and to send Board invitations to
+                nominees.
               </li>
               <li>
                 <strong>monday.com</strong> — where we keep our records of

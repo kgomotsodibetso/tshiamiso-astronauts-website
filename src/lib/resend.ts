@@ -183,3 +183,78 @@ export const sendDonorNotification = async (
     `,
   });
 };
+
+// ── Board recruitment ─────────────────────────────────────────────
+
+/**
+ * One email to a nominee, sent when someone nominates them on /board/nominate.
+ * `applyUrl` is built by the server (never taken from the request). Returns true only if Resend accepted it.
+ */
+export const sendBoardNomineeInvitation = async (input: { nomineeName: string; nominatorName: string; email: string; applyUrl: string; boardUrl: string; privacyUrl: string }): Promise<boolean> => {
+  const nominee = oneLine(input.nomineeName, 150);
+  const nominator = oneLine(input.nominatorName, 150);
+  const info = "info@tshiamisoastronauts.org";
+  const result = await sendEmailSafely({
+    from: FROM_EMAIL,
+    replyTo: ADMIN_EMAIL,
+    to: input.email,
+    subject: "You have been nominated for the Tshiamiso Astronauts Board",
+    html: `
+      <div style="font-family: Montserrat, Arial, sans-serif; color: #000080; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.55;">
+        <p>Hello ${esc(nominee)},</p>
+        <p>${esc(nominator)} has nominated you to join the Board of Directors of Tshiamiso Astronauts (TA). We are a literacy and community-empowerment non-profit in Evaton West, Gauteng, and we are opening seats on our Board for 2026, our Year of Breakthrough.</p>
+        <p>We are looking for people who will guide a literate, empowered and confident Evaton West. A nomination is an invitation to apply. Nobody is appointed on a nomination alone.</p>
+        <p style="margin-bottom: 4px;"><strong>What the role involves</strong></p>
+        <ul style="margin-top: 0;">
+          <li>One Saturday a month: Board meeting, 15h00 to 17h00, plus committee work.</li>
+          <li>A 5-year term.</li>
+          <li>Unpaid, with real impact for children and families in our community.</li>
+        </ul>
+        <p style="margin-bottom: 4px;"><strong>If you are interested</strong></p>
+        <p style="margin-top: 0;">Apply by Friday 27 November 2026. It takes about 10 minutes and you will need your CV (PDF or Word).</p>
+        <p style="margin: 24px 0;"><a href="${esc(input.applyUrl)}" style="background-color: #E9711E; color: #000080; font-weight: bold; text-decoration: none; padding: 14px 28px; border-radius: 6px; display: inline-block;">Apply now</a></p>
+        <p>You can read more about the role at <a href="${esc(input.boardUrl)}" style="color: #000080;">${esc(input.boardUrl.replace(/^https?:\/\//, ""))}</a>.</p>
+        <p style="margin-bottom: 4px;"><strong>If you are not interested</strong></p>
+        <p style="margin-top: 0;">You do not need to do anything.</p>
+        <p style="margin-bottom: 4px;"><strong>Your details</strong></p>
+        <p style="margin-top: 0;">${esc(nominator)} gave us your name and contact details. We use them only to send you this invitation. If you do not apply, we will delete them after the recruitment closes on 27 November 2026. To ask what we hold, or to have your details deleted sooner, reply to this email or write to <a href="mailto:${info}" style="color: #000080;">${info}</a>. Our Privacy Policy is at <a href="${esc(input.privacyUrl)}" style="color: #000080;">${esc(input.privacyUrl.replace(/^https?:\/\//, ""))}</a>.</p>
+        <p>If this reached you by mistake, please tell us at <a href="mailto:${info}" style="color: #000080;">${info}</a>.</p>
+        <p>Warm regards,<br/><strong>The Tshiamiso Astronauts Team</strong></p>
+        <hr style="border: 0; border-top: 1px solid #ccc; margin: 24px 0 12px;"/>
+        <p style="font-size: 12px; color: #333;">Tshiamiso Astronauts NPC | NPC 2022/460202/08 | NPO 294-255 | PBO 930083956</p>
+      </div>
+    `,
+    text: [
+      `Hello ${nominee},`,
+      "",
+      `${nominator} has nominated you to join the Board of Directors of Tshiamiso Astronauts (TA). We are a literacy and community-empowerment non-profit in Evaton West, Gauteng, and we are opening seats on our Board for 2026, our Year of Breakthrough.`,
+      "",
+      "We are looking for people who will guide a literate, empowered and confident Evaton West. A nomination is an invitation to apply. Nobody is appointed on a nomination alone.",
+      "",
+      "What the role involves",
+      "- One Saturday a month: Board meeting, 15h00 to 17h00, plus committee work.",
+      "- A 5-year term.",
+      "- Unpaid, with real impact for children and families in our community.",
+      "",
+      "If you are interested",
+      "Apply by Friday 27 November 2026. It takes about 10 minutes and you will need your CV (PDF or Word).",
+      `Apply now: ${input.applyUrl}`,
+      "",
+      `You can read more about the role at ${input.boardUrl}.`,
+      "",
+      "If you are not interested",
+      "You do not need to do anything.",
+      "",
+      "Your details",
+      `${nominator} gave us your name and contact details. We use them only to send you this invitation. If you do not apply, we will delete them after the recruitment closes on 27 November 2026. To ask what we hold, or to have your details deleted sooner, reply to this email or write to ${info}. Our Privacy Policy is at ${input.privacyUrl}.`,
+      "",
+      `If this reached you by mistake, please tell us at ${info}.`,
+      "",
+      "Warm regards,",
+      "The Tshiamiso Astronauts Team",
+      "",
+      "Tshiamiso Astronauts NPC | NPC 2022/460202/08 | NPO 294-255 | PBO 930083956",
+    ].join("\n"),
+  });
+  return Boolean(result && "data" in result && result.data?.id);
+};

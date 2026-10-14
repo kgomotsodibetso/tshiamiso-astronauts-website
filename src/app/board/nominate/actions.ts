@@ -2,7 +2,11 @@
 
 import { BOARD_MONDAY, NOMINEE_KNOWS, SKILL_AREAS, resolveBoardSource } from "@/config/board";
 import { guardSubmission } from "@/lib/board/guard";
-import { createBoardItem } from "@/lib/board/monday";
+import { createHash } from "node:crypto";
+import { addUpdate, createBoardItem } from "@/lib/board/monday";
+import { boardNomineeEmailRatelimit } from "@/lib/ratelimit";
+import { sendBoardNomineeInvitation } from "@/lib/resend";
+import { siteUrl } from "@/lib/subscribe/siteUrl";
 import { clean, isEmail, normaliseSaPhone } from "@/lib/board/validate";
 
 export type NominationResult = { success: true } | { success: false; error: string };
@@ -69,6 +73,37 @@ export async function submitBoardNomination(formData: FormData): Promise<Nominat
   });
   if (!created.ok) {
     return fail("Something went wrong and your nomination was not saved. Please try again, or email info@tshiamisoastronauts.org.");
+  }
+
+  // Invite the nominee. The nomination is already saved, so an email problem never loses it: a note on the
+  // Monday item tells TA to invite them by hand.
+  let invited = false;
+  let capped = false;
+  try {
+    const key = createHash("sha256").update(nomineeEmail).digest("hex");
+    capped = !(await boardNomineeEmailRatelimit.limit(key)).success;
+  } catch {
+    console.warn("[Board:Nominations] nominee email limit check failed, failing open");
+  }
+  if (!capped) {
+    const base = siteUrl();
+    invited = await sendBoardNomineeInvitation({
+      nomineeName,
+      nominatorName: yourName,
+      email: nomineeEmail,
+      applyUrl: `${base}/board/apply?s=referral`,
+      boardUrl: `${base}/board?s=referral`,
+      privacyUrl: `${base}/privacy`,
+    });
+  }
+  if (!invited) {
+    console.warn(`[Board:Nominations] invitation email not sent (${capped ? "daily limit for this address" : "send failed"})`);
+    await addUpdate(
+      created.itemId,
+      capped
+        ? "Invitation email NOT sent: this address already received 3 invitations today. Please invite the nominee by hand if needed."
+        : "Invitation email NOT sent automatically. Please invite the nominee by hand.",
+    );
   }
   return { success: true };
 }
