@@ -104,6 +104,7 @@ export interface RsvpInput {
   phone: string;
   attendees: number;
   organisation: string;
+  consent: boolean;
   turnstileToken?: string;
 }
 
@@ -148,15 +149,20 @@ async function fetchEventDetails(
 
 // ── Server-side validation ─────────────────────────────────────────────────────
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^\+?[\d\s()-]+$/;
 
 function validate(input: RsvpInput): string | null {
   if (!input.firstName?.trim() || input.firstName.length > 100) return "First name is required.";
   if (!input.lastName?.trim() || input.lastName.length > 100)   return "Last name is required.";
   if (!input.email?.trim() || !EMAIL_RE.test(input.email) || input.email.length > 254) return "A valid email address is required.";
-  if (input.phone && input.phone.length > 20) return "Phone number is too long.";
+  const phone = input.phone?.trim() ?? "";
+  const phoneDigits = phone.replace(/\D/g, "").length;
+  if (!phone) return "A phone number is required so we can reach you about the event.";
+  if (phone.length > 20 || !PHONE_RE.test(phone) || phoneDigits < 9 || phoneDigits > 15) return "Please enter a valid phone number.";
   const count = Number(input.attendees);
   if (!Number.isInteger(count) || count < 1 || count > 20) return "Attendees must be between 1 and 20.";
   if (input.organisation && input.organisation.length > 200) return "Organisation name is too long.";
+  if (input.consent !== true) return "Please tick the box so we know you agree.";
   return null;
 }
 
