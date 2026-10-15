@@ -19,6 +19,7 @@ const nextConfig = {
       { source: "/tshiamiso-astronauts-blog", destination: "/blog", permanent: true },
       { source: "/tshiamiso-astronauts-blog/tag/:tag", destination: "/blog", permanent: true },
       { source: "/tshiamiso-astronauts-blog/author/:author", destination: "/blog", permanent: true },
+      { source: "/tshiamiso-astronauts-blog/page/:n", destination: "/blog", permanent: true },
       { source: "/tshiamiso-astronauts-blog/rss.xml", destination: "/blog", permanent: true },
       { source: "/tshiamiso-astronauts-blog/:slug", destination: "/blog/:slug", permanent: true },
       { source: "/inspiring-a-love-for-reading", destination: "/about", permanent: true },
