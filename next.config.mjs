@@ -31,6 +31,8 @@ const nextConfig = {
       // Short links for print and WhatsApp. Temporary on purpose, so they can be re-pointed later. The query string (?s=) is kept.
       { source: "/signup", destination: "/join", permanent: false },
       { source: "/families", destination: "/join", permanent: false },
+      // Photo gallery short link (see src/config/gallery.ts). Temporary, so it can be re-pointed for the next event.
+      { source: "/spellingbee", destination: "/gallery/regional-spelling-bee", permanent: false },
       // Board recruitment: one front door at /board. Temporary redirects, so they can change after the campaign.
       // Next.js keeps the query string (?s=poster etc.) on a redirect with no query of its own.
       { source: "/board-vacancies", destination: "/board", permanent: false },
@@ -56,7 +58,7 @@ const nextConfig = {
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.clarity.ms https://scripts.clarity.ms",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: https://www.tshiamisoastronauts.org https://*.hubspot.net https://*.hubspotusercontent.com https://*.hubspotusercontent-na1.net https://*.hubspotusercontent-na2.net https://www.google.com https://www.google.co.za https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://www.googletagmanager.com https://*.google-analytics.com https://www.googleadservices.com https://*.clarity.ms https://c.bing.com",
+      "img-src 'self' data: https://*.public.blob.vercel-storage.com https://www.tshiamisoastronauts.org https://*.hubspot.net https://*.hubspotusercontent.com https://*.hubspotusercontent-na1.net https://*.hubspotusercontent-na2.net https://www.google.com https://www.google.co.za https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://www.googletagmanager.com https://*.google-analytics.com https://www.googleadservices.com https://*.clarity.ms https://c.bing.com",
       "font-src 'self'",
       "frame-src https://challenges.cloudflare.com",
       "connect-src 'self' https://challenges.cloudflare.com https://api.monday.com https://api.resend.com https://api.twilio.com https://www.google.com https://www.google.co.za https://www.googleadservices.com https://googleads.g.doubleclick.net https://*.g.doubleclick.net https://*.google-analytics.com https://*.analytics.google.com https://analytics.google.com https://www.googletagmanager.com https://pagead2.googlesyndication.com https://*.clarity.ms https://c.bing.com",
@@ -86,6 +88,11 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "www.tshiamisoastronauts.org",
+      },
+      {
+        // Event photo galleries (Vercel Blob)
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
       },
       {
         protocol: "https",
