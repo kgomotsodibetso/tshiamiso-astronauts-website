@@ -18,9 +18,9 @@ export type GalleryConfig = {
 export const GALLERIES: GalleryConfig[] = [
   {
     slug: "regional-spelling-bee",
-    title: "Regional Spelling Bee",
+    title: "Regional Spelling Bee Grand Final",
     eyebrow: "2026 Photo Gallery",
-    intro: "Moments from the Regional Spelling Bee. View the photos here and download your favourites.",
+    intro: "Moments from the Regional Spelling Bee Grand Final. View the photos here and download your favourites.",
     thanks:
       "Thank you to our learners, teachers, the host school and the Tshiamiso Astronauts team for making the day a success.",
     prefix: "TA_Photo_SpellingBeeGrandFinal_",
