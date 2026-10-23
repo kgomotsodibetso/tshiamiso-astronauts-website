@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { list } from "@vercel/blob";
+import { head, list } from "@vercel/blob";
 import { GALLERIES, getGallery } from "@/config/gallery";
 import { GalleryGrid, type GalleryPhoto } from "./GalleryGrid";
 
@@ -25,11 +25,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-async function loadFolder(folder: string) {
+async function loadPhotos(prefix: string) {
   const blobs = [];
   let cursor: string | undefined;
   do {
-    const page = await list({ prefix: folder, cursor, limit: 1000 });
+    const page = await list({ prefix, cursor, limit: 1000 });
     blobs.push(...page.blobs);
     cursor = page.hasMore ? page.cursor : undefined;
   } while (cursor);
@@ -45,16 +45,16 @@ export default async function GalleryPage({ params }: { params: Promise<{ slug: 
   let loadError = false;
 
   try {
-    const blobs = await loadFolder(gallery.folder);
+    const blobs = await loadPhotos(gallery.prefix);
     photos = blobs
       .filter((b) => IMAGE_EXT.test(b.pathname))
       .sort((a, b) => a.pathname.localeCompare(b.pathname, undefined, { numeric: true }))
       .map((b) => ({
         src: b.url,
         downloadUrl: b.downloadUrl,
-        name: b.pathname.slice(gallery.folder.length),
+        name: b.pathname.split("/").pop() ?? b.pathname,
       }));
-    zipUrl = blobs.find((b) => b.pathname === `${gallery.folder}${gallery.zipName}`)?.downloadUrl ?? null;
+    zipUrl = (await head(gallery.zipPath).catch(() => null))?.downloadUrl ?? null;
   } catch {
     loadError = true;
   }
