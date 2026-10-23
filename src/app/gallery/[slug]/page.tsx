@@ -4,8 +4,9 @@ import { list } from "@vercel/blob";
 import { GALLERIES, getGallery } from "@/config/gallery";
 import { GalleryGrid, type GalleryPhoto } from "./GalleryGrid";
 
-// New uploads show up within a few minutes without a redeploy.
-export const revalidate = 300;
+// New uploads show up within the hour without a redeploy. Listing the folder counts as an advanced Blob operation,
+// and the free plan allows 2,000 a month, so this stays well under it (at most 720).
+export const revalidate = 3600;
 
 const IMAGE_EXT = /\.(jpe?g|png|webp)$/i;
 
