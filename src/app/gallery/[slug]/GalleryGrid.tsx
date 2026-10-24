@@ -9,6 +9,7 @@ export function GalleryGrid({ photos, label }: { photos: GalleryPhoto[]; label: 
   const [open, setOpen] = useState<number | null>(null);
   const lastTrigger = useRef<HTMLElement | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   const close = useCallback(() => {
     setOpen(null);
@@ -26,6 +27,21 @@ export function GalleryGrid({ photos, label }: { photos: GalleryPhoto[]; label: 
       if (e.key === "Escape") close();
       else if (e.key === "ArrowRight") step(1);
       else if (e.key === "ArrowLeft") step(-1);
+      else if (e.key === "Tab") {
+        // The dialog is modal, so keep keyboard focus inside it.
+        const focusable = dialogRef.current?.querySelectorAll<HTMLElement>("a[href], button");
+        if (!focusable?.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const active = document.activeElement;
+        if (!dialogRef.current?.contains(active) || (e.shiftKey && active === first)) {
+          e.preventDefault();
+          (e.shiftKey ? last : first).focus();
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -75,6 +91,7 @@ export function GalleryGrid({ photos, label }: { photos: GalleryPhoto[]; label: 
 
       {current && open !== null && (
         <div
+          ref={dialogRef}
           role="dialog"
           aria-modal="true"
           aria-label={`Photo ${open + 1} of ${photos.length}`}

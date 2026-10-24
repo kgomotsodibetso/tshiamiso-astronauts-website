@@ -12,7 +12,7 @@ export type GalleryConfig = {
   /** Start of the Blob path shared by this gallery's photos (a folder with a trailing slash, or a file name prefix). */
   prefix: string;
   /** Optional zip of every photo, uploaded to the Blob store, for the "Download all" button. */
-  zipPath: string;
+  zipPath?: string;
 };
 
 export const GALLERIES: GalleryConfig[] = [

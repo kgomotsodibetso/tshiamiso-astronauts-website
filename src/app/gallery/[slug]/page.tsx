@@ -54,7 +54,7 @@ export default async function GalleryPage({ params }: { params: Promise<{ slug: 
         downloadUrl: b.downloadUrl,
         name: b.pathname.split("/").pop() ?? b.pathname,
       }));
-    zipUrl = (await head(gallery.zipPath).catch(() => null))?.downloadUrl ?? null;
+    if (gallery.zipPath) zipUrl = (await head(gallery.zipPath).catch(() => null))?.downloadUrl ?? null;
   } catch {
     loadError = true;
   }
