@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/TurnstileWidget";
 import { COMMITTEES, CV_MAX_BYTES, GENDERS, LINKS_TO_TA, SKILL_AREAS, WHY_MAX_WORDS, boardPath, type BoardSource } from "@/config/board";
 import { wordCount } from "@/lib/board/validate";
+import { BOARD_APPLICATION_SEND_TO, trackBoardConversion } from "@/lib/gtag";
 import { Card, Check, Field, FormError, HUMAN_CHECK_MESSAGE, Select, SubmitButton, TextArea, TextInput, inputClass, waitForHumanCheck } from "../_components/form-ui";
 import { submitBoardApplication } from "./actions";
 
@@ -15,6 +16,7 @@ export default function ApplyForm({ source }: { source: BoardSource }) {
   const [whyWords, setWhyWords] = useState(0);
   const turnstileToken = useRef("");
   const turnstile = useRef<TurnstileHandle>(null);
+  const conversionSent = useRef(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -45,6 +47,11 @@ export default function ApplyForm({ source }: { source: BoardSource }) {
       const result = await submitBoardApplication(fd);
       if (result.success) {
         setDone({ cvSaved: result.cvSaved });
+        // Google Ads conversion, once, only after the server has saved the application. No personal data is sent.
+        if (!conversionSent.current) {
+          conversionSent.current = true;
+          void trackBoardConversion(BOARD_APPLICATION_SEND_TO);
+        }
         window.scrollTo({ top: 0 });
       } else {
         setError(result.error);

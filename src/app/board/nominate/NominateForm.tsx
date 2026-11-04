@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/TurnstileWidget";
 import { NOMINEE_KNOWS, SKILL_AREAS, boardPath, type BoardSource } from "@/config/board";
 import { Card, Check, Field, FormError, HUMAN_CHECK_MESSAGE, Select, SubmitButton, TextArea, TextInput, waitForHumanCheck } from "../_components/form-ui";
+import { BOARD_NOMINATION_SEND_TO, trackBoardConversion } from "@/lib/gtag";
 import { submitBoardNomination } from "./actions";
 
 export default function NominateForm({ source }: { source: BoardSource }) {
@@ -13,6 +14,7 @@ export default function NominateForm({ source }: { source: BoardSource }) {
   const [done, setDone] = useState(false);
   const turnstileToken = useRef("");
   const turnstile = useRef<TurnstileHandle>(null);
+  const conversionSent = useRef(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -33,6 +35,11 @@ export default function NominateForm({ source }: { source: BoardSource }) {
       const result = await submitBoardNomination(fd);
       if (result.success) {
         setDone(true);
+        // Google Ads conversion, once, only after the server has saved the nomination. No personal data is sent.
+        if (!conversionSent.current) {
+          conversionSent.current = true;
+          void trackBoardConversion(BOARD_NOMINATION_SEND_TO);
+        }
         window.scrollTo({ top: 0 });
       } else {
         setError(result.error);

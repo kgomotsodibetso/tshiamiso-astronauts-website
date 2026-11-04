@@ -21,6 +21,7 @@ export const BOARD_SOURCES = [
   "gala",
   "referral",
   "website",
+  "google",
 ] as const;
 export type BoardSource = (typeof BOARD_SOURCES)[number] | "other";
 

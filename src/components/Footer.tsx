@@ -109,6 +109,11 @@ export default function Footer() {
                   +27 66 071 5426
                 </a>
               </li>
+              <li>
+                <Link href="/contact" className="hover:text-brand-orange transition-colors">
+                  Contact form
+                </Link>
+              </li>
             </ul>
 
             <div className="mt-4 flex flex-col gap-2">
