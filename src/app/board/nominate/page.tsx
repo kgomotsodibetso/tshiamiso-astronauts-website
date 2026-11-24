@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { boardPath, resolveBoardSource, resolveBoardState } from "@/config/board";
+import { BOARD_CLOSE_DATE, boardPath, resolveBoardSource, resolveBoardState } from "@/config/board";
 import { PageHero } from "../_components/form-ui";
 import NominateForm from "./NominateForm";
 
@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Nominate a TA Board Director | Tshiamiso Astronauts",
-  description: "Nominate someone for the Board of Tshiamiso Astronauts by Friday 27 November 2026.",
+  description: `Nominate someone for the Board of Tshiamiso Astronauts by ${BOARD_CLOSE_DATE}.`,
   alternates: { canonical: "https://tshiamisoastronauts.org/board/nominate" },
   robots: { index: false, follow: true },
 };
@@ -28,7 +28,7 @@ export default async function NominatePage({
     <article className="pb-16">
       <PageHero
         title="Nominate a TA Board Director"
-        intro="Know someone who could help Tshiamiso Astronauts break through? Nominate them here by Friday 27 November 2026. We will invite them to apply; nobody is appointed on a nomination alone."
+        intro={`Know someone who could help Tshiamiso Astronauts break through? Nominate them here by ${BOARD_CLOSE_DATE}. We will invite them to apply; nobody is appointed on a nomination alone.`}
         backHref={boardPath("/board", source)}
       />
       <div className="mt-8 bg-gray-50 py-10">
