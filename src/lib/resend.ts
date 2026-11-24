@@ -1,4 +1,6 @@
 import { Resend, type CreateEmailOptions } from "resend";
+// The Board close date and timing words live in one place. Never type them into an email by hand.
+import { BOARD_CLOSE_DATE, BOARD_MEETING_WHEN, BOARD_SCREENING_WHEN } from "@/config/board";
 
 // If API key is missing, it will throw an error when used, which is fine as it's caught in Server Actions.
 const resend = new Resend(process.env.RESEND_API_KEY || "dummy_key_to_prevent_crash_during_build");
@@ -242,13 +244,13 @@ export const sendBoardNomineeInvitation = async (input: { nomineeName: string; n
           <li>Unpaid, with real impact for children and families in our community.</li>
         </ul>
         <p style="margin-bottom: 4px;"><strong>If you are interested</strong></p>
-        <p style="margin-top: 0;">Apply by Friday 27 November 2026. It takes about 10 minutes and you will need your CV (PDF or Word).</p>
+        <p style="margin-top: 0;">Apply by ${BOARD_CLOSE_DATE}. It takes about 10 minutes and you will need your CV (PDF or Word).</p>
         <p style="margin: 24px 0;"><a href="${esc(input.applyUrl)}" style="background-color: #E9711E; color: #000080; font-weight: bold; text-decoration: none; padding: 14px 28px; border-radius: 6px; display: inline-block;">Apply now</a></p>
         <p>You can read more about the role at <a href="${esc(input.boardUrl)}" style="color: #000080;">${esc(input.boardUrl.replace(/^https?:\/\//, ""))}</a>.</p>
         <p style="margin-bottom: 4px;"><strong>If you are not interested</strong></p>
         <p style="margin-top: 0;">You do not need to do anything.</p>
         <p style="margin-bottom: 4px;"><strong>Your details</strong></p>
-        <p style="margin-top: 0;">${esc(nominator)} gave us your name and contact details. We use them only to send you this invitation. If you do not apply, we will delete them after the recruitment closes on 27 November 2026. To ask what we hold, or to have your details deleted sooner, reply to this email or write to <a href="mailto:${info}" style="color: #000080;">${info}</a>. Our Privacy Policy is at <a href="${esc(input.privacyUrl)}" style="color: #000080;">${esc(input.privacyUrl.replace(/^https?:\/\//, ""))}</a>.</p>
+        <p style="margin-top: 0;">${esc(nominator)} gave us your name and contact details. We use them only to send you this invitation. If you do not apply, we will delete them after the recruitment closes on ${BOARD_CLOSE_DATE}. To ask what we hold, or to have your details deleted sooner, reply to this email or write to <a href="mailto:${info}" style="color: #000080;">${info}</a>. Our Privacy Policy is at <a href="${esc(input.privacyUrl)}" style="color: #000080;">${esc(input.privacyUrl.replace(/^https?:\/\//, ""))}</a>.</p>
         <p>If this reached you by mistake, please tell us at <a href="mailto:${info}" style="color: #000080;">${info}</a>.</p>
         <p>Warm regards,<br/><strong>The Tshiamiso Astronauts Team</strong></p>
         <hr style="border: 0; border-top: 1px solid #ccc; margin: 24px 0 12px;"/>
@@ -268,7 +270,7 @@ export const sendBoardNomineeInvitation = async (input: { nomineeName: string; n
       "- Unpaid, with real impact for children and families in our community.",
       "",
       "If you are interested",
-      "Apply by Friday 27 November 2026. It takes about 10 minutes and you will need your CV (PDF or Word).",
+      `Apply by ${BOARD_CLOSE_DATE}. It takes about 10 minutes and you will need your CV (PDF or Word).`,
       `Apply now: ${input.applyUrl}`,
       "",
       `You can read more about the role at ${input.boardUrl}.`,
@@ -277,7 +279,7 @@ export const sendBoardNomineeInvitation = async (input: { nomineeName: string; n
       "You do not need to do anything.",
       "",
       "Your details",
-      `${nominator} gave us your name and contact details. We use them only to send you this invitation. If you do not apply, we will delete them after the recruitment closes on 27 November 2026. To ask what we hold, or to have your details deleted sooner, reply to this email or write to ${info}. Our Privacy Policy is at ${input.privacyUrl}.`,
+      `${nominator} gave us your name and contact details. We use them only to send you this invitation. If you do not apply, we will delete them after the recruitment closes on ${BOARD_CLOSE_DATE}. To ask what we hold, or to have your details deleted sooner, reply to this email or write to ${info}. Our Privacy Policy is at ${input.privacyUrl}.`,
       "",
       `If this reached you by mistake, please tell us at ${info}.`,
       "",
@@ -321,9 +323,9 @@ export const sendBoardApplicationConfirmation = async (input: { name: string; em
         ${cvHtml}
         <p style="margin-bottom: 4px;"><strong>What happens next</strong></p>
         <ol style="margin-top: 0;">
-          <li>A committee screens applications in early December.</li>
+          <li>A committee screens applications in ${BOARD_SCREENING_WHEN}.</li>
           <li>Shortlisted candidates are interviewed.</li>
-          <li>Appointments are confirmed at a meeting of our members in the new year.</li>
+          <li>Appointments are confirmed at a meeting of our members ${BOARD_MEETING_WHEN}.</li>
         </ol>
         <p>We will contact you by email. If anything in your application changes, or you want to withdraw, reply to this email or write to <a href="mailto:${info}" style="color: #000080;">${info}</a>.</p>
         <p style="margin-bottom: 4px;"><strong>Your details</strong></p>
@@ -335,9 +337,9 @@ export const sendBoardApplicationConfirmation = async (input: { name: string; em
         "",
         ...cvText,
         "What happens next",
-        "1. A committee screens applications in early December.",
+        `1. A committee screens applications in ${BOARD_SCREENING_WHEN}.`,
         "2. Shortlisted candidates are interviewed.",
-        "3. Appointments are confirmed at a meeting of our members in the new year.",
+        `3. Appointments are confirmed at a meeting of our members ${BOARD_MEETING_WHEN}.`,
         "",
         `We will contact you by email. If anything in your application changes, or you want to withdraw, reply to this email or write to ${info}.`,
         "",
@@ -359,11 +361,11 @@ export const sendBoardNominationConfirmation = async (input: { nominatorName: st
   const nominee = oneLine(input.nomineeName, 150);
   const info = "info@tshiamisoastronauts.org";
   const invitedHtml = input.nomineeInvited
-    ? `We have emailed ${esc(nominee)} an invitation to apply by Friday 27 November 2026.`
-    : `We will invite ${esc(nominee)} to apply by Friday 27 November 2026.`;
+    ? `We have emailed ${esc(nominee)} an invitation to apply by ${BOARD_CLOSE_DATE}.`
+    : `We will invite ${esc(nominee)} to apply by ${BOARD_CLOSE_DATE}.`;
   const invitedText = input.nomineeInvited
-    ? `We have emailed ${nominee} an invitation to apply by Friday 27 November 2026.`
-    : `We will invite ${nominee} to apply by Friday 27 November 2026.`;
+    ? `We have emailed ${nominee} an invitation to apply by ${BOARD_CLOSE_DATE}.`
+    : `We will invite ${nominee} to apply by ${BOARD_CLOSE_DATE}.`;
   return accepted(
     await sendEmailSafely({
       from: FROM_EMAIL,
@@ -375,7 +377,7 @@ export const sendBoardNominationConfirmation = async (input: { nominatorName: st
         <p>Thank you for nominating ${esc(nominee)} for the Board of Directors of Tshiamiso Astronauts. We have received your nomination.</p>
         <p>${invitedHtml} A nomination is an invitation to apply. Nobody is appointed on a nomination alone.</p>
         <p style="margin-bottom: 4px;"><strong>Your details and your nominee's</strong></p>
-        <p style="margin-top: 0;">We use your details and ${esc(nominee)}'s only for this recruitment, in line with POPIA. If ${esc(nominee)} does not apply, we will delete their details after the recruitment closes on 27 November 2026. Our Privacy Policy is at <a href="${esc(input.privacyUrl)}" style="color: #000080;">${esc(input.privacyUrl.replace(/^https?:\/\//, ""))}</a>. Questions? Write to <a href="mailto:${info}" style="color: #000080;">${info}</a>.</p>`),
+        <p style="margin-top: 0;">We use your details and ${esc(nominee)}'s only for this recruitment, in line with POPIA. If ${esc(nominee)} does not apply, we will delete their details after the recruitment closes on ${BOARD_CLOSE_DATE}. Our Privacy Policy is at <a href="${esc(input.privacyUrl)}" style="color: #000080;">${esc(input.privacyUrl.replace(/^https?:\/\//, ""))}</a>. Questions? Write to <a href="mailto:${info}" style="color: #000080;">${info}</a>.</p>`),
       text: [
         `Hello ${nominator},`,
         "",
@@ -384,7 +386,7 @@ export const sendBoardNominationConfirmation = async (input: { nominatorName: st
         `${invitedText} A nomination is an invitation to apply. Nobody is appointed on a nomination alone.`,
         "",
         "Your details and your nominee's",
-        `We use your details and ${nominee}'s only for this recruitment, in line with POPIA. If ${nominee} does not apply, we will delete their details after the recruitment closes on 27 November 2026. Our Privacy Policy is at ${input.privacyUrl}. Questions? Write to ${info}.`,
+        `We use your details and ${nominee}'s only for this recruitment, in line with POPIA. If ${nominee} does not apply, we will delete their details after the recruitment closes on ${BOARD_CLOSE_DATE}. Our Privacy Policy is at ${input.privacyUrl}. Questions? Write to ${info}.`,
         "",
         "Warm regards,",
         "The Tshiamiso Astronauts Team",

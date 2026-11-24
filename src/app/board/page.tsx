@@ -1,5 +1,17 @@
 import Link from "next/link";
-import { boardPath, isProductionDeployment, resolveBoardSource, resolveBoardState } from "@/config/board";
+import {
+  BOARD_CLOSE_DATE,
+  BOARD_CLOSE_DAY_MONTH,
+  BOARD_EXTENSION_NOTICE,
+  BOARD_MEETING_WHEN,
+  BOARD_SCREENING_WHEN,
+  boardPath,
+  isProductionDeployment,
+  resolveBoardSource,
+  resolveBoardState,
+  showBoardExtensionNotice,
+} from "@/config/board";
+import ExtensionRibbon from "./_components/ExtensionRibbon";
 
 // Read at request time: the closing date, `?state=` and `?s=` all depend on the request.
 export const dynamic = "force-dynamic";
@@ -26,11 +38,12 @@ const WHO_CAN_APPLY = [
   "You will declare any conflict of interest, and you are not seeking a job at TA or planning to stand for public office.",
 ];
 
+// Dates and timing come from src/config/board.ts, so they always match the close date the forms enforce.
 const HOW_IT_WORKS = [
-  "Apply or nominate someone by Friday 27 November.",
-  "A committee screens applications in early December.",
+  `Apply or nominate someone by ${BOARD_CLOSE_DAY_MONTH}.`,
+  `A committee screens applications in ${BOARD_SCREENING_WHEN}.`,
   "Shortlisted candidates are interviewed.",
-  "Appointments are confirmed at a meeting of our members in the new year.",
+  `Appointments are confirmed at a meeting of our members ${BOARD_MEETING_WHEN}.`,
 ];
 
 const focus =
@@ -77,9 +90,12 @@ export default async function BoardPage({
   const showButtons = state === "open";
   // Preview only: say when the closed or open state is being forced with ?state=.
   const ribbon = !production && overridden ? `Preview, showing the ${state} state` : null;
+  // "Deadline extended" ribbon: open state only, and only until the end of Fri 1 Jan 2027 (decided by the clock on each request).
+  const showExtension = state === "open" && showBoardExtensionNotice();
 
   return (
     <article>
+      {showExtension && <ExtensionRibbon text={BOARD_EXTENSION_NOTICE} focusId="board-heading" />}
       {ribbon && (
         <p role="status" className="bg-brand-navy px-4 py-2 text-center text-sm font-semibold text-white">
           {ribbon}
@@ -94,7 +110,11 @@ export default async function BoardPage({
                 <p className="inline-block rounded-full bg-white px-4 py-1.5 text-sm font-bold text-brand-navy">
                   Board recruitment, Year of Breakthrough 2026
                 </p>
-                <h1 id="board-heading" className="mt-5 text-4xl font-extrabold text-white sm:text-5xl lg:text-6xl">
+                <h1
+                  id="board-heading"
+                  tabIndex={-1}
+                  className="mt-5 text-4xl font-extrabold text-white focus:outline-none sm:text-5xl lg:text-6xl"
+                >
                   Help us break through.
                 </h1>
                 <p className="mt-3 text-2xl font-bold text-white sm:text-3xl">Join the TA Board.</p>
@@ -116,7 +136,7 @@ export default async function BoardPage({
                 guide a literate, empowered and confident Evaton West.
               </p>
               <p className="mt-6 inline-block rounded-md border-l-8 border-brand-orange bg-brand-pale-teal px-5 py-3 text-base font-bold">
-                Applications and nominations close Friday 27 November 2026.
+                Applications and nominations close {BOARD_CLOSE_DATE}.
               </p>
               {showButtons && (
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row">
@@ -232,7 +252,7 @@ export default async function BoardPage({
           {showButtons && (
             <section aria-label="Apply or nominate" className="mx-auto max-w-5xl px-4 pb-12 sm:px-6 lg:px-8">
               <div className="rounded-xl bg-brand-navy p-6 text-white sm:p-10">
-                <p className="text-xl font-bold sm:text-2xl">Applications and nominations close Friday 27 November 2026.</p>
+                <p className="text-xl font-bold sm:text-2xl">Applications and nominations close {BOARD_CLOSE_DATE}.</p>
                 <div className="mt-6 flex flex-col gap-4 sm:flex-row">
                   <ApplyButton href={applyHref} />
                   <NominateButton href={nominateHref} onNavy />

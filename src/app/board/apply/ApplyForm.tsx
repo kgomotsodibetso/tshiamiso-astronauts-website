@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import TurnstileWidget, { type TurnstileHandle } from "@/components/TurnstileWidget";
-import { COMMITTEES, CV_MAX_BYTES, GENDERS, LINKS_TO_TA, SKILL_AREAS, WHY_MAX_WORDS, boardPath, type BoardSource } from "@/config/board";
+import { BOARD_SCREENING_WHEN, COMMITTEES, CV_MAX_BYTES, GENDERS, LINKS_TO_TA, SKILL_AREAS, WHY_MAX_WORDS, boardPath, type BoardSource } from "@/config/board";
 import { wordCount } from "@/lib/board/validate";
 import { Card, Check, Field, FormError, HUMAN_CHECK_MESSAGE, Select, SubmitButton, TextArea, TextInput, inputClass, waitForHumanCheck } from "../_components/form-ui";
 import { submitBoardApplication } from "./actions";
@@ -62,7 +62,7 @@ export default function ApplyForm({ source }: { source: BoardSource }) {
       <div role="status" className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 text-center">
         <h2 className="text-2xl font-bold text-brand-navy mb-3">Application received</h2>
         <p className="text-lg leading-relaxed">
-          Thank you. A committee screens applications in early December and we will contact you by email.
+          Thank you. A committee screens applications in {BOARD_SCREENING_WHEN} and we will contact you by email.
         </p>
         {!done.cvSaved && (
           <p className="mt-4 rounded-xl border-2 border-brand-orange bg-brand-pale-teal px-4 py-3 font-semibold">

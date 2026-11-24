@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { BOARD_CLOSE_DATE } from "@/config/board";
 
 const TITLE = "Join the TA Board | Tshiamiso Astronauts";
-const DESCRIPTION =
-  "Tshiamiso Astronauts is opening seats on its Board. Apply or nominate someone by Friday 27 November 2026.";
+// Used for the meta description, Open Graph and Twitter text. The date comes from src/config/board.ts.
+const DESCRIPTION = `Tshiamiso Astronauts is opening seats on its Board. Apply or nominate someone by ${BOARD_CLOSE_DATE}.`;
 
 export const metadata: Metadata = {
   title: TITLE,
